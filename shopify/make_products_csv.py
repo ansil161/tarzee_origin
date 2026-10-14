@@ -21,6 +21,7 @@ with open(out, 'w', newline='', encoding='utf-8') as f:
     w = csv.DictWriter(f, fieldnames=cols); w.writeheader()
     for p in cat:
         imgs = [f"{p['handle']}-{i+1}.jpg" for i in range(len(p['photos']))]
+        imgs += p.get('campaign', [])  # campaign shots: 2nd image is the collection hover image
         body = f"<p>{p['desc']}</p><p><em>{p['fabric']}</em></p>"
         tags = ','.join(['drop-01', p['type'].lower(), p['tag'].lower().replace(' ', '-')] + (['new'] if p['handle'] == 'lattice-zip-jacket' else []) + (['limited'] if p['handle'] == 'frayed-street-denim' else []))
         rows = max(len(SIZES), len(imgs))

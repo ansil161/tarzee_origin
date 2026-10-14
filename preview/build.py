@@ -19,8 +19,8 @@ def rupee(n): return '₹' + f'{n:,}'
 def img(handle, n): return f'{handle}-{n}.jpg'
 def e(s): return html.escape(s)
 ALT = {  # hover images for cards
-    'lattice-zip-jacket': 'detail-jaal.jpg', 'archive-patchwork-jacket': 'detail-patchwork.jpg',
-    'jaal-pocket-camp-shirt': 'look-03-camp-shirt-4x5.jpg', 'diamond-jaal-bomber': 'diamond-jaal-bomber-2.jpg',
+    'lattice-zip-jacket': 'detail-jaal.jpg', 'archive-patchwork-jacket': 'archive-patchwork-jacket-campaign-1.jpg',
+    'jaal-pocket-camp-shirt': 'look-03-camp-shirt-4x5.jpg', 'diamond-jaal-bomber': 'diamond-jaal-bomber-campaign-1.jpg',
     'frayed-street-denim': 'frayed-street-denim-3.jpg', 'paisley-tonal-shirt': 'paisley-tonal-shirt-2.jpg'}
 TAGS = {'lattice-zip-jacket': 'New drop', 'frayed-street-denim': 'Limited'}
 
@@ -109,7 +109,7 @@ import re as _re
 SIZES = ['S', 'M', 'L', 'XL', 'XXL']
 CHEV = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
 def shop_card(p, i, base=''):
-    tag = TAGS.get(p['handle'])
+    tag = TAGS.get(p['handle']); alt = ALT.get(p['handle'])
     badge = f'<span class="shop-badge">{"New" if tag == "New drop" else tag}</span>' if tag else ''
     sizes = ''
     for j, sz in enumerate(SIZES):
@@ -118,7 +118,7 @@ def shop_card(p, i, base=''):
     return f"""<div class="shop-card" data-shop-card data-product-id="{p['handle']}">
   <div class="shop-card__image-wrapper">
     <button type="button" class="shop-wishlist" data-wishlist="{p['handle']}" aria-label="Add to wishlist" aria-pressed="false"><svg class="shop-heart" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>{badge}
-    <a class="shop-card__image-link" href="{base}products/{p['handle']}.html" draggable="false" tabindex="-1" aria-hidden="true"><img class="shop-card__img" src="{base}assets/{img(p['handle'],1)}" alt="{e(p['title'])}" width="800" height="1000" loading="lazy" draggable="false"></a>
+    <a class="shop-card__image-link" href="{base}products/{p['handle']}.html" draggable="false" tabindex="-1" aria-hidden="true"><img class="shop-card__img" src="{base}assets/{img(p['handle'],1)}" alt="{e(p['title'])}" width="800" height="1000" loading="lazy" draggable="false">{f'<img class="shop-card__img shop-card__img--alt" src="{base}assets/{alt}" alt="" width="800" height="1000" loading="lazy" draggable="false">' if alt else ''}</a>
     <form class="shop-quick" data-preview-cart data-shop-quick data-title="{e(p['title'])}" data-price="{p['price']}" data-img="{base}assets/{img(p['handle'],1)}"><input type="hidden" name="size" value="M" data-shop-variant-id><span class="shop-quick__title">Quick add</span><div class="shop-quick__sizes">{sizes}</div></form>
   </div>
   <div class="shop-card__info"><h3 class="shop-card__title"><a href="{base}products/{p['handle']}.html">{e(p['title'])}</a></h3><span class="shop-card__category">{p['type']}</span><span class="shop-card__color" data-shop-color>{p['tag']}</span><span class="shop-card__price">{rupee(p['price'])}</span></div>
@@ -232,6 +232,7 @@ open(os.path.join(OUT, 'collection.html'), 'w', encoding='utf-8').write(col)
 # ---------------- PRODUCTS ----------------
 for i, p in enumerate(cat):
     gallery = ''.join(f'<figure data-reveal data-delay="{n*0.05}"><img src="../assets/{img(p["handle"],n+1)}" alt="{e(p["title"])}" width="1200" height="1500"></figure>' for n in range(len(p['photos'])))
+    gallery += ''.join(f'<figure data-reveal><img src="../assets/{c}" alt="{e(p["title"])} campaign" width="1200" height="1500" loading="lazy"></figure>' for c in p.get('campaign', []))
     if p['handle'] in ALT and not ALT[p['handle']].startswith(p['handle']):
         gallery += f'<figure data-reveal><img src="../assets/{ALT[p["handle"]]}" alt="" width="1200" height="1500" loading="lazy"></figure>'
     related = [q for q in cat if q['handle'] != p['handle']][:4]

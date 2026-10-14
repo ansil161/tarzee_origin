@@ -1,11 +1,131 @@
 [
- {"handle":"lattice-zip-jacket","title":"Lattice Zip Jacket","type":"Jackets","tag":"Block print","price":6490,"photos":[2],"desc":"A lattice block print along the hem and collar, traced by hand in black blanket stitch. Heavy cotton twill, two-way zip, boxy fit.","fabric":"100% cotton twill · block print · blanket stitch"},
- {"handle":"diamond-jaal-bomber","title":"Diamond Jaal Bomber","type":"Jackets","tag":"All-over print","price":7490,"photos":[3,5],"desc":"The diamond jaal printed edge to edge. Two-way zip, ribbed hem and cuffs, a tonal chest patch.","fabric":"Cotton twill · all-over block print · rib trims"},
- {"handle":"frayed-street-denim","title":"Frayed Street Denim","type":"Jackets","tag":"Frayed appliqué","price":8990,"photos":[1,4,10],"desc":"Strips of black denim, laid by hand and left to fray. No two pieces fall the same way.","fabric":"Heavy black denim · hand-laid appliqué"},
- {"handle":"archive-patchwork-jacket","title":"Archive Patchwork Jacket","type":"Jackets","tag":"Patchwork","price":9490,"photos":[12],"desc":"Raw squares in four greys, pieced by hand. Exposed edges, visible stitch, a tonal patch at the chest.","fabric":"Cotton patchwork · exposed seams · metal zip"},
- {"handle":"zip-shacket","title":"Zip Shacket","type":"Shackets","tag":"Statements","price":5990,"photos":[11],"desc":"Boxy, zipped, quiet. Black blanket stitch traces the edge by hand; a tonal print sits low at the hem.","fabric":"Heavy cotton twill · boxy fit"},
- {"handle":"jaal-pocket-camp-shirt","title":"Jaal Pocket Camp Shirt","type":"Shirts","tag":"Block print","price":4490,"photos":[0],"desc":"A camp collar, two block-printed pockets, a printed patch at the chest. Cut loose for the heat.","fabric":"Cotton poplin · block-printed pockets"},
- {"handle":"pillar-pintuck-shirt","title":"Pillar Pintuck Shirt","type":"Shirts","tag":"Pintuck","price":4290,"photos":[6],"desc":"Pintuck panels run the length of the front, tonal black on black. Relaxed through the body.","fabric":"Cotton · tonal pintuck panels"},
- {"handle":"diamond-jaal-popover","title":"Diamond Jaal Popover","type":"Shirts","tag":"All-over print","price":4990,"photos":[7],"desc":"A half-placket popover in the diamond jaal, printed edge to edge. Worn open at the throat.","fabric":"Cotton · all-over block print"},
- {"handle":"paisley-tonal-shirt","title":"Paisley Tonal Shirt","type":"Shirts","tag":"Embroidery","price":4690,"photos":[9,8],"desc":"Paisley, tonal, by hand. One embroidered motif on a plain black shirt.","fabric":"Cotton · hand embroidery"}
+ {
+  "handle": "lattice-zip-jacket",
+  "title": "Lattice Zip Jacket",
+  "type": "Jackets",
+  "tag": "Block print",
+  "price": 6490,
+  "photos": [
+   2
+  ],
+  "desc": "A lattice block print along the hem and collar, traced by hand in black blanket stitch. Heavy cotton twill, two-way zip, boxy fit.",
+  "fabric": "100% cotton twill · block print · blanket stitch",
+  "campaign": []
+ },
+ {
+  "handle": "diamond-jaal-bomber",
+  "title": "Diamond Jaal Bomber",
+  "type": "Jackets",
+  "tag": "All-over print",
+  "price": 7490,
+  "photos": [
+   3,
+   5
+  ],
+  "desc": "The diamond jaal printed edge to edge. Two-way zip, ribbed hem and cuffs, a tonal chest patch.",
+  "fabric": "Cotton twill · all-over block print · rib trims",
+  "campaign": [
+   "diamond-jaal-bomber-campaign-1.jpg",
+   "diamond-jaal-bomber-campaign-2.jpg",
+   "diamond-jaal-bomber-campaign-3.jpg",
+   "diamond-jaal-bomber-campaign-4.jpg"
+  ]
+ },
+ {
+  "handle": "frayed-street-denim",
+  "title": "Frayed Street Denim",
+  "type": "Jackets",
+  "tag": "Frayed appliqué",
+  "price": 8990,
+  "photos": [
+   1,
+   4,
+   10
+  ],
+  "desc": "Strips of black denim, laid by hand and left to fray. No two pieces fall the same way.",
+  "fabric": "Heavy black denim · hand-laid appliqué",
+  "campaign": []
+ },
+ {
+  "handle": "archive-patchwork-jacket",
+  "title": "Archive Patchwork Jacket",
+  "type": "Jackets",
+  "tag": "Patchwork",
+  "price": 9490,
+  "photos": [
+   12
+  ],
+  "desc": "Raw squares in four greys, pieced by hand. Exposed edges, visible stitch, a tonal patch at the chest.",
+  "fabric": "Cotton patchwork · exposed seams · metal zip",
+  "campaign": [
+   "archive-patchwork-jacket-campaign-1.jpg",
+   "archive-patchwork-jacket-campaign-2.jpg"
+  ]
+ },
+ {
+  "handle": "zip-shacket",
+  "title": "Zip Shacket",
+  "type": "Shackets",
+  "tag": "Statements",
+  "price": 5990,
+  "photos": [
+   11
+  ],
+  "desc": "Boxy, zipped, quiet. Black blanket stitch traces the edge by hand; a tonal print sits low at the hem.",
+  "fabric": "Heavy cotton twill · boxy fit",
+  "campaign": []
+ },
+ {
+  "handle": "jaal-pocket-camp-shirt",
+  "title": "Jaal Pocket Camp Shirt",
+  "type": "Shirts",
+  "tag": "Block print",
+  "price": 4490,
+  "photos": [
+   0
+  ],
+  "desc": "A camp collar, two block-printed pockets, a printed patch at the chest. Cut loose for the heat.",
+  "fabric": "Cotton poplin · block-printed pockets",
+  "campaign": []
+ },
+ {
+  "handle": "pillar-pintuck-shirt",
+  "title": "Pillar Pintuck Shirt",
+  "type": "Shirts",
+  "tag": "Pintuck",
+  "price": 4290,
+  "photos": [
+   6
+  ],
+  "desc": "Pintuck panels run the length of the front, tonal black on black. Relaxed through the body.",
+  "fabric": "Cotton · tonal pintuck panels",
+  "campaign": []
+ },
+ {
+  "handle": "diamond-jaal-popover",
+  "title": "Diamond Jaal Popover",
+  "type": "Shirts",
+  "tag": "All-over print",
+  "price": 4990,
+  "photos": [
+   7
+  ],
+  "desc": "A half-placket popover in the diamond jaal, printed edge to edge. Worn open at the throat.",
+  "fabric": "Cotton · all-over block print",
+  "campaign": []
+ },
+ {
+  "handle": "paisley-tonal-shirt",
+  "title": "Paisley Tonal Shirt",
+  "type": "Shirts",
+  "tag": "Embroidery",
+  "price": 4690,
+  "photos": [
+   9,
+   8
+  ],
+  "desc": "Paisley, tonal, by hand. One embroidered motif on a plain black shirt.",
+  "fabric": "Cotton · hand embroidery",
+  "campaign": []
+ }
 ]
