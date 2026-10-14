@@ -1,0 +1,10 @@
+<section class="section section--dark" style="min-height:70svh;display:grid;place-items:center;text-align:center">
+  <div class="container">
+    <h1 class="t-display" data-split>{{ 'general.404_title' | t }}</h1>
+    <p class="t-body-lg u-mt-4" style="opacity:.8">{{ 'general.404_text' | t }}</p>
+    <div class="u-mt-6"><a class="btn btn--paper" href="{{ routes.root_url }}"><span>{{ 'general.back_home' | t }}</span></a></div>
+  </div>
+</section>
+{% schema %}
+{ "name": "404", "settings": [] }
+{% endschema %}

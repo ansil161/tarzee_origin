@@ -1,0 +1,13 @@
+{
+  "current": {
+    "logo_width": 120,
+    "tagline": "Cut and sewn by hand.",
+    "color_ink": "#0A0A0A",
+    "color_paper": "#F4F3EF",
+    "color_stone": "#ECECE8",
+    "color_ash": "#8A8A86",
+    "enable_smooth_scroll": true,
+    "enable_cursor": true,
+    "free_shipping_text": "Free shipping across India"
+  }
+}

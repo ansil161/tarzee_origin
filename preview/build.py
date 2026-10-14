@@ -1,0 +1,299 @@
+"""Static preview of the Terzee Origins Shopify theme.
+Renders the same sections/markup as the Liquid theme using the catalog in media-src/catalog.json,
+so the design can be reviewed before the theme is pushed to a store.
+Run:  python preview/build.py   then open preview/index.html (or serve the folder).
+"""
+import json, os, shutil, html
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT = os.path.join(ROOT, 'preview')
+ASSETS = os.path.join(OUT, 'assets')
+THEME_ASSETS = os.path.join(ROOT, 'theme', 'assets')
+os.makedirs(ASSETS, exist_ok=True)
+os.makedirs(os.path.join(OUT, 'products'), exist_ok=True)
+for f in os.listdir(THEME_ASSETS):
+    src = os.path.join(THEME_ASSETS, f); dst = os.path.join(ASSETS, f)
+    if not os.path.exists(dst) or os.path.getmtime(src) > os.path.getmtime(dst):
+        shutil.copy2(src, dst)
+cat = json.load(open(os.path.join(ROOT, 'media-src', 'catalog.json'), encoding='utf-8'))
+def rupee(n): return '₹' + f'{n:,}'
+def img(handle, n): return f'{handle}-{n}.jpg'
+def e(s): return html.escape(s)
+ALT = {  # hover images for cards
+    'lattice-zip-jacket': 'detail-jaal.jpg', 'archive-patchwork-jacket': 'detail-patchwork.jpg',
+    'jaal-pocket-camp-shirt': 'look-03-camp-shirt-4x5.jpg', 'diamond-jaal-bomber': 'diamond-jaal-bomber-2.jpg',
+    'frayed-street-denim': 'frayed-street-denim-3.jpg', 'paisley-tonal-shirt': 'paisley-tonal-shirt-2.jpg'}
+TAGS = {'lattice-zip-jacket': 'New drop', 'frayed-street-denim': 'Limited'}
+
+def head(title, base='', body_class=''):
+    return f'''<!doctype html>
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0A0A0A">
+<title>{e(title)} – Terzee Origins</title>
+<link rel="icon" type="image/png" href="{base}assets/ze-monogram-white.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Marhey:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{base}assets/base.css">
+<style>:root{{--logo-w:120px}}</style>
+<script>window.TERZEE={{smoothScroll:true,cursor:true,moneyFormat:"₹{{{{amount_no_decimals}}}}",t:{{empty:"Your bag is empty.",remove:"Remove",added:"Added to bag",add:"Add to bag",soldOut:"Sold out"}}}};</script>
+</head>
+<body class="{body_class}">
+<div class="cursor" aria-hidden="true"><span class="cursor__label">View</span></div>
+'''
+
+def header(base='', over=True):
+    return f'''<header class="header{' header--over' if over else ' is-solid is-light'}" data-header>
+  <div class="header__left">
+    <button class="header__burger" data-open="menu-drawer" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="header__nav" aria-label="Primary"><a href="{base}collection.html">Shop</a><a href="{base}story.html">Story</a></nav>
+  </div>
+  <a class="header__logo" href="{base}index.html" aria-label="Terzee Origins">
+    <img class="logo-light" src="{base}assets/wordmark-terzee-white.png" alt="Terzee Origins" width="220" height="64">
+    <img class="logo-dark" src="{base}assets/wordmark-terzee-black.png" alt="Terzee Origins" width="220" height="64">
+  </a>
+  <div class="header__right">
+    <a class="header__icon" href="#" aria-label="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg></a>
+    <a class="header__icon header__icon--account" href="#" aria-label="Account"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></a>
+    <button class="header__icon" data-open="cart-drawer" aria-label="Bag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 13H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="header__count" data-cart-count>0</span></button>
+  </div>
+</header>
+<main id="MainContent">'''
+
+def footer(base=''):
+    links_shop = ''.join(f'<li><a href="{base}collection.html">{t}</a></li>' for t in ['Shop all', 'Jackets', 'Shirts', 'Shackets', 'Archive'])
+    links_brand = ''.join(f'<li><a href="{base}story.html">{t}</a></li>' for t in ['Our story', 'Lookbook', 'Size guide', 'Shipping & returns', 'Contact'])
+    return f'''</main>
+<footer class="footer"><div class="container">
+  <div class="footer__top">
+    <div class="footer__brand"><img src="{base}assets/wordmark-origins-white.png" alt="Terzee Origins" width="150" height="62"><p>Black on black streetwear. Block print, patchwork and frayed appliqué, cut and sewn by hand in limited runs.</p></div>
+    <div><h4>Shop</h4><ul>{links_shop}</ul></div>
+    <div><h4>Terzee</h4><ul>{links_brand}</ul></div>
+    <div><h4>Follow</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">WhatsApp</a></li><li><a href="mailto:hello@terzeeorigins.com">hello@terzeeorigins.com</a></li></ul></div>
+  </div>
+  <div class="footer__big" aria-hidden="true">Terzee Origins</div>
+  <div class="footer__bottom"><span>&copy; 2026 Terzee Origins · All rights reserved</span><span>Cut and sewn by hand</span></div>
+</div></footer>
+<div class="drawer" id="menu-drawer" aria-hidden="true"><div class="drawer__scrim"></div><nav class="drawer__panel"><div class="drawer__head"><img src="{base}assets/wordmark-origins-white.png" alt="" width="110" height="46" style="width:110px"><button class="drawer__close" data-close>Close</button></div>
+<ul class="menu-list"><li><a href="{base}collection.html">Shop all<small>01</small></a></li><li><a href="{base}collection.html">Shirts<small>02</small></a></li><li><a href="{base}collection.html">Jackets<small>03</small></a></li><li><a href="{base}story.html">Our story<small>04</small></a></li></ul>
+<div class="drawer__foot"><a href="#">Search</a><a href="#">Account</a><a href="#">Instagram</a><span>Cut and sewn by hand.</span></div></nav></div>
+<div class="drawer drawer--right" id="cart-drawer" aria-hidden="true"><div class="drawer__scrim"></div><aside class="drawer__panel"><div class="drawer__head"><span class="t-label">Your bag (<span data-cart-count>0</span>)</span><button class="drawer__close" data-close>Close</button></div>
+<div class="cart-lines" data-cart-lines><p class="cart-empty">Your bag is empty.</p></div>
+<div class="cart-foot"><div class="cart-foot__row"><span>Subtotal</span><strong data-cart-subtotal>₹0</strong></div><small>Free shipping across India · Taxes and shipping calculated at checkout.</small><a class="btn btn--solid-paper btn--wide" href="#"><span>Checkout</span></a></div></aside></div>
+<div class="toast" role="status" aria-live="polite"></div>
+<div class="lightbox" aria-hidden="true"><button class="lightbox__close" data-lightbox-close>Close ✕</button><video controls playsinline preload="none" poster="{base}assets/brand-film-poster.jpg"></video></div>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="{base}assets/theme.js"></script>
+<script src="{base}assets/preview-cart.js"></script>
+</body></html>'''
+
+def card(p, base=''):
+    alt = ALT.get(p['handle']); tag = TAGS.get(p['handle'])
+    return f'''<a class="card" href="{base}products/{p['handle']}.html" data-cursor="view">
+  <div class="card__media">{f'<span class="card__tag">{tag}</span>' if tag else ''}{f'<img class="alt" src="{base}assets/{alt}" alt="" loading="lazy" width="900" height="1125">' if alt else ''}<img class="main" src="{base}assets/{img(p['handle'],1)}" alt="{e(p['title'])}" loading="lazy" width="900" height="1125">
+    <div class="card__quick"><form data-preview-cart data-title="{e(p['title'])}" data-price="{p['price']}" data-img="{base}assets/{img(p['handle'],1)}"><button class="btn" type="submit"><span>Add to bag</span></button></form></div></div>
+  <div class="card__info"><div><h3 class="card__title">{e(p['title'])}</h3><div class="card__meta">{p['type']} · {p['tag']}</div></div><div class="card__price">{rupee(p['price'])}</div></div></a>'''
+
+def pmarquee(base=''):
+    lists = ''
+    for i in range(2):
+        items = ''.join(f'<li class="pmarquee__item"><a class="pmarquee__link" href="{base}products/{p["handle"]}.html"{" tabindex=\"-1\"" if i else ""}><img class="pmarquee__image" src="{base}assets/{p["handle"]}-cutout.png" alt="" width="600" height="731" loading="lazy"><span class="visually-hidden">{e(p["title"])}</span></a></li>' for p in cat)
+        lists += f'<ul class="pmarquee__list"{" aria-hidden=\"true\"" if i else ""}>{items}</ul>'
+    return f'''<section class="pmarquee section--light" data-header-light>
+  <h2 class="pmarquee__heading pmarquee__heading--left" id="pmarquee-home">See our products:</h2>
+  <div class="pmarquee__viewport pmarquee__viewport--pausable" data-pmarquee data-speed="45" data-direction="left" role="region" aria-labelledby="pmarquee-home"><div class="pmarquee__track">{lists}</div></div>
+</section>'''
+
+import re as _re
+SIZES = ['S', 'M', 'L', 'XL', 'XXL']
+CHEV = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
+def shop_card(p, i, base=''):
+    tag = TAGS.get(p['handle'])
+    badge = f'<span class="shop-badge">{"New" if tag == "New drop" else tag}</span>' if tag else ''
+    sizes = ''
+    for j, sz in enumerate(SIZES):
+        off = (i + j) % 4 == 3
+        sizes += f'<button type="submit" class="shop-size{" disabled" if off else ""}" data-variant="{sz}" data-size="{sz}"{" disabled" if off else ""}>{sz}</button>'
+    return f"""<div class="shop-card" data-shop-card data-product-id="{p['handle']}">
+  <div class="shop-card__image-wrapper">
+    <button type="button" class="shop-wishlist" data-wishlist="{p['handle']}" aria-label="Add to wishlist" aria-pressed="false"><svg class="shop-heart" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>{badge}
+    <a class="shop-card__image-link" href="{base}products/{p['handle']}.html" draggable="false" tabindex="-1" aria-hidden="true"><img class="shop-card__img" src="{base}assets/{img(p['handle'],1)}" alt="{e(p['title'])}" width="800" height="1000" loading="lazy" draggable="false"></a>
+    <form class="shop-quick" data-preview-cart data-shop-quick data-title="{e(p['title'])}" data-price="{p['price']}" data-img="{base}assets/{img(p['handle'],1)}"><input type="hidden" name="size" value="M" data-shop-variant-id><span class="shop-quick__title">Quick add</span><div class="shop-quick__sizes">{sizes}</div></form>
+  </div>
+  <div class="shop-card__info"><h3 class="shop-card__title"><a href="{base}products/{p['handle']}.html">{e(p['title'])}</a></h3><span class="shop-card__category">{p['type']}</span><span class="shop-card__color" data-shop-color>{p['tag']}</span><span class="shop-card__price">{rupee(p['price'])}</span></div>
+</div>"""
+
+# ---------------- HOME ----------------
+
+SD = [('lattice-zip-jacket', '₹7,990', '-19%'), ('diamond-jaal-bomber', '', 'New'), ('frayed-street-denim', '₹10,990', '-18%'), ('archive-patchwork-jacket', '', 'Limited')]
+HEART = '<svg class="shop-heart" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.6 3 5.5 6.3 5.2c1.9-.2 3.6.8 4.7 2.3 1.1-1.5 2.8-2.5 4.7-2.3 3.3.3 5.1 3.4 3.8 6.6C19.5 16.4 12 21 12 21z"/></svg>'
+def sd_card(handle, compare, tag):
+    p = next(x for x in cat if x['handle'] == handle)
+    alt = ALT.get(handle)
+    url = f'products/{handle}.html'
+    return (f'<article class="sd-card"><div class="sd-card__media">'
+            + (f'<span class="sd-card__badge">{tag}</span>' if tag else '')
+            + f'<button type="button" class="shop-wishlist" data-wishlist="{handle}" aria-label="Add to wishlist" aria-pressed="false">{HEART}</button>'
+            + f'<a class="sd-card__link" href="{url}" aria-label="{e(p["title"])}">'
+            + (f'<img class="alt" src="assets/{alt}" alt="" loading="lazy" width="900" height="1125">' if alt else '')
+            + f'<img class="main" src="assets/{img(handle, 1)}" alt="{e(p["title"])}" loading="lazy" width="900" height="1125"></a></div>'
+            + f'<div class="sd-card__info"><a class="sd-card__title" href="{url}">{e(p["title"])}</a><div class="sd-card__price">{rupee(p["price"])}'
+            + (f' <s>{compare}</s>' if compare else '') + '</div><span class="sd-card__swatch" aria-hidden="true" title="Black"></span></div></article>')
+
+home = head('Black on black streetwear', body_class='template-index') + header()
+home += '''
+<section class="hero hero--brand" id="hero">
+  <div class="hero__media hero__media--desktop"><video autoplay muted loop playsinline preload="metadata" poster="assets/hero-user-poster.jpg"><source src="assets/hero-user-1920.mp4" type="video/mp4"></video></div>
+  <div class="hero__media hero__media--mobile"><video autoplay muted loop playsinline preload="metadata" poster="assets/hero-user-mobile-poster.jpg"><source src="assets/hero-user-mobile-720x1280.mp4" type="video/mp4"></video></div>
+  <a class="hero__brand" href="index.html" aria-label="Terzee Origins"><img src="assets/wordmark-terzee-white.png" alt="" width="919" height="266"></a>
+</section>
+''' + pmarquee() + '''
+'''
+home += '''
+<section class="section section--light" data-header-light><div class="container">
+  <div class="section-head"><div><div class="eyebrow t-label"><span class="dia"></span>Drop 01</div><h2 class="t-display" data-split>New arrivals</h2></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:14px"><a class="link" href="collection.html">Shop all</a></div></div>
+  <div class="shop-grid shop-grid--home" data-stagger>''' + ''.join(shop_card(p, i) for i, p in enumerate(cat[:8])) + '''</div>
+</div></section>
+<section class="section section--flush section--dark"><div class="split">
+  <div class="split__text">
+    <div class="eyebrow t-label" data-reveal><span class="dia"></span>Craft</div>
+    <h2 class="t-display" data-split>Every piece carries the hand that made it.</h2>
+    <p class="t-body-lg u-mt-4" data-reveal style="max-width:46ch">Blanket stitch, block print, patchwork with exposed edges. Slow work, kept patient and precise — the hand is always visible.</p>
+    <ul class="split__list" data-stagger>
+      <li><span class="n">01</span><span class="k">Blanket stitch — collars, hems, appliqué</span><span class="u"></span></li>
+      <li><span class="n">02</span><span class="k">Block print — lattice and diamond repeats</span><span class="u"></span></li>
+      <li><span class="n">03</span><span class="k">Patchwork — raw squares, four greys</span><span class="u"></span></li>
+      <li><span class="n">04</span><span class="k">Frayed appliqué — built from strips of denim</span><span class="u"></span></li>
+    </ul>
+    <div class="u-mt-6" data-reveal><a class="btn btn--paper" href="story.html"><span>Our story</span></a></div>
+  </div>
+  <div class="split__media"><video autoplay muted loop playsinline preload="metadata" poster="assets/craft-poster.jpg"><source src="assets/craft-1080x1350.mp4" type="video/mp4"></video></div>
+</div></section>
+<section class="sd" data-header-light>
+  <div class="sd__panel"><img class="sd__bg" src="assets/seasonal-panel.jpg" alt="" loading="lazy" width="1400" height="2100">
+    <div class="sd__content"><h2 class="sd__title">Seasonal Drop</h2><a class="pill pill--paper" href="collection.html">Shop Now</a></div></div>
+  <div class="sd__grid">''' + ''.join(sd_card(p, c, t) for p, c, t in SD) + '''</div>
+</section>
+<section class="cats" data-header-light>
+  <h2 class="cats__title" data-split>Shop by Categories</h2>
+  <div class="cats__grid">
+    <a class="cat cat--tall" href="collection.html" style="--img-x:30%;--img-y:7%;--img-h:112%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR JACKETS</p><h3 class="cat__title">Built For Daily Confidence</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-jackets.png" alt="" loading="lazy" width="931" height="1400"></a>
+    <a class="cat cat--wide" href="collection.html" style="--img-x:36%;--img-y:-6%;--img-h:200%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR SHIRTS</p><h3 class="cat__title">Designed For Modern Living</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-shirts.png" alt="" loading="lazy" width="932" height="1400"></a>
+    <a class="cat cat--wide" href="collection.html" style="--img-x:40%;--img-y:-3%;--img-h:190%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR THE ARCHIVE</p><h3 class="cat__title">Made For Every Season</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-archive.png" alt="" loading="lazy" width="934" height="1400"></a>
+  </div>
+</section>
+'''
+home += '''
+<section class="jreveal" data-jreveal aria-label="Terzee Origins"><div class="jreveal__pin"><div class="jreveal__stage">
+  <div class="jreveal__title" aria-hidden="true"><div class="jreveal__title-1">TERZEE</div><div class="jreveal__title-2">ORIGINS</div></div>
+  <div class="jreveal__inside"><img src="assets/jacket-reveal-inside.jpg" alt="" loading="lazy" width="2048" height="1152"></div>
+  <div class="jreveal__about"><span class="jreveal__about-sub">about us</span><p class="jreveal__about-text" data-chars>Cut and sewn by hand from one black cloth. Built to be worn hard and kept for years.</p></div>
+  <div class="jreveal__seam" aria-hidden="true"></div>
+  <div class="jreveal__half jreveal__half--left" aria-hidden="true"><img src="assets/jacket-reveal-left.png" alt="" loading="lazy" width="1024" height="1152"></div>
+  <div class="jreveal__half jreveal__half--right" aria-hidden="true"><img src="assets/jacket-reveal-right.png" alt="" loading="lazy" width="1024" height="1152"></div>
+</div></div></section>
+
+<section class="section section--stone" data-header-light><div class="container"><div class="newsletter">
+  <div><div class="eyebrow t-label" data-reveal><span class="dia"></span>Newsletter</div><h2 class="t-display" data-split>Sign up</h2></div>
+  <div data-reveal><p class="t-body" style="opacity:.85">Early access to drops, restocks and once-a-season offers. No noise.</p><form class="newsletter__form" onsubmit="event.preventDefault();window.terzeeToast('Thank you. You are on the list.')"><input type="email" placeholder="Email address" required><button type="submit">Sign up</button></form><p class="newsletter__note">One letter a month, at most. Unsubscribe any time.</p></div>
+</div></div></section>'''
+home += footer()
+open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8').write(home)
+
+# ---------------- COLLECTION (layout mirrors sections/main-collection.liquid) ----------------
+
+def shop_group(label, items):
+    checks = ''.join(f'<li><label class="shop-check"><input type="checkbox" name="{label.lower()}" value="{e(v)}"><span class="shop-check__box"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></span><span class="shop-check__label">{e(v)}</span></label></li>' for v in items)
+    return f'<details class="shop-group" open><summary class="shop-group__summary"><span>{label}</span>{CHEV}</summary><div class="shop-group__body"><ul class="shop-checks">{checks}</ul></div></details>'
+
+price_group = f'<details class="shop-group" open><summary class="shop-group__summary"><span>Price</span>{CHEV}</summary><div class="shop-group__body"><div class="shop-price"><label class="shop-price__field"><span class="shop-price__symbol">₹</span><input type="number" name="price_min" min="0" placeholder="0" aria-label="From"></label><span class="shop-price__sep">to</span><label class="shop-price__field"><span class="shop-price__symbol">₹</span><input type="number" name="price_max" min="0" placeholder="{max(p["price"] for p in cat)}" aria-label="To"></label></div></div></details>'
+types = sorted({p['type'] for p in cat}); techs = sorted({p['tag'] for p in cat})
+shop_js = _re.search(r'<script>([\s\S]*?)</script>', open(os.path.join(ROOT, 'theme', 'sections', 'main-collection.liquid'), encoding='utf-8').read()).group(1)
+SORTS = [('manual', 'Featured'), ('best-selling', 'Best selling'), ('title-ascending', 'Alphabetically, A-Z'), ('title-descending', 'Alphabetically, Z-A'), ('price-ascending', 'Price, low to high'), ('price-descending', 'Price, high to low'), ('created-descending', 'Date, new to old')]
+sort_opts = ''.join(f'<option value="{v}">{t}</option>' for v, t in SORTS)
+col = head('Shop all', body_class='template-collection') + header(over=False)
+col += f"""<section class="shop section--light" data-header-light data-shop data-shop-url="collection.html"><div class="shop__inner">
+  <header class="shop__header"><h1 class="shop__title">Shop all</h1></header>
+  <div class="shop__toolbar"><p class="shop__count"><span class="shop__count-label">Showing</span> <span data-shop-count>{len(cat)} of {len(cat)} products</span></p>
+    <div class="shop__toolbar-actions"><button type="button" class="shop__filter-btn" data-shop-open-filters><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg> Filter <span data-shop-active-count></span></button>
+      <div class="shop-sort"><label class="visually-hidden" for="shop-sort">Sort by</label><select id="shop-sort" class="shop-sort__select" name="sort_by" data-shop-sort>{sort_opts}</select><svg class="shop-sort__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div></div></div>
+  <div class="shop__layout">
+    <aside class="shop__sidebar" data-shop-sidebar><form class="shop__form" action="collection.html" data-shop-form><input type="hidden" name="sort_by" value="manual">
+      <div class="shop__sidebar-head"><h2 class="shop__sidebar-title">Filter by</h2><button type="button" class="shop__close" data-shop-close-filters aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" style="stroke:currentColor;fill:none;stroke-width:1.4"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>
+      <div data-shop-filters>{shop_group('Availability', ['In stock', 'Out of stock'])}{price_group}{shop_group('Size', SIZES)}{shop_group('Category', types)}{shop_group('Technique', techs)}</div></form>
+      <div class="shop__drawer-foot"><button type="button" class="shop__apply" data-shop-close-filters>Show <span data-shop-apply-count>{len(cat)}</span> products</button></div></aside>
+    <div class="shop__main" data-shop-main><div class="shop-active" data-shop-active></div><span hidden data-shop-active-total>0</span>
+      <div class="shop-grid">{''.join(shop_card(p, i) for i, p in enumerate(cat))}</div>
+      <nav class="shop-pagination" aria-label="Pagination"></nav></div></div></div>
+  <div class="shop__overlay" data-shop-close-filters></div></section><script>{shop_js}</script>""" + footer()
+open(os.path.join(OUT, 'collection.html'), 'w', encoding='utf-8').write(col)
+
+# ---------------- PRODUCTS ----------------
+for i, p in enumerate(cat):
+    gallery = ''.join(f'<figure data-reveal data-delay="{n*0.05}"><img src="../assets/{img(p["handle"],n+1)}" alt="{e(p["title"])}" width="1200" height="1500"></figure>' for n in range(len(p['photos'])))
+    if p['handle'] in ALT and not ALT[p['handle']].startswith(p['handle']):
+        gallery += f'<figure data-reveal><img src="../assets/{ALT[p["handle"]]}" alt="" width="1200" height="1500" loading="lazy"></figure>'
+    related = [q for q in cat if q['handle'] != p['handle']][:4]
+    page = head(p['title'], base='../', body_class='template-product') + header(base='../', over=False)
+    page += f'''<section class="section section--tight section--light" data-header-light><div class="container"><div class="product">
+  <div class="product__gallery">{gallery}</div>
+  <div class="product__info">
+    <div class="product__crumb"><a href="../collection.html">Drop 01</a> · <a href="../collection.html">{p['type']}</a> · {p['tag']}</div>
+    <h1 class="product__title" data-split>{e(p['title'])}</h1>
+    <div class="product__price" data-price>{rupee(p['price'])}</div>
+    <div class="product__desc t-body">{e(p['desc'])}</div>
+    <form data-preview-cart data-title="{e(p['title'])}" data-price="{p['price']}" data-img="../assets/{img(p['handle'],1)}">
+      <div class="sizes"><div class="sizes__head"><span class="t-label">Size</span><a class="link" href="#">Size guide</a></div>
+        <div class="sizes__grid">{''.join(f'<label><input type="radio" name="size" value="{s}"{" checked" if s=="M" else ""}{" disabled" if s=="XXL" and i%3==0 else ""}><span>{s}</span></label>' for s in ["S","M","L","XL","XXL"])}</div></div>
+      <div class="product__cta"><button class="btn btn--solid-ink btn--wide" type="submit"><span>Add to bag</span></button></div>
+    </form>
+    <div class="product__meta">Free shipping across India · Cut and sewn by hand</div>
+    <div class="acc">
+      <details open><summary>Details<i></i></summary><div class="acc__body">Boxy fit, true to size. Men and unisex. Each piece is finished by hand, so small differences are part of the cloth.</div></details>
+      <details><summary>Fabric &amp; care<i></i></summary><div class="acc__body">{e(p['fabric'])}. Cold wash inside out, line dry in shade, do not tumble.</div></details>
+      <details><summary>Shipping &amp; returns<i></i></summary><div class="acc__body">Free shipping across India. Dispatched in 2–4 days. Returns within 10 days, unworn, tags on.</div></details>
+    </div>
+  </div></div></div></section>
+<section class="section section--stone" data-header-light><div class="container"><div class="section-head"><div><div class="eyebrow t-label"><span class="dia"></span>Drop 01</div><h2 class="t-headline" data-split>You may also like</h2></div><a class="link" href="../collection.html">Shop all</a></div>
+<div class="product-grid" data-stagger>{''.join(card(q, base='../') for q in related)}</div></div></section>'''
+    page += footer(base='../')
+    open(os.path.join(OUT, 'products', p['handle'] + '.html'), 'w', encoding='utf-8').write(page)
+
+# ---------------- STORY ----------------
+story = head('Our story', body_class='template-page') + header(over=False)
+story += '''<section class="section section--flush section--light" data-header-light><div class="page-narrow">
+  <div class="eyebrow t-label"><span class="dia"></span>Our story</div><h1 data-split>Terzee means tailor.</h1>
+  <div class="rte t-body-lg"><p>Terzee Origins is a study in one black cloth. Every piece starts the same way — heavy cotton, cut boxy — and leaves the table different: block-printed with lattice and diamond repeats, pieced from raw squares in four greys, or laid with strips of denim and left to fray.</p><p>Nothing is hidden. Blanket stitch traces every collar and hem. Patches keep their exposed edges. The hand is always visible, and no two pieces fall the same way.</p><p>We make in limited runs and ship across India for free. Drop 01 — AW26 is live now.</p></div>
+</div></section>
+<section class="section section--flush section--dark"><div class="split split--flip">
+  <div class="split__text"><div class="eyebrow t-label" data-reveal><span class="dia"></span>Craft</div><h2 class="t-display" data-split>Every piece carries the hand that made it.</h2><p class="t-body-lg u-mt-4" data-reveal style="max-width:46ch">Blanket stitch, block print, patchwork with exposed edges. Slow work, kept patient and precise.</p><div class="u-mt-6" data-reveal><a class="btn btn--paper" href="collection.html"><span>Shop the drop</span></a></div></div>
+  <div class="split__media"><video autoplay muted loop playsinline preload="metadata" poster="assets/craft-poster.jpg"><source src="assets/craft-1080x1350.mp4" type="video/mp4"></video></div>
+</div></section>''' + footer()
+open(os.path.join(OUT, 'story.html'), 'w', encoding='utf-8').write(story)
+
+# preview-only cart script
+open(os.path.join(ASSETS, 'preview-cart.js'), 'w', encoding='utf-8').write('''/* Preview-only bag (no Shopify backend). */
+(function(){
+  var items=[];
+  function money(n){return '₹'+n.toLocaleString('en-IN');}
+  function render(){
+    document.querySelectorAll('[data-cart-count]').forEach(function(el){el.textContent=items.reduce(function(a,b){return a+b.qty},0)});
+    var list=document.querySelector('[data-cart-lines]'); if(!list) return;
+    list.innerHTML=items.length?items.map(function(it,i){return '<div class="cart-line" data-i="'+i+'"><img src="'+it.img+'" alt=""><div><div class="cart-line__title">'+it.title+'</div><div class="cart-line__meta">'+(it.size||'')+'</div><div class="cart-line__qty"><button data-d="-1">−</button><span>'+it.qty+'</span><button data-d="1">+</button></div><button class="cart-line__remove" data-d="0">Remove</button></div><div>'+money(it.price*it.qty)+'</div></div>'}).join(''):'<p class="cart-empty">Your bag is empty.</p>';
+    var sub=document.querySelector('[data-cart-subtotal]'); if(sub) sub.textContent=money(items.reduce(function(a,b){return a+b.price*b.qty},0));
+  }
+  document.addEventListener('submit',function(e){
+    var f=e.target.closest('form[data-preview-cart]'); if(!f) return; e.preventDefault();
+    var size=(f.querySelector('input[name=size]:checked')||f.querySelector('input[name=size][type=hidden]')||{}).value||'';
+    var ex=items.find(function(x){return x.title===f.dataset.title&&x.size===size});
+    if(ex) ex.qty++; else items.push({title:f.dataset.title,price:+f.dataset.price,img:f.dataset.img,size:size,qty:1});
+    render(); window.terzeeToast&&window.terzeeToast('Added to bag'); window.terzeeOpenDrawer&&window.terzeeOpenDrawer('cart-drawer');
+  });
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-d]'); if(!b) return; var i=+b.closest('.cart-line').dataset.i; var d=+b.dataset.d;
+    if(d===0) items.splice(i,1); else { items[i].qty+=d; if(items[i].qty<=0) items.splice(i,1); } render();
+  });
+  render();
+})();''')
+print('built preview:', os.listdir(OUT))

@@ -1,0 +1,72 @@
+{%- comment -%}
+  Shop by category — one tall card on the left, two wide cards stacked on the right.
+  Light grey rounded cards, eyebrow + headline + pill button, cut-out model image bleeding out of the card.
+  (Section type kept as "arch-tiles" so existing templates keep working.)
+{%- endcomment -%}
+<section class="cats" data-header-light>
+  <h2 class="cats__title" data-split>{{ section.settings.heading }}</h2>
+  <div class="cats__grid">
+    {%- for block in section.blocks limit: 3 -%}
+      {%- liquid
+        assign col = block.settings.collection
+        assign url = block.settings.url
+        if url == blank and col != blank
+          assign url = col.url
+        endif
+        if forloop.first
+          assign kind = 'tall'
+        else
+          assign kind = 'wide'
+        endif
+        if block.settings.image != blank
+          assign img = block.settings.image | image_url: width: 1400
+        elsif block.settings.asset != blank
+          assign img = block.settings.asset | asset_url
+        elsif col != blank and col.featured_image != blank
+          assign img = col.featured_image | image_url: width: 1400
+        else
+          assign img = blank
+        endif
+      -%}
+      <a class="cat cat--{{ kind }}" href="{{ url | default: '#' }}" {{ block.shopify_attributes }} style="--img-x:{{ block.settings.img_x }}%;--img-y:{{ block.settings.img_y }}%;--img-h:{{ block.settings.img_h }}%">
+        <div class="cat__text">
+          <div class="cat__head">
+            <p class="cat__eyebrow">{{ block.settings.eyebrow }}</p>
+            <h3 class="cat__title">{{ block.settings.title }}</h3>
+          </div>
+          <span class="pill pill--ink">{{ block.settings.cta | default: 'Shop Now' }}</span>
+        </div>
+        {%- if img != blank -%}
+          <img class="cat__img" src="{{ img }}" alt="" loading="lazy" width="900" height="1400">
+        {%- endif -%}
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Shop by category",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by Categories" }
+  ],
+  "max_blocks": 3,
+  "blocks": [ { "type": "tile", "name": "Category card", "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "FOR JACKETS" },
+    { "type": "text", "id": "title", "label": "Headline", "default": "Built For Daily Confidence" },
+    { "type": "text", "id": "cta", "label": "Button", "default": "Shop Now" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "url", "id": "url", "label": "Link override" },
+    { "type": "image_picker", "id": "image", "label": "Cut-out image (transparent PNG)" },
+    { "type": "text", "id": "asset", "label": "Or theme asset filename", "default": "cat-jackets.png" },
+    { "type": "range", "id": "img_x", "label": "Image left offset (% of card width)", "min": 0, "max": 80, "step": 1, "default": 30 },
+    { "type": "range", "id": "img_y", "label": "Image top offset (% of card height)", "min": -80, "max": 40, "step": 1, "default": 7 },
+    { "type": "range", "id": "img_h", "label": "Image height (% of card height)", "min": 60, "max": 300, "step": 5, "default": 112 }
+  ] } ],
+  "default": { "blocks": [
+    { "type": "tile", "settings": { "eyebrow": "FOR JACKETS", "title": "Built For Daily Confidence", "asset": "cat-jackets.png", "url": "/collections/jackets", "img_x": 30, "img_y": 7, "img_h": 112 } },
+    { "type": "tile", "settings": { "eyebrow": "FOR SHIRTS", "title": "Designed For Modern Living", "asset": "cat-shirts.png", "url": "/collections/shirts", "img_x": 36, "img_y": -6, "img_h": 200 } },
+    { "type": "tile", "settings": { "eyebrow": "FOR THE ARCHIVE", "title": "Made For Every Season", "asset": "cat-archive.png", "url": "/collections/all", "img_x": 40, "img_y": -3, "img_h": 190 } }
+  ] },
+  "presets": [ { "name": "Shop by category" } ]
+}
+{% endschema %}

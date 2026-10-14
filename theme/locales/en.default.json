@@ -1,0 +1,70 @@
+{
+  "general": {
+    "search": "Search",
+    "account": "Account",
+    "bag": "Bag",
+    "menu": "Menu",
+    "close": "Close",
+    "continue_shopping": "Continue shopping",
+    "404_title": "This page does not exist.",
+    "404_text": "The page you were looking for has moved or never existed.",
+    "back_home": "Back to home",
+    "password_title": "The drop opens soon.",
+    "password_label": "Enter password",
+    "password_submit": "Access now",
+    "newsletter_label": "Email address",
+    "newsletter_submit": "Sign up",
+    "newsletter_success": "Thank you. You are on the list."
+  },
+  "products": {
+    "add_to_bag": "Add to bag",
+    "sold_out": "Sold out",
+    "unavailable": "Unavailable",
+    "size": "Size",
+    "size_guide": "Size guide",
+    "details": "Details",
+    "fabric_care": "Fabric & care",
+    "shipping_returns": "Shipping & returns",
+    "shipping_text": "Free shipping across India. Dispatched in 2–4 days. Returns within 10 days, unworn, tags on.",
+    "related": "You may also like",
+    "new_drop": "New drop",
+    "limited": "Limited",
+    "view": "View"
+  },
+  "collections": {
+    "all": "All",
+    "filter": "Filter",
+    "sort": "Sort",
+    "empty": "Nothing here yet. The next drop is being made.",
+    "count": "{{ count }} pieces"
+  },
+  "cart": {
+    "title": "Your bag",
+    "empty": "Your bag is empty.",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "quantity": "Quantity",
+    "note": "Taxes and shipping calculated at checkout.",
+    "update": "Update bag"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search pieces, techniques, places",
+    "results": "Results for “{{ terms }}”",
+    "no_results": "Nothing found for “{{ terms }}”."
+  },
+  "customer": {
+    "login": "Log in",
+    "logout": "Log out",
+    "register": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "forgot": "Forgot your password?",
+    "account": "Account",
+    "orders": "Orders",
+    "addresses": "Addresses"
+  }
+}

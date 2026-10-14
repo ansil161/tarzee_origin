@@ -1,0 +1,22 @@
+<section class="section section--light" data-header-light>
+  <div class="page-narrow">
+    <h1 data-split>{{ 'customer.login' | t }}</h1>
+    {%- form 'customer_login', class: 'form' -%}
+      {{ form.errors | default_errors }}
+      <input type="email" name="customer[email]" placeholder="{{ 'customer.email' | t }}" autocomplete="email" required>
+      <input type="password" name="customer[password]" placeholder="{{ 'customer.password' | t }}" autocomplete="current-password" required>
+      <button class="btn btn--solid-ink" type="submit"><span>{{ 'customer.login' | t }}</span></button>
+      <a class="link" href="{{ routes.account_register_url }}">{{ 'customer.register' | t }}</a>
+      <a class="link" href="#recover">{{ 'customer.forgot' | t }}</a>
+    {%- endform -%}
+    <div id="recover" class="u-mt-6">
+      {%- form 'recover_customer_password', class: 'form' -%}
+        <input type="email" name="email" placeholder="{{ 'customer.email' | t }}" required>
+        <button class="btn btn--ink" type="submit"><span>Reset password</span></button>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Login", "settings": [] }
+{% endschema %}

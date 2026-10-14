@@ -1,0 +1,46 @@
+{%- liquid
+  assign desktop_src = section.settings.video_url
+  if desktop_src == blank
+    assign desktop_src = 'hero-user-1920.mp4' | asset_url
+  endif
+  assign mobile_src = section.settings.video_url_mobile
+  if mobile_src == blank
+    assign mobile_src = 'hero-user-mobile-720x1280.mp4' | asset_url
+  endif
+  -%}
+<section class="hero hero--brand" id="hero">
+  <div class="hero__media hero__media--desktop">
+    {%- if section.settings.image != blank and section.settings.use_image -%}
+      <img src="{{ section.settings.image | image_url: width: 2400 }}" alt="" width="2400" height="1350">
+    {%- else -%}
+      <video autoplay muted loop playsinline preload="metadata" poster="{{ 'hero-user-poster.jpg' | asset_url }}">
+        <source src="{{ desktop_src }}" type="video/mp4">
+      </video>
+    {%- endif -%}
+  </div>
+  <div class="hero__media hero__media--mobile">
+    <video autoplay muted loop playsinline preload="metadata" poster="{{ 'hero-user-mobile-poster.jpg' | asset_url }}">
+      <source src="{{ mobile_src }}" type="video/mp4">
+    </video>
+  </div>
+
+  <a class="hero__brand" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+    {%- if settings.logo_light != blank -%}
+      <img src="{{ settings.logo_light | image_url: width: 1600 }}" alt="" width="1600" height="662">
+    {%- else -%}
+      <img src="{{ 'wordmark-terzee-white.png' | asset_url }}" alt="" width="919" height="266">
+    {%- endif -%}
+  </a>
+</section>
+{% schema %}
+{
+  "name": "Hero video",
+  "settings": [
+    { "type": "url", "id": "video_url", "label": "Background video URL (mp4). Empty = bundled Veo hero." },
+    { "type": "url", "id": "video_url_mobile", "label": "Mobile background video (9:16 mp4). Empty = bundled." },
+    { "type": "checkbox", "id": "use_image", "label": "Use still image instead of background video", "default": false },
+    { "type": "image_picker", "id": "image", "label": "Still image" }
+  ],
+  "presets": [ { "name": "Hero video" } ]
+}
+{% endschema %}

@@ -1,0 +1,91 @@
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+-%}
+<section class="section section--tight section--light" data-header-light>
+  <div class="container">
+    <div class="product">
+      <div class="product__gallery">
+        {%- for media in product.media -%}
+          <figure data-reveal data-delay="{{ forloop.index0 | times: 0.05 }}">
+            {%- if media.media_type == 'image' -%}
+              <img src="{{ media | image_url: width: 1400 }}" srcset="{{ media | image_url: width: 800 }} 800w, {{ media | image_url: width: 1400 }} 1400w, {{ media | image_url: width: 2000 }} 2000w" sizes="(max-width:900px) 100vw, 55vw" alt="{{ media.alt | escape }}" {% if forloop.first %}loading="eager"{% else %}loading="lazy"{% endif %} width="1400" height="1750">
+            {%- elsif media.media_type == 'video' -%}
+              {{ media | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true }}
+            {%- endif -%}
+          </figure>
+        {%- else -%}
+          <figure><img src="{{ 'lattice-zip-jacket-1.jpg' | asset_url }}" alt="" width="1200" height="1500"></figure>
+        {%- endfor -%}
+      </div>
+      <div class="product__info">
+        <div class="product__crumb">
+          <a href="{{ routes.all_products_collection_url }}">Drop 01</a>
+          {%- if product.type != blank %} · <a href="{{ routes.collections_url }}/{{ product.type | handle }}">{{ product.type }}</a>{% endif -%}
+          {%- if product.metafields.custom.technique != blank %} · {{ product.metafields.custom.technique }}{% endif -%}
+        </div>
+        <h1 class="product__title" data-split>{{ product.title }}</h1>
+        <div class="product__price" data-price>
+          {%- if current.compare_at_price > current.price -%}<s>{{ current.compare_at_price | money }}</s>{%- endif -%}
+          {{ current.price | money }}
+        </div>
+        <div class="product__desc t-body">{{ product.description }}</div>
+
+        <form method="post" action="{{ routes.cart_add_url }}" data-product-form data-ajax-cart>
+          <script type="application/json" data-variants>{{ product.variants | json }}</script>
+          <input type="hidden" name="id" value="{{ current.id }}">
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              <div class="sizes" data-option>
+                <div class="sizes__head"><span class="t-label">{{ option.name }}</span>{% if option.name == 'Size' %}<a class="link" href="/pages/size-guide">{{ 'products.size_guide' | t }}</a>{% endif %}</div>
+                <div class="sizes__grid">
+                  {%- for value in option.values -%}
+                    {%- liquid
+                      assign avail = false
+                      for v in product.variants
+                        if v.options[forloop.parentloop.index0] == value and v.available
+                          assign avail = true
+                        endif
+                      endfor
+                    -%}
+                    <label>
+                      <input type="radio" name="option-{{ option.position }}" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %} {% unless avail %}disabled{% endunless %}>
+                      <span>{{ value }}</span>
+                    </label>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- endunless -%}
+          <div class="product__cta">
+            <button class="btn btn--solid-ink btn--wide" type="submit" {% unless current.available %}disabled{% endunless %}><span>{% if current.available %}{{ 'products.add_to_bag' | t }}{% else %}{{ 'products.sold_out' | t }}{% endif %}</span></button>
+          </div>
+        </form>
+        <div class="product__meta">{{ settings.free_shipping_text }} · {{ settings.tagline }}</div>
+
+        <div class="acc">
+          <details open>
+            <summary>{{ 'products.details' | t }}<i></i></summary>
+            <div class="acc__body">{{ product.metafields.custom.details | default: section.settings.details_fallback }}</div>
+          </details>
+          <details>
+            <summary>{{ 'products.fabric_care' | t }}<i></i></summary>
+            <div class="acc__body">{{ product.metafields.custom.fabric | default: section.settings.fabric_fallback }}</div>
+          </details>
+          <details>
+            <summary>{{ 'products.shipping_returns' | t }}<i></i></summary>
+            <div class="acc__body">{{ 'products.shipping_text' | t }}</div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    { "type": "textarea", "id": "details_fallback", "label": "Default details", "default": "Boxy fit, true to size. Men and unisex. Each piece is finished by hand, so small differences are part of the cloth." },
+    { "type": "textarea", "id": "fabric_fallback", "label": "Default fabric & care", "default": "100% cotton. Cold wash inside out, line dry in shade, do not tumble. Frayed and patchwork pieces soften and loosen with wear — that is the point." }
+  ]
+}
+{% endschema %}

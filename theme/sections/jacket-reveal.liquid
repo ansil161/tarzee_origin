@@ -1,0 +1,64 @@
+{%- comment -%}
+  Jacket reveal — pinned scroll section. Two halves of a photo (hands holding a jacket open)
+  slide apart to reveal the brand wordmark, then the "inside" campaign image and the about text.
+{%- endcomment -%}
+{%- liquid
+  if section.settings.image_left != blank
+    assign left_url = section.settings.image_left | image_url: width: 1400
+  else
+    assign left_url = section.settings.asset_left | asset_url
+  endif
+  if section.settings.image_right != blank
+    assign right_url = section.settings.image_right | image_url: width: 1400
+  else
+    assign right_url = section.settings.asset_right | asset_url
+  endif
+  if section.settings.image_inside != blank
+    assign inside_url = section.settings.image_inside | image_url: width: 2400
+  else
+    assign inside_url = section.settings.asset_inside | asset_url
+  endif
+-%}
+<section class="jreveal" data-jreveal aria-label="{{ section.settings.heading_1 }} {{ section.settings.heading_2 }}">
+  <div class="jreveal__pin">
+    <div class="jreveal__stage">
+      <div class="jreveal__title" aria-hidden="true">
+        <div class="jreveal__title-1">{{ section.settings.heading_1 }}</div>
+        <div class="jreveal__title-2">{{ section.settings.heading_2 }}</div>
+      </div>
+      <div class="jreveal__inside">
+        <img src="{{ inside_url }}" alt="" loading="lazy" width="2048" height="1152">
+      </div>
+      <div class="jreveal__about">
+        <span class="jreveal__about-sub">{{ section.settings.subtitle }}</span>
+        <p class="jreveal__about-text" data-chars>{{ section.settings.text }}</p>
+      </div>
+      <div class="jreveal__seam" aria-hidden="true"></div>
+      <div class="jreveal__half jreveal__half--left" aria-hidden="true">
+        <img src="{{ left_url }}" alt="" loading="lazy" width="1024" height="1152">
+      </div>
+      <div class="jreveal__half jreveal__half--right" aria-hidden="true">
+        <img src="{{ right_url }}" alt="" loading="lazy" width="1024" height="1152">
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Jacket reveal",
+  "settings": [
+    { "type": "text", "id": "heading_1", "label": "Big word", "default": "TERZEE" },
+    { "type": "text", "id": "heading_2", "label": "Second word", "default": "ORIGINS" },
+    { "type": "text", "id": "subtitle", "label": "Small label", "default": "about us" },
+    { "type": "textarea", "id": "text", "label": "Sentence", "default": "Cut and sewn by hand from one black cloth. Built to be worn hard and kept for years." },
+    { "type": "header", "content": "Images" },
+    { "type": "image_picker", "id": "image_left", "label": "Left half (jacket held open)" },
+    { "type": "text", "id": "asset_left", "label": "Or theme asset filename", "default": "jacket-reveal-left.png" },
+    { "type": "image_picker", "id": "image_right", "label": "Right half (jacket held open)" },
+    { "type": "text", "id": "asset_right", "label": "Or theme asset filename", "default": "jacket-reveal-right.png" },
+    { "type": "image_picker", "id": "image_inside", "label": "Inside image (revealed)" },
+    { "type": "text", "id": "asset_inside", "label": "Or theme asset filename", "default": "jacket-reveal-inside.jpg" }
+  ],
+  "presets": [ { "name": "Jacket reveal" } ]
+}
+{% endschema %}

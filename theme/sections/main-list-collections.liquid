@@ -1,0 +1,18 @@
+<section class="section section--light" data-header-light>
+  <div class="container">
+    <div class="section-head"><h1 class="t-display" data-split>Collections</h1></div>
+    <div class="arches" data-stagger>
+      {%- for c in collections -%}
+        {%- unless c.handle == 'frontpage' -%}
+        <a class="arch" href="{{ c.url }}" data-cursor="view">
+          <div class="arch__media">{% if c.featured_image %}<img src="{{ c.featured_image | image_url: width: 1200 }}" alt="{{ c.title | escape }}" loading="lazy" width="1200" height="1600">{% endif %}</div>
+          <div class="arch__label"><h3>{{ c.title }}</h3><span class="link">Shop now</span></div>
+        </a>
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Collections list", "settings": [] }
+{% endschema %}

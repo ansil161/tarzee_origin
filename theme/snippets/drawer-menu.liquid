@@ -1,0 +1,25 @@
+<div class="drawer" id="menu-drawer" aria-hidden="true">
+  <div class="drawer__scrim"></div>
+  <nav class="drawer__panel" aria-label="{{ 'general.menu' | t }}">
+    <div class="drawer__head">
+      <img src="{{ 'wordmark-origins-white.png' | asset_url }}" alt="{{ shop.name }}" width="110" height="46" style="width:110px">
+      <button class="drawer__close" data-close>{{ 'general.close' | t }}</button>
+    </div>
+    <ul class="menu-list">
+      {%- for link in linklists.main-menu.links -%}
+        <li><a href="{{ link.url }}">{{ link.title }}<small>0{{ forloop.index }}</small></a></li>
+      {%- else -%}
+        <li><a href="{{ routes.all_products_collection_url }}">Shop all<small>01</small></a></li>
+        <li><a href="{{ routes.collections_url }}/shirts">Shirts<small>02</small></a></li>
+        <li><a href="{{ routes.collections_url }}/jackets">Jackets<small>03</small></a></li>
+        <li><a href="{{ routes.root_url }}pages/story">Our story<small>04</small></a></li>
+      {%- endfor -%}
+    </ul>
+    <div class="drawer__foot">
+      <a href="{{ routes.search_url }}">{{ 'general.search' | t }}</a>
+      <a href="{{ routes.account_url }}">{{ 'general.account' | t }}</a>
+      {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" target="_blank" rel="noopener">Instagram</a>{%- endif -%}
+      <span>{{ settings.tagline }}</span>
+    </div>
+  </nav>
+</div>

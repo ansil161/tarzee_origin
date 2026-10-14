@@ -1,0 +1,50 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Terzee Origins — Monochrome",
+    "theme_version": "1.0.0",
+    "theme_author": "Terzee Origins",
+    "theme_documentation_url": "https://terzeeorigins.com",
+    "theme_support_url": "mailto:hello@terzeeorigins.com"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      { "type": "image_picker", "id": "logo_light", "label": "Wordmark (white, for dark grounds)" },
+      { "type": "image_picker", "id": "logo_dark", "label": "Wordmark (black, for light grounds)" },
+      { "type": "image_picker", "id": "monogram_light", "label": "ze monogram (white)" },
+      { "type": "range", "id": "logo_width", "min": 80, "max": 220, "step": 4, "unit": "px", "default": 132, "label": "Logo width" },
+      { "type": "text", "id": "tagline", "label": "English tagline", "default": "Cut and sewn by hand." }
+    ]
+  },
+  {
+    "name": "Colours",
+    "settings": [
+      { "type": "color", "id": "color_ink", "label": "Ink (black)", "default": "#0A0A0A" },
+      { "type": "color", "id": "color_paper", "label": "Paper (white)", "default": "#F4F3EF" },
+      { "type": "color", "id": "color_stone", "label": "Stone (light ground)", "default": "#ECECE8" },
+      { "type": "color", "id": "color_ash", "label": "Ash (muted text)", "default": "#8A8A86" }
+    ]
+  },
+  {
+    "name": "Motion",
+    "settings": [
+      { "type": "checkbox", "id": "enable_smooth_scroll", "label": "Smooth scroll (Lenis)", "default": true },
+      { "type": "checkbox", "id": "enable_cursor", "label": "Custom cursor on desktop", "default": true }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      { "type": "text", "id": "free_shipping_text", "label": "Free shipping note", "default": "Free shipping across India" }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      { "type": "url", "id": "social_instagram", "label": "Instagram" },
+      { "type": "url", "id": "social_whatsapp", "label": "WhatsApp" },
+      { "type": "url", "id": "social_youtube", "label": "YouTube" }
+    ]
+  }
+]

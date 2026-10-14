@@ -1,0 +1,39 @@
+<section class="section section--{{ section.settings.scheme }}" {% if section.settings.scheme != 'dark' %}data-header-light{% endif %}>
+  <div class="container">
+    <div class="newsletter">
+      <div>
+        <div class="eyebrow t-label" data-reveal><span class="dia"></span>{{ section.settings.eyebrow }}</div>
+        <h2 class="t-display" data-split>{{ section.settings.heading }}</h2>
+      </div>
+      <div data-reveal>
+        <p class="t-body" style="opacity:.85">{{ section.settings.text }}</p>
+        {%- form 'customer', class: 'newsletter__formwrap' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="t-label u-mt-4">{{ 'general.newsletter_success' | t }}</p>
+          {%- else -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <div class="newsletter__form">
+              <input type="email" name="contact[email]" placeholder="{{ 'general.newsletter_label' | t }}" required autocomplete="email">
+              <button type="submit">{{ 'general.newsletter_submit' | t }}</button>
+            </div>
+          {%- endif -%}
+          {%- if form.errors -%}<p class="newsletter__note">{{ form.errors | default_errors }}</p>{%- endif -%}
+        {%- endform -%}
+        <p class="newsletter__note">{{ section.settings.note }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Newsletter" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Sign up" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Early access to drops, restocks and once-a-season offers. No noise." },
+    { "type": "text", "id": "note", "label": "Small print", "default": "One letter a month, at most. Unsubscribe any time." },
+    { "type": "select", "id": "scheme", "label": "Colour scheme", "default": "stone", "options": [ { "value": "dark", "label": "Black" }, { "value": "light", "label": "White" }, { "value": "stone", "label": "Stone" } ] }
+  ],
+  "presets": [ { "name": "Newsletter" } ]
+}
+{% endschema %}

@@ -1,0 +1,35 @@
+<section class="section section--flush section--{{ section.settings.scheme }}">
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      {%- for i in (1..2) -%}
+        {%- for block in section.blocks -%}
+          <span class="marquee__item" {{ block.shopify_attributes }}>
+            <span class="{% if block.settings.outline %}outline{% endif %}">{{ block.settings.text }}</span>
+            <span class="dia"></span>
+          </span>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Marquee",
+  "settings": [
+    { "type": "select", "id": "scheme", "label": "Colour scheme", "default": "dark", "options": [ { "value": "dark", "label": "Black" }, { "value": "light", "label": "White" }, { "value": "stone", "label": "Stone" } ] }
+  ],
+  "max_blocks": 6,
+  "blocks": [
+    { "type": "item", "name": "Phrase", "settings": [
+      { "type": "text", "id": "text", "label": "Text", "default": "Cut and sewn by hand" },
+      { "type": "checkbox", "id": "outline", "label": "Outline style", "default": false }
+    ] }
+  ],
+  "default": { "blocks": [
+    { "type": "item", "settings": { "text": "Cut and sewn by hand" } },
+    { "type": "item", "settings": { "text": "One black cloth", "outline": true } },
+    { "type": "item", "settings": { "text": "Drop 01 — AW26" } }
+  ] },
+  "presets": [ { "name": "Marquee" } ]
+}
+{% endschema %}

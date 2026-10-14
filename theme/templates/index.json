@@ -1,0 +1,417 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-video",
+      "settings": {}
+    },
+    "products": {
+      "type": "product-marquee",
+      "blocks": {
+        "s1": {
+          "type": "demo",
+          "settings": {
+            "title": "Lattice Zip Jacket",
+            "image": "lattice-zip-jacket-cutout.png",
+            "url": "/products/lattice-zip-jacket"
+          }
+        },
+        "s2": {
+          "type": "demo",
+          "settings": {
+            "title": "Diamond Jaal Bomber",
+            "image": "diamond-jaal-bomber-cutout.png",
+            "url": "/products/diamond-jaal-bomber"
+          }
+        },
+        "s3": {
+          "type": "demo",
+          "settings": {
+            "title": "Frayed Street Denim",
+            "image": "frayed-street-denim-cutout.png",
+            "url": "/products/frayed-street-denim"
+          }
+        },
+        "s4": {
+          "type": "demo",
+          "settings": {
+            "title": "Archive Patchwork Jacket",
+            "image": "archive-patchwork-jacket-cutout.png",
+            "url": "/products/archive-patchwork-jacket"
+          }
+        },
+        "s5": {
+          "type": "demo",
+          "settings": {
+            "title": "Zip Shacket",
+            "image": "zip-shacket-cutout.png",
+            "url": "/products/zip-shacket"
+          }
+        },
+        "s6": {
+          "type": "demo",
+          "settings": {
+            "title": "Jaal Pocket Camp Shirt",
+            "image": "jaal-pocket-camp-shirt-cutout.png",
+            "url": "/products/jaal-pocket-camp-shirt"
+          }
+        },
+        "s7": {
+          "type": "demo",
+          "settings": {
+            "title": "Pillar Pintuck Shirt",
+            "image": "pillar-pintuck-shirt-cutout.png",
+            "url": "/products/pillar-pintuck-shirt"
+          }
+        },
+        "s8": {
+          "type": "demo",
+          "settings": {
+            "title": "Diamond Jaal Popover",
+            "image": "diamond-jaal-popover-cutout.png",
+            "url": "/products/diamond-jaal-popover"
+          }
+        },
+        "s9": {
+          "type": "demo",
+          "settings": {
+            "title": "Paisley Tonal Shirt",
+            "image": "paisley-tonal-shirt-cutout.png",
+            "url": "/products/paisley-tonal-shirt"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5",
+        "s6",
+        "s7",
+        "s8",
+        "s9"
+      ],
+      "settings": {
+        "heading": "See our products:",
+        "align": "left",
+        "limit": 12,
+        "speed": 45,
+        "direction": "left",
+        "pausable": true,
+        "overlap": false
+      }
+    },
+    "featured": {
+      "type": "featured-collection",
+      "blocks": {
+        "p1": {
+          "type": "demo",
+          "settings": {
+            "title": "Lattice Zip Jacket",
+            "price": "₹6,490",
+            "meta": "Jackets · Block print",
+            "image": "lattice-zip-jacket-1.jpg",
+            "image_alt": "detail-jaal.jpg",
+            "tag": "New drop",
+            "url": "/products/lattice-zip-jacket"
+          }
+        },
+        "p2": {
+          "type": "demo",
+          "settings": {
+            "title": "Diamond Jaal Bomber",
+            "price": "₹7,490",
+            "meta": "Jackets · All-over print",
+            "image": "diamond-jaal-bomber-1.jpg",
+            "image_alt": "diamond-jaal-bomber-2.jpg",
+            "tag": "",
+            "url": "/products/diamond-jaal-bomber"
+          }
+        },
+        "p3": {
+          "type": "demo",
+          "settings": {
+            "title": "Frayed Street Denim",
+            "price": "₹8,990",
+            "meta": "Jackets · Frayed appliqué",
+            "image": "frayed-street-denim-1.jpg",
+            "image_alt": "frayed-street-denim-3.jpg",
+            "tag": "Limited",
+            "url": "/products/frayed-street-denim"
+          }
+        },
+        "p4": {
+          "type": "demo",
+          "settings": {
+            "title": "Archive Patchwork Jacket",
+            "price": "₹9,490",
+            "meta": "Jackets · Patchwork",
+            "image": "archive-patchwork-jacket-1.jpg",
+            "image_alt": "detail-patchwork.jpg",
+            "tag": "",
+            "url": "/products/archive-patchwork-jacket"
+          }
+        },
+        "p5": {
+          "type": "demo",
+          "settings": {
+            "title": "Jaal Pocket Camp Shirt",
+            "price": "₹4,490",
+            "meta": "Shirts · Block print",
+            "image": "jaal-pocket-camp-shirt-1.jpg",
+            "image_alt": "look-03-camp-shirt-4x5.jpg",
+            "tag": "",
+            "url": "/products/jaal-pocket-camp-shirt"
+          }
+        },
+        "p6": {
+          "type": "demo",
+          "settings": {
+            "title": "Pillar Pintuck Shirt",
+            "price": "₹4,290",
+            "meta": "Shirts · Pintuck",
+            "image": "pillar-pintuck-shirt-1.jpg",
+            "image_alt": "",
+            "tag": "",
+            "url": "/products/pillar-pintuck-shirt"
+          }
+        },
+        "p7": {
+          "type": "demo",
+          "settings": {
+            "title": "Diamond Jaal Popover",
+            "price": "₹4,990",
+            "meta": "Shirts · All-over print",
+            "image": "diamond-jaal-popover-1.jpg",
+            "image_alt": "",
+            "tag": "",
+            "url": "/products/diamond-jaal-popover"
+          }
+        },
+        "p8": {
+          "type": "demo",
+          "settings": {
+            "title": "Zip Shacket",
+            "price": "₹5,990",
+            "meta": "Shackets · Statements",
+            "image": "zip-shacket-1.jpg",
+            "image_alt": "",
+            "tag": "",
+            "url": "/products/zip-shacket"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5",
+        "p6",
+        "p7",
+        "p8"
+      ],
+      "settings": {
+        "eyebrow": "Drop 01",
+        "heading": "New arrivals",
+        "limit": 8,
+        "link_text": "Shop all",
+        "link_url": "/collections/all",
+        "scheme": "light"
+      }
+    },
+    "craft": {
+      "type": "split-media",
+      "blocks": {
+        "c1": {
+          "type": "line",
+          "settings": {
+            "title": "Blanket stitch — collars, hems, appliqué"
+          }
+        },
+        "c2": {
+          "type": "line",
+          "settings": {
+            "title": "Block print — lattice and diamond repeats"
+          }
+        },
+        "c3": {
+          "type": "line",
+          "settings": {
+            "title": "Patchwork — raw squares, four greys"
+          }
+        },
+        "c4": {
+          "type": "line",
+          "settings": {
+            "title": "Frayed appliqué — built from strips of denim"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "settings": {
+        "eyebrow": "Craft",
+        "heading": "Every piece carries the hand that made it.",
+        "text": "Blanket stitch, block print, patchwork with exposed edges. Slow work, kept patient and precise — the hand is always visible.",
+        "cta": "Our story",
+        "cta_url": "/pages/story",
+        "flip": false,
+        "scheme": "dark"
+      }
+    },
+    "tiles": {
+      "type": "arch-tiles",
+      "blocks": {
+        "a1": {
+          "type": "tile",
+          "settings": {
+            "eyebrow": "FOR JACKETS",
+            "title": "Built For Daily Confidence",
+            "cta": "Shop Now",
+            "asset": "cat-jackets.png",
+            "url": "/collections/jackets",
+            "img_x": 30,
+            "img_y": 7,
+            "img_h": 112
+          }
+        },
+        "a2": {
+          "type": "tile",
+          "settings": {
+            "eyebrow": "FOR SHIRTS",
+            "title": "Designed For Modern Living",
+            "cta": "Shop Now",
+            "asset": "cat-shirts.png",
+            "url": "/collections/shirts",
+            "img_x": 36,
+            "img_y": -6,
+            "img_h": 200
+          }
+        },
+        "a3": {
+          "type": "tile",
+          "settings": {
+            "eyebrow": "FOR THE ARCHIVE",
+            "title": "Made For Every Season",
+            "cta": "Shop Now",
+            "asset": "cat-archive.png",
+            "url": "/collections/all",
+            "img_x": 40,
+            "img_y": -3,
+            "img_h": 190
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3"
+      ],
+      "settings": {
+        "heading": "Shop by Categories"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "Newsletter",
+        "heading": "Sign up",
+        "text": "Early access to drops, restocks and once-a-season offers. No noise.",
+        "note": "One letter a month, at most. Unsubscribe any time.",
+        "scheme": "stone"
+      }
+    },
+    "jacket": {
+      "type": "jacket-reveal",
+      "settings": {
+        "heading_1": "TERZEE",
+        "heading_2": "ORIGINS",
+        "subtitle": "about us",
+        "text": "Cut and sewn by hand from one black cloth. Built to be worn hard and kept for years.",
+        "asset_left": "jacket-reveal-left.png",
+        "asset_right": "jacket-reveal-right.png",
+        "asset_inside": "jacket-reveal-inside.jpg"
+      }
+    },
+    "seasonal": {
+      "type": "seasonal-drop",
+      "blocks": {
+        "s1": {
+          "type": "demo",
+          "settings": {
+            "title": "Lattice Zip Jacket",
+            "price": "₹6,490",
+            "compare": "₹7,990",
+            "tag": "-19%",
+            "image": "lattice-zip-jacket-1.jpg",
+            "image_alt": "detail-jaal.jpg",
+            "url": "/products/lattice-zip-jacket"
+          }
+        },
+        "s2": {
+          "type": "demo",
+          "settings": {
+            "title": "Diamond Jaal Bomber",
+            "price": "₹7,490",
+            "compare": "",
+            "tag": "New",
+            "image": "diamond-jaal-bomber-1.jpg",
+            "image_alt": "diamond-jaal-bomber-2.jpg",
+            "url": "/products/diamond-jaal-bomber"
+          }
+        },
+        "s3": {
+          "type": "demo",
+          "settings": {
+            "title": "Frayed Street Denim",
+            "price": "₹8,990",
+            "compare": "₹10,990",
+            "tag": "-18%",
+            "image": "frayed-street-denim-1.jpg",
+            "image_alt": "frayed-street-denim-3.jpg",
+            "url": "/products/frayed-street-denim"
+          }
+        },
+        "s4": {
+          "type": "demo",
+          "settings": {
+            "title": "Archive Patchwork Jacket",
+            "price": "₹9,490",
+            "compare": "",
+            "tag": "Limited",
+            "image": "archive-patchwork-jacket-1.jpg",
+            "image_alt": "detail-patchwork.jpg",
+            "url": "/products/archive-patchwork-jacket"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "settings": {
+        "heading": "Seasonal Drop",
+        "cta": "Shop Now",
+        "cta_url": "/collections/all",
+        "asset": "seasonal-panel.jpg"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "products",
+    "featured",
+    "craft",
+    "seasonal",
+    "tiles",
+    "jacket",
+    "newsletter"
+  ]
+}

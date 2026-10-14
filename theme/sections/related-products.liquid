@@ -1,0 +1,23 @@
+<section class="section section--stone" data-header-light>
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow t-label"><span class="dia"></span>Drop 01</div>
+        <h2 class="t-headline" data-split>{{ 'products.related' | t }}</h2>
+      </div>
+      <a class="link" href="{{ routes.all_products_collection_url }}">Shop all</a>
+    </div>
+    <div class="product-grid" data-stagger>
+      {%- if recommendations.performed and recommendations.products_count > 0 -%}
+        {%- for p in recommendations.products limit: 4 -%}{% render 'product-card', product: p %}{%- endfor -%}
+      {%- else -%}
+        {%- for p in collections.all.products limit: 4 -%}
+          {%- unless p.id == product.id -%}{% render 'product-card', product: p %}{%- endunless -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Related products", "settings": [] }
+{% endschema %}

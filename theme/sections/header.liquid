@@ -1,0 +1,46 @@
+{%- liquid
+  assign menu = linklists[section.settings.menu]
+  assign over = false
+  if request.page_type == 'index' and section.settings.transparent_home
+    assign over = true
+  endif
+-%}
+<header class="header{% if over %} header--over{% endif %}{% unless over %} is-solid is-light{% endunless %}" data-header>
+  <div class="header__left">
+    <button class="header__burger" data-open="menu-drawer" aria-label="{{ 'general.menu' | t }}"><span></span><span></span><span></span></button>
+    <nav class="header__nav" aria-label="Primary">
+      {%- for link in menu.links limit: 4 -%}
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      {%- else -%}
+        <a href="{{ routes.all_products_collection_url }}">Shop</a>
+        <a href="/pages/story">Story</a>
+      {%- endfor -%}
+    </nav>
+  </div>
+  <a class="header__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+    {%- if settings.logo_light != blank -%}
+      <img class="logo-light" src="{{ settings.logo_light | image_url: width: 440 }}" alt="{{ shop.name }}" width="220" height="91">
+    {%- else -%}
+      <img class="logo-light" src="{{ 'wordmark-terzee-white.png' | asset_url }}" alt="{{ shop.name }}" width="220" height="64">
+    {%- endif -%}
+    {%- if settings.logo_dark != blank -%}
+      <img class="logo-dark" src="{{ settings.logo_dark | image_url: width: 440 }}" alt="{{ shop.name }}" width="220" height="91">
+    {%- else -%}
+      <img class="logo-dark" src="{{ 'wordmark-terzee-black.png' | asset_url }}" alt="{{ shop.name }}" width="220" height="64">
+    {%- endif -%}
+  </a>
+  <div class="header__right">
+    <a class="header__icon" href="{{ routes.search_url }}" aria-label="{{ 'general.search' | t }}">{% render 'icon', name: 'search' %}<span class="visually-hidden">{{ 'general.search' | t }}</span></a>
+    <a class="header__icon header__icon--account" href="{{ routes.account_url }}" aria-label="{{ 'general.account' | t }}">{% render 'icon', name: 'account' %}</a>
+    <button class="header__icon" data-open="cart-drawer" aria-label="{{ 'general.bag' | t }}">{% render 'icon', name: 'bag' %}<span class="header__count" data-cart-count>{{ cart.item_count }}</span></button>
+  </div>
+</header>
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "checkbox", "id": "transparent_home", "label": "Transparent over hero on homepage", "default": true }
+  ]
+}
+{% endschema %}

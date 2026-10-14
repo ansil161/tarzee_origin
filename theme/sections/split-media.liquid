@@ -1,0 +1,59 @@
+{%- liquid
+  assign video_src = section.settings.video_url
+  if video_src == blank
+    assign video_src = 'craft-1080x1350.mp4' | asset_url
+  endif
+-%}
+<section class="section section--flush section--{{ section.settings.scheme }}" {% if section.settings.scheme != 'dark' %}data-header-light{% endif %}>
+  <div class="split{% if section.settings.flip %} split--flip{% endif %}">
+    <div class="split__text">
+      <div class="eyebrow t-label" data-reveal><span class="dia"></span>{{ section.settings.eyebrow }}</div>
+      <h2 class="t-display" data-split>{{ section.settings.heading }}</h2>
+      <p class="t-body-lg u-mt-4" data-reveal style="max-width:46ch">{{ section.settings.text }}</p>
+      {%- if section.blocks.size > 0 -%}
+      <ul class="split__list" data-stagger>
+        {%- for block in section.blocks -%}
+          <li {{ block.shopify_attributes }}><span class="n">0{{ forloop.index }}</span><span class="k">{{ block.settings.title }}</span><span class="u"></span></li>
+        {%- endfor -%}
+      </ul>
+      {%- endif -%}
+      {%- if section.settings.cta != blank -%}
+        <div class="u-mt-6" data-reveal><a class="btn btn--{% if section.settings.scheme == 'dark' %}paper{% else %}ink{% endif %}" href="{{ section.settings.cta_url }}"><span>{{ section.settings.cta }}</span></a></div>
+      {%- endif -%}
+    </div>
+    <div class="split__media">
+      {%- if section.settings.image != blank -%}
+        <img src="{{ section.settings.image | image_url: width: 1400 }}" alt="" data-parallax="8" width="1400" height="1750">
+      {%- else -%}
+        <video autoplay muted loop playsinline preload="metadata" poster="{{ 'craft-poster.jpg' | asset_url }}"><source src="{{ video_src }}" type="video/mp4"></video>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Split: text + video",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Craft" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Every piece carries the hand that made it." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Blanket stitch, block print, patchwork with exposed edges. Slow work, kept patient and precise — the hand is always visible." },
+    { "type": "text", "id": "cta", "label": "Button", "default": "Our story" },
+    { "type": "url", "id": "cta_url", "label": "Button link" },
+    { "type": "url", "id": "video_url", "label": "Video URL (mp4). Empty = bundled craft loop." },
+    { "type": "image_picker", "id": "image", "label": "Image instead of video" },
+    { "type": "checkbox", "id": "flip", "label": "Media on the left", "default": false },
+    { "type": "select", "id": "scheme", "label": "Colour scheme", "default": "dark", "options": [ { "value": "dark", "label": "Black" }, { "value": "light", "label": "White" }, { "value": "stone", "label": "Stone" } ] }
+  ],
+  "max_blocks": 5,
+  "blocks": [ { "type": "line", "name": "Craft line", "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Blanket stitch" }
+  ] } ],
+  "default": { "blocks": [
+    { "type": "line", "settings": { "title": "Blanket stitch — collars, hems, appliqué" } },
+    { "type": "line", "settings": { "title": "Block print — lattice and diamond repeats" } },
+    { "type": "line", "settings": { "title": "Patchwork — raw squares, four greys" } },
+    { "type": "line", "settings": { "title": "Frayed appliqué — built from strips of denim" } }
+  ] },
+  "presets": [ { "name": "Split: text + video" } ]
+}
+{% endschema %}

@@ -1,0 +1,55 @@
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <img src="{{ 'wordmark-origins-white.png' | asset_url }}" alt="{{ shop.name }}" width="150" height="62">
+        <p>{{ section.settings.text }}</p>
+      </div>
+      {%- for block in section.blocks -%}
+        <div {{ block.shopify_attributes }}>
+          <h4>{{ block.settings.title }}</h4>
+          <ul>
+            {%- for link in linklists[block.settings.menu].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endfor -%}
+      <div>
+        <h4>Follow</h4>
+        <ul>
+          {%- if settings.social_instagram != blank -%}<li><a href="{{ settings.social_instagram }}" target="_blank" rel="noopener">Instagram</a></li>{%- endif -%}
+          {%- if settings.social_whatsapp != blank -%}<li><a href="{{ settings.social_whatsapp }}" target="_blank" rel="noopener">WhatsApp</a></li>{%- endif -%}
+          {%- if settings.social_youtube != blank -%}<li><a href="{{ settings.social_youtube }}" target="_blank" rel="noopener">YouTube</a></li>{%- endif -%}
+          <li><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__big" aria-hidden="true">Terzee Origins</div>
+    <div class="footer__bottom">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }} · {{ section.settings.address }}</span>
+      <span>{{ settings.tagline }}</span>
+    </div>
+  </div>
+</footer>
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "textarea", "id": "text", "label": "Brand line", "default": "Black on black streetwear. Block print, patchwork and frayed appliqué, cut and sewn by hand in limited runs." },
+    { "type": "text", "id": "email", "label": "Email", "default": "hello@terzeeorigins.com" },
+    { "type": "text", "id": "address", "label": "Address line (optional)", "default": "All rights reserved" }
+  ],
+  "max_blocks": 2,
+  "blocks": [
+    { "type": "menu", "name": "Menu column", "settings": [
+      { "type": "text", "id": "title", "label": "Heading", "default": "Shop" },
+      { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+    ] }
+  ],
+  "default": { "blocks": [
+    { "type": "menu", "settings": { "title": "Shop", "menu": "main-menu" } },
+    { "type": "menu", "settings": { "title": "Terzee", "menu": "footer" } }
+  ] }
+}
+{% endschema %}

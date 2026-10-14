@@ -1,0 +1,242 @@
+{%- liquid
+  assign per_page = section.settings.per_page | default: 12
+  assign sort = collection.sort_by | default: collection.default_sort_by
+  assign currency_symbol = cart.currency.symbol | default: localization.country.currency.symbol
+-%}
+<section class="shop section--light" data-header-light data-shop data-shop-url="{{ collection.url }}">
+  <div class="shop__inner">
+    <header class="shop__header">
+      {%- if section.settings.eyebrow != blank -%}<p class="shop__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h1 class="shop__title">{{ collection.title }}</h1>
+    </header>
+
+    {%- paginate collection.products by per_page -%}
+    {%- liquid
+      assign shown = paginate.current_offset | plus: collection.products.size
+      if shown > collection.products_count
+        assign shown = collection.products_count
+      endif
+    -%}
+    <div class="shop__toolbar">
+      <p class="shop__count"><span class="shop__count-label">Showing</span> <span data-shop-count>{{ shown }} of {{ collection.products_count }} products</span></p>
+      <div class="shop__toolbar-actions">
+        <button type="button" class="shop__filter-btn" data-shop-open-filters>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          {{ 'collections.filter' | t }} <span data-shop-active-count></span>
+        </button>
+        <div class="shop-sort">
+          <label class="visually-hidden" for="shop-sort">{{ 'collections.sort' | t }}</label>
+          <select id="shop-sort" class="shop-sort__select" name="sort_by" data-shop-sort>
+            {%- for opt in collection.sort_options -%}
+              <option value="{{ opt.value }}" {% if opt.value == sort %}selected{% endif %}>{{ opt.name }}</option>
+            {%- endfor -%}
+          </select>
+          <svg class="shop-sort__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="shop__layout">
+      <aside class="shop__sidebar" data-shop-sidebar>
+        <form class="shop__form" method="get" action="{{ collection.url }}" data-shop-form>
+          <input type="hidden" name="sort_by" value="{{ sort }}">
+          <div class="shop__sidebar-head">
+            <h2 class="shop__sidebar-title">Filter by</h2>
+            <button type="button" class="shop__close" data-shop-close-filters aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+          </div>
+          <div data-shop-filters>
+            {%- for filter in collection.filters -%}
+              <details class="shop-group" open>
+                <summary class="shop-group__summary">
+                  <span>{{ filter.label }}</span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                </summary>
+                <div class="shop-group__body">
+                  {%- case filter.type -%}
+                    {%- when 'price_range' -%}
+                      <div class="shop-price">
+                        <label class="shop-price__field">
+                          <span class="shop-price__symbol">{{ currency_symbol }}</span>
+                          <input type="number" name="{{ filter.min_value.param_name }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}" placeholder="0" {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %} aria-label="From">
+                        </label>
+                        <span class="shop-price__sep">to</span>
+                        <label class="shop-price__field">
+                          <span class="shop-price__symbol">{{ currency_symbol }}</span>
+                          <input type="number" name="{{ filter.max_value.param_name }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}" placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}" {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %} aria-label="To">
+                        </label>
+                      </div>
+                    {%- else -%}
+                      <ul class="shop-checks">
+                        {%- for value in filter.values -%}
+                          <li>
+                            <label class="shop-check{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+                              <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                              <span class="shop-check__box"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></span>
+                              <span class="shop-check__label">{{ value.label }}</span>
+                            </label>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                  {%- endcase -%}
+                </div>
+              </details>
+            {%- endfor -%}
+          </div>
+        </form>
+        <div class="shop__drawer-foot">
+          <button type="button" class="shop__apply" data-shop-close-filters>Show <span data-shop-apply-count>{{ collection.products_count }}</span> products</button>
+        </div>
+      </aside>
+
+      <div class="shop__main" data-shop-main>
+        <div class="shop-active" data-shop-active>
+          {%- assign active_total = 0 -%}
+          {%- for filter in collection.filters -%}
+            {%- case filter.type -%}
+              {%- when 'price_range' -%}
+                {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+                  {%- assign active_total = active_total | plus: 1 -%}
+                  <a class="shop-chip" href="{{ filter.url_to_remove }}">{{ filter.min_value.value | default: 0 | money }} – {{ filter.max_value.value | default: filter.range_max | money }} <span aria-hidden="true">×</span></a>
+                {%- endif -%}
+              {%- else -%}
+                {%- for value in filter.active_values -%}
+                  {%- assign active_total = active_total | plus: 1 -%}
+                  <a class="shop-chip" href="{{ value.url_to_remove }}">{{ value.label }} <span aria-hidden="true">×</span></a>
+                {%- endfor -%}
+            {%- endcase -%}
+          {%- endfor -%}
+          {%- if active_total > 0 -%}<a class="shop-chip shop-chip--clear" href="{{ collection.url }}?sort_by={{ sort }}">Clear all</a>{%- endif -%}
+        </div>
+        <span hidden data-shop-active-total>{{ active_total }}</span>
+
+        <div class="shop-grid">
+          {%- for product in collection.products -%}
+            {% render 'shop-card', product: product %}
+          {%- else -%}
+            <div class="shop-empty">
+              <p class="shop-empty__title">No products found</p>
+              <p class="shop-empty__text">{{ 'collections.empty' | t }}</p>
+              <a class="shop__apply" href="{{ collection.url }}">Clear filters</a>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <nav class="shop-pagination" aria-label="Pagination">
+          {%- if paginate.pages > 1 -%}
+            <ul>
+              {%- if paginate.previous -%}<li><a href="{{ paginate.previous.url }}" aria-label="Previous">‹</a></li>{%- endif -%}
+              {%- for part in paginate.parts -%}
+                <li>
+                  {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
+                  {%- elsif part.title == paginate.current_page -%}<span class="is-current" aria-current="page">{{ part.title }}</span>
+                  {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+                </li>
+              {%- endfor -%}
+              {%- if paginate.next -%}<li><a href="{{ paginate.next.url }}" aria-label="Next">›</a></li>{%- endif -%}
+            </ul>
+          {%- endif -%}
+        </nav>
+      </div>
+    </div>
+    {%- endpaginate -%}
+  </div>
+  <div class="shop__overlay" data-shop-close-filters></div>
+</section>
+
+<script>
+(() => {
+  const root = document.querySelector('[data-shop]'); if (!root || root.dataset.shopReady) return;
+  root.dataset.shopReady = '1';
+  const main = root.querySelector('[data-shop-main]');
+  const sidebar = root.querySelector('[data-shop-sidebar]');
+  const form = root.querySelector('[data-shop-form]');
+  const sortSel = root.querySelector('[data-shop-sort]');
+  const countEl = root.querySelector('[data-shop-count]');
+  const applyCount = root.querySelector('[data-shop-apply-count]');
+  const activeBadge = root.querySelector('[data-shop-active-count]');
+  const base = root.dataset.shopUrl || location.pathname;
+  let timer = null;
+
+  /* ---- mobile filter drawer ---- */
+  const openFilters = () => { root.classList.add('is-filters-open'); document.body.classList.add('drawer-open'); };
+  const closeFilters = () => { root.classList.remove('is-filters-open'); document.body.classList.remove('drawer-open'); };
+  root.addEventListener('click', (e) => {
+    if (e.target.closest('[data-shop-open-filters]')) openFilters();
+    else if (e.target.closest('[data-shop-close-filters]')) closeFilters();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeFilters(); });
+
+  /* ---- build URL from form + sort ---- */
+  const buildUrl = () => {
+    const p = new URLSearchParams();
+    new FormData(form).forEach((v, k) => { if (v !== '' && k !== 'sort_by') p.append(k, v); });
+    if (sortSel && sortSel.value) p.set('sort_by', sortSel.value);
+    const q = p.toString();
+    return base + (q ? '?' + q : '');
+  };
+
+  const syncActiveBadge = () => {
+    const n = parseInt(root.querySelector('[data-shop-active-total]')?.textContent || '0', 10);
+    if (activeBadge) activeBadge.textContent = n ? '(' + n + ')' : '';
+  };
+  syncActiveBadge();
+
+  /* ---- AJAX render ---- */
+  const load = (url, push = true) => {
+    main.classList.add('is-loading');
+    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then((r) => r.text())
+      .then((html) => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const nm = doc.querySelector('[data-shop-main]');
+        const nf = doc.querySelector('[data-shop-filters]');
+        const nc = doc.querySelector('[data-shop-count]');
+        if (nm) main.innerHTML = nm.innerHTML;
+        if (nf) {
+          const openState = [...form.querySelectorAll('details')].map((d) => d.open);
+          form.querySelector('[data-shop-filters]').innerHTML = nf.innerHTML;
+          form.querySelectorAll('details').forEach((d, i) => { if (openState[i] !== undefined) d.open = openState[i]; });
+        }
+        if (nc && countEl) countEl.textContent = nc.textContent;
+        if (applyCount) { const m = (nc?.textContent || '').match(/of\s+(\d+)/); if (m) applyCount.textContent = m[1]; }
+        syncActiveBadge();
+        if (push) history.pushState({ shop: url }, '', url);
+        main.classList.remove('is-loading');
+        main.querySelectorAll('.shop-card').forEach((c, i) => { c.style.animationDelay = Math.min(i * 40, 400) + 'ms'; c.classList.add('is-in'); });
+      })
+      .catch(() => { location.href = url; });
+  };
+
+  form.addEventListener('submit', (e) => { e.preventDefault(); load(buildUrl()); });
+  form.addEventListener('change', (e) => {
+    if (e.target.matches('input[type=number]')) return;
+    load(buildUrl());
+  });
+  form.addEventListener('input', (e) => {
+    if (!e.target.matches('input[type=number]')) return;
+    clearTimeout(timer); timer = setTimeout(() => load(buildUrl()), 600);
+  });
+  if (sortSel) sortSel.addEventListener('change', () => load(buildUrl()));
+
+  /* chips + pagination inside main → ajax */
+  main.addEventListener('click', (e) => {
+    const a = e.target.closest('.shop-chip, .shop-pagination a'); if (!a) return;
+    e.preventDefault(); load(a.getAttribute('href'));
+    if (a.closest('.shop-pagination')) root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  window.addEventListener('popstate', (e) => { if (e.state && e.state.shop) load(e.state.shop, false); });
+
+  /* quick-add sizes, swatches and wishlist live in theme.js; repaint after ajax loads */
+  new MutationObserver(() => { window.terzeeShopPaint && window.terzeeShopPaint(main); }).observe(main, { childList: true });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow (optional)", "default": "" },
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 12 }
+  ]
+}
+{% endschema %}

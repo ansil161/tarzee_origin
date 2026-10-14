@@ -1,0 +1,16 @@
+<section class="section section--light" data-header-light>
+  <div class="container">
+    <h1 class="t-display" data-split>Order {{ order.name }}</h1>
+    <p class="t-body u-mt-2">{{ order.created_at | date: '%d %B %Y' }} · {{ order.financial_status_label }} · {{ order.fulfillment_status_label }}</p>
+    <ul class="u-mt-6" style="border-top:1px solid currentColor">
+      {%- for line in order.line_items -%}
+        <li class="cart-line" style="border-color:currentColor"><img src="{{ line.image | image_url: width: 240 }}" alt="" width="120" height="150"><div><div class="cart-line__title">{{ line.title }}</div><div class="cart-line__meta">× {{ line.quantity }}</div></div><div>{{ line.final_line_price | money }}</div></li>
+      {%- endfor -%}
+    </ul>
+    <p class="t-body u-mt-4"><strong>Total</strong> {{ order.total_price | money }}</p>
+    <a class="link u-mt-4" href="{{ routes.account_url }}">Back to account</a>
+  </div>
+</section>
+{% schema %}
+{ "name": "Order", "settings": [] }
+{% endschema %}

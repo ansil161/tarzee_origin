@@ -1,0 +1,48 @@
+<section class="section section--flush section--{{ section.settings.scheme }} lookbook" {% if section.settings.scheme != 'dark' %}data-header-light{% endif %}>
+  <div class="lookbook__pin">
+    <div class="lookbook__track">
+      <div class="lookbook__intro">
+        <div class="eyebrow t-label"><span class="dia"></span>{{ section.settings.eyebrow }}</div>
+        <h2 class="t-display" data-split>{{ section.settings.heading }}</h2>
+        <p class="t-body u-mt-4" data-reveal style="max-width:40ch;opacity:.8">{{ section.settings.text }}</p>
+      </div>
+      {%- for block in section.blocks -%}
+        <figure class="look look--{{ block.settings.size }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <img src="{{ block.settings.image | image_url: width: 1200 }}" alt="{{ block.settings.caption | escape }}" loading="lazy" width="1200" height="1500">
+          {%- else -%}
+            <img src="{{ block.settings.asset | asset_url }}" alt="{{ block.settings.caption | escape }}" loading="lazy" width="1200" height="1500">
+          {%- endif -%}
+          <figcaption class="look__cap"><span>{{ block.settings.caption }}</span><span>{{ block.settings.place }}</span></figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Lookbook (horizontal)",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Lookbook" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Worn in the open." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Low light, concrete and shadow. Oversized black silhouettes, faces calm and unposed." },
+    { "type": "select", "id": "scheme", "label": "Colour scheme", "default": "dark", "options": [ { "value": "dark", "label": "Black" }, { "value": "light", "label": "White" }, { "value": "stone", "label": "Stone" } ] }
+  ],
+  "max_blocks": 8,
+  "blocks": [ { "type": "look", "name": "Look", "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "asset", "label": "Or theme asset filename", "default": "look-01-bomber.jpg" },
+    { "type": "select", "id": "size", "label": "Size", "default": "tall", "options": [ { "value": "tall", "label": "Tall" }, { "value": "square", "label": "Square" }, { "value": "small", "label": "Small" } ] },
+    { "type": "text", "id": "caption", "label": "Caption", "default": "Diamond Jaal Bomber" },
+    { "type": "text", "id": "place", "label": "Place", "default": "Concrete, first light" }
+  ] } ],
+  "default": { "blocks": [
+    { "type": "look", "settings": { "asset": "look-01-bomber.jpg", "size": "tall", "caption": "Diamond Jaal Bomber", "place": "Concrete, first light" } },
+    { "type": "look", "settings": { "asset": "detail-frayed.jpg", "size": "small", "caption": "Frayed appliqué", "place": "Detail" } },
+    { "type": "look", "settings": { "asset": "look-02-back.jpg", "size": "square", "caption": "Jaal Pocket Camp Shirt — back", "place": "Shadow" } },
+    { "type": "look", "settings": { "asset": "look-03-camp-shirt.jpg", "size": "tall", "caption": "Jaal Pocket Camp Shirt", "place": "Concrete shadows" } },
+    { "type": "look", "settings": { "asset": "detail-patchwork.jpg", "size": "small", "caption": "Archive patchwork", "place": "Detail" } }
+  ] },
+  "presets": [ { "name": "Lookbook (horizontal)" } ]
+}
+{% endschema %}

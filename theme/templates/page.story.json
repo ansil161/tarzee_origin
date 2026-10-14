@@ -1,0 +1,1 @@
+{ "sections": { "main": { "type": "main-page", "settings": { "eyebrow": "Our story" } }, "craft": { "type": "split-media", "settings": { "scheme": "dark", "flip": true } } }, "order": ["main", "craft"] }

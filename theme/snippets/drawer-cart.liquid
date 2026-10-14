@@ -1,0 +1,17 @@
+<div class="drawer drawer--right" id="cart-drawer" aria-hidden="true">
+  <div class="drawer__scrim"></div>
+  <aside class="drawer__panel" aria-label="{{ 'cart.title' | t }}">
+    <div class="drawer__head">
+      <span class="t-label">{{ 'cart.title' | t }} (<span data-cart-count>{{ cart.item_count }}</span>)</span>
+      <button class="drawer__close" data-close>{{ 'general.close' | t }}</button>
+    </div>
+    <div class="cart-lines" data-cart-lines>
+      {%- if cart.item_count == 0 -%}<p class="cart-empty">{{ 'cart.empty' | t }}</p>{%- endif -%}
+    </div>
+    <div class="cart-foot">
+      <div class="cart-foot__row"><span>{{ 'cart.subtotal' | t }}</span><strong data-cart-subtotal>{{ cart.total_price | money }}</strong></div>
+      <small>{{ settings.free_shipping_text }} · {{ 'cart.note' | t }}</small>
+      <a class="btn btn--solid-paper btn--wide" href="{{ routes.cart_url }}/checkout" onclick="document.location='{{ routes.cart_url }}';return false;"><span>{{ 'cart.checkout' | t }}</span></a>
+    </div>
+  </aside>
+</div>

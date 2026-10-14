@@ -1,0 +1,26 @@
+<section class="section section--light" data-header-light>
+  <div class="container">
+    <h1 class="t-display" data-split>{{ 'customer.addresses' | t }}</h1>
+    <ul class="u-mt-6" style="border-top:1px solid currentColor">
+      {%- for address in customer.addresses -%}
+        <li style="padding:18px 0;border-bottom:1px solid currentColor">{{ address | format_address }}<br><a class="link" href="#" onclick="return false">Default: {% if address == customer.default_address %}yes{% else %}no{% endif %}</a></li>
+      {%- endfor -%}
+    </ul>
+    <div class="u-mt-6">
+      <h2 class="t-headline">Add address</h2>
+      {%- form 'customer_address', customer.new_address, class: 'form u-mt-4' -%}
+        <input type="text" name="address[first_name]" placeholder="First name">
+        <input type="text" name="address[last_name]" placeholder="Last name">
+        <input type="text" name="address[address1]" placeholder="Address">
+        <input type="text" name="address[city]" placeholder="City">
+        <input type="text" name="address[zip]" placeholder="PIN code">
+        <input type="text" name="address[country]" placeholder="Country" value="India">
+        <input type="tel" name="address[phone]" placeholder="Phone">
+        <button class="btn btn--solid-ink" type="submit"><span>Save address</span></button>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Addresses", "settings": [] }
+{% endschema %}
