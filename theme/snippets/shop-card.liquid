@@ -1,6 +1,6 @@
 {%- comment -%}
   Collection-page product card (layout copied from the reference catalog page):
-  3:4 image tile · wishlist heart · "New" badge · quick-add size panel that slides up on hover ·
+  3:4 image tile · wishlist heart · "New" badge · second image fades in on hover ·
   colour swatches · title / category / colour / price.
   Accepts: product — or demo values: demo_title, demo_price, demo_meta, demo_image, demo_url, demo_tag
 {%- endcomment -%}
@@ -12,13 +12,6 @@
     </button>
     {%- if demo_tag != blank -%}<span class="shop-badge">{{ demo_tag }}</span>{%- endif -%}
     <a class="shop-card__image-link" href="{{ demo_url | default: '#' }}" draggable="false" tabindex="-1" aria-hidden="true"><img class="shop-card__img" src="{{ demo_image | asset_url }}" alt="{{ demo_title | escape }}" width="800" height="1000" loading="lazy" draggable="false"></a>
-    <div class="shop-quick" data-shop-quick>
-      <span class="shop-quick__title">Quick add</span>
-      <div class="shop-quick__sizes">
-        {%- assign demo_sizes = 'S,M,L,XL,XXL' | split: ',' -%}
-        {%- for sz in demo_sizes -%}<a class="shop-size" href="{{ demo_url | default: '#' }}" data-size="{{ sz }}">{{ sz }}</a>{%- endfor -%}
-      </div>
-    </div>
   </div>
   <div class="shop-card__info">
     <h3 class="shop-card__title"><a href="{{ demo_url | default: '#' }}">{{ demo_title }}</a></h3>
@@ -64,45 +57,6 @@
         <div class="shop-card__placeholder">{{ 'product-1' | placeholder_svg_tag }}</div>
       {%- endif -%}
     </a>
-    <form class="shop-quick" method="post" action="{{ routes.cart_add_url }}" data-ajax-cart data-shop-quick>
-      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-shop-variant-id>
-      <input type="hidden" name="quantity" value="1">
-      {%- if product.has_only_default_variant -%}
-        <div class="shop-quick__sizes">
-          <button type="submit" class="shop-size shop-size--full{% unless product.available %} disabled{% endunless %}" data-variant="{{ product.selected_or_first_available_variant.id }}"{% unless product.available %} disabled{% endunless %}>{% if product.available %}{{ 'products.add_to_bag' | t }}{% else %}{{ 'products.sold_out' | t }}{% endif %}</button>
-        </div>
-      {%- else -%}
-        <span class="shop-quick__title">Quick add</span>
-        <div class="shop-quick__sizes">
-          {%- for variant in product.variants -%}
-            {%- liquid
-              assign label = variant.title
-              assign vcolor = ''
-              if color_option
-                assign label = ''
-                for opt in product.options_with_values
-                  assign idx = forloop.index0
-                  assign v = variant.options[idx]
-                  if opt.name == color_option.name
-                    assign vcolor = v
-                  else
-                    if label == ''
-                      assign label = v
-                    else
-                      assign label = label | append: ' / ' | append: v
-                    endif
-                  endif
-                endfor
-                if label == ''
-                  assign label = vcolor
-                endif
-              endif
-            -%}
-            <button type="submit" class="shop-size{% unless variant.available %} disabled{% endunless %}" data-variant="{{ variant.id }}" data-size="{{ label | escape }}"{% if color_option %} data-color="{{ vcolor | escape }}"{% endif %}{% unless variant.available %} disabled aria-disabled="true"{% endunless %}>{{ label }}</button>
-          {%- endfor -%}
-        </div>
-      {%- endif -%}
-    </form>
   </div>
   {%- if color_option and color_option.values.size > 1 -%}
     <div class="shop-card__swatches" role="group" aria-label="{{ color_option.name }}">

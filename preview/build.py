@@ -111,15 +111,10 @@ CHEV = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="curr
 def shop_card(p, i, base=''):
     tag = TAGS.get(p['handle']); alt = ALT.get(p['handle'])
     badge = f'<span class="shop-badge">{"New" if tag == "New drop" else tag}</span>' if tag else ''
-    sizes = ''
-    for j, sz in enumerate(SIZES):
-        off = (i + j) % 4 == 3
-        sizes += f'<button type="submit" class="shop-size{" disabled" if off else ""}" data-variant="{sz}" data-size="{sz}"{" disabled" if off else ""}>{sz}</button>'
     return f"""<div class="shop-card" data-shop-card data-product-id="{p['handle']}">
   <div class="shop-card__image-wrapper">
     <button type="button" class="shop-wishlist" data-wishlist="{p['handle']}" aria-label="Add to wishlist" aria-pressed="false"><svg class="shop-heart" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>{badge}
     <a class="shop-card__image-link" href="{base}products/{p['handle']}.html" draggable="false" tabindex="-1" aria-hidden="true"><img class="shop-card__img" src="{base}assets/{img(p['handle'],1)}" alt="{e(p['title'])}" width="800" height="1000" loading="lazy" draggable="false">{f'<img class="shop-card__img shop-card__img--alt" src="{base}assets/{alt}" alt="" width="800" height="1000" loading="lazy" draggable="false">' if alt else ''}</a>
-    <form class="shop-quick" data-preview-cart data-shop-quick data-title="{e(p['title'])}" data-price="{p['price']}" data-img="{base}assets/{img(p['handle'],1)}"><input type="hidden" name="size" value="M" data-shop-variant-id><span class="shop-quick__title">Quick add</span><div class="shop-quick__sizes">{sizes}</div></form>
   </div>
   <div class="shop-card__info"><h3 class="shop-card__title"><a href="{base}products/{p['handle']}.html">{e(p['title'])}</a></h3><span class="shop-card__category">{p['type']}</span><span class="shop-card__color" data-shop-color>{p['tag']}</span><span class="shop-card__price">{rupee(p['price'])}</span></div>
 </div>"""

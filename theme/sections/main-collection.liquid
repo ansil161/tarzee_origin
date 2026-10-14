@@ -226,7 +226,7 @@
   });
   window.addEventListener('popstate', (e) => { if (e.state && e.state.shop) load(e.state.shop, false); });
 
-  /* quick-add sizes, swatches and wishlist live in theme.js; repaint after ajax loads */
+  /* swatches and wishlist live in theme.js; repaint after ajax loads */
   new MutationObserver(() => { window.terzeeShopPaint && window.terzeeShopPaint(main); }).observe(main, { childList: true });
 })();
 </script>

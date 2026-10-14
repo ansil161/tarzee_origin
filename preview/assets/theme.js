@@ -375,16 +375,7 @@
       .finally(() => btn && btn.removeAttribute('disabled'));
   });
 
-  /* ---------- Shop cards (home + collection): quick-add sizes, swatches, wishlist ---------- */
-  document.addEventListener('click', (e) => {
-    const sz = e.target.closest('.shop-size'); if (!sz) return;
-    if (sz.classList.contains('disabled')) { e.preventDefault(); return; }
-    const f = sz.closest('[data-shop-quick]'); if (!f) return;
-    const idInput = f.querySelector('[data-shop-variant-id]');
-    if (idInput && sz.dataset.variant) idInput.value = sz.dataset.variant;
-    f.querySelectorAll('.shop-size').forEach((b) => b.classList.remove('active')); sz.classList.add('active');
-    setTimeout(() => sz.classList.remove('active'), 900);
-  });
+  /* ---------- Shop cards (home + collection): swatches, wishlist ---------- */
   document.addEventListener('click', (e) => {
     const sw = e.target.closest('.shop-swatch'); if (!sw) return;
     const card = sw.closest('.shop-card'); if (!card) return;
@@ -392,16 +383,12 @@
     const img = card.querySelector('.shop-card__img');
     if (img && sw.dataset.image) { img.src = sw.dataset.image; img.removeAttribute('srcset'); }
     const colorEl = card.querySelector('[data-shop-color]'); if (colorEl) colorEl.textContent = sw.dataset.swatch;
-    card.querySelectorAll('.shop-size[data-color]').forEach((b) => { b.hidden = b.dataset.color !== sw.dataset.swatch; });
   });
   const WL_KEY = 'terzee_wishlist';
   const getWl = () => { try { return JSON.parse(localStorage.getItem(WL_KEY) || '[]'); } catch (_) { return []; } };
   const shopPaint = (scope) => {
     const wl = getWl();
     scope.querySelectorAll('[data-wishlist]').forEach((b) => { const on = wl.includes(b.dataset.wishlist); b.classList.toggle('active', on); b.setAttribute('aria-pressed', on); });
-    scope.querySelectorAll('.shop-card .shop-swatch.active').forEach((sw) => {
-      sw.closest('.shop-card').querySelectorAll('.shop-size[data-color]').forEach((b) => { b.hidden = b.dataset.color !== sw.dataset.swatch; });
-    });
   };
   window.terzeeShopPaint = shopPaint;
   shopPaint(document);
