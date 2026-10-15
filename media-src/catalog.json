@@ -69,6 +69,7 @@
   },
   {
     "handle": "frayed-street-denim",
+    "hidden": true,
     "title": "Dhaga Division",
     "type": "Jackets",
     "tag": "Frayed appliqué",
@@ -117,6 +118,7 @@
   },
   {
     "handle": "zip-shacket",
+    "hidden": true,
     "title": "Sannata Dept.",
     "type": "Shackets",
     "tag": "Statements",
@@ -162,6 +164,7 @@
   },
   {
     "handle": "pillar-pintuck-shirt",
+    "hidden": true,
     "title": "Mehraab",
     "type": "Shirts",
     "tag": "Pintuck",
@@ -180,6 +183,7 @@
   },
   {
     "handle": "diamond-jaal-popover",
+    "hidden": true,
     "title": "Jaal Reworked",
     "type": "Shirts",
     "tag": "All-over print",
@@ -199,6 +203,7 @@
   },
   {
     "handle": "paisley-tonal-shirt",
+    "hidden": true,
     "title": "Riwaayat 2.0",
     "type": "Shirts",
     "tag": "Embroidery",

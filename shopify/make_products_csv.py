@@ -11,6 +11,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser(); ap.add_argument('--base-url', default='https://YOUR-CDN-BASE/'); a = ap.parse_args()
 base = a.base_url if a.base_url.endswith('/') else a.base_url + '/'
 cat = json.load(open(os.path.join(ROOT, 'media-src', 'catalog.json'), encoding='utf-8'))
+cat = [p for p in cat if not p.get('hidden')]   # products without a primary + secondary photo are hidden for now
 SIZES = ['S', 'M', 'L', 'XL', 'XXL']
 cols = ['Handle', 'Title', 'Body (HTML)', 'Vendor', 'Product Category', 'Type', 'Tags', 'Published',
         'Option1 Name', 'Option1 Value', 'Variant SKU', 'Variant Grams', 'Variant Inventory Tracker', 'Variant Inventory Qty',

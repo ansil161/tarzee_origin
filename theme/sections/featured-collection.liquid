@@ -20,10 +20,12 @@
       {%- if use_demo -%}
         {%- for block in section.blocks limit: section.settings.limit -%}
           {% render 'shop-card', demo_title: block.settings.title, demo_price: block.settings.price, demo_meta: block.settings.meta, demo_image: block.settings.image, demo_url: block.settings.url, demo_tag: block.settings.tag %}
+          {%- if forloop.index == 4 and section.settings.banner_image != blank -%}<div class="shop-banner"><img src="{{ section.settings.banner_image | asset_url }}" alt="{{ section.settings.banner_alt | escape }}" width="1672" height="941" loading="lazy"><div class="shop-banner__copy"><h3 class="shop-banner__title">{{ section.settings.banner_title }}</h3><p class="shop-banner__sub">{{ section.settings.banner_sub }}</p><a class="pill pill--paper" href="{{ section.settings.banner_url | default: routes.all_products_collection_url }}">{{ section.settings.banner_btn }}</a></div></div>{%- endif -%}
         {%- endfor -%}
       {%- else -%}
         {%- for product in col.products limit: section.settings.limit -%}
           {% render 'shop-card', product: product %}
+          {%- if forloop.index == 4 and section.settings.banner_image != blank -%}<figure class="shop-banner"><img src="{{ section.settings.banner_image | asset_url }}" alt="{{ section.settings.banner_alt | escape }}" width="1672" height="941" loading="lazy"></figure>{%- endif -%}
         {%- endfor -%}
       {%- endif -%}
     </div>
@@ -39,6 +41,12 @@
     { "type": "range", "id": "limit", "min": 4, "max": 12, "step": 1, "default": 8, "label": "Pieces to show" },
     { "type": "text", "id": "link_text", "label": "Link text", "default": "Shop all" },
     { "type": "url", "id": "link_url", "label": "Link" },
+    { "type": "text", "id": "banner_image", "label": "Landscape banner asset filename (shown after the 4th piece; blank = none)", "default": "new-arrivals-banner.jpg" },
+    { "type": "text", "id": "banner_alt", "label": "Banner alt text", "default": "Model in the diamond jaal bomber against a painted floral backdrop" },
+    { "type": "text", "id": "banner_title", "label": "Banner title", "default": "Diamond Jaal" },
+    { "type": "text", "id": "banner_sub", "label": "Banner subtitle", "default": "Block-print bomber · New drop" },
+    { "type": "text", "id": "banner_btn", "label": "Banner button text", "default": "Shop Now" },
+    { "type": "url", "id": "banner_url", "label": "Banner button link" },
     { "type": "select", "id": "scheme", "label": "Colour scheme", "default": "light", "options": [ { "value": "dark", "label": "Black" }, { "value": "light", "label": "White" }, { "value": "stone", "label": "Stone" } ] }
   ],
   "max_blocks": 12,

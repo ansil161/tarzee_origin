@@ -16,7 +16,7 @@
       <div class="pdp-gallery{% if product.media.size < 2 %} no-thumbs{% endif %}" data-gallery>
         <div class="pdp-thumbs" role="group" aria-label="Product images">
           {%- if product.media.size > 1 -%}
-            {%- for media in product.media -%}
+            {%- for media in product.media limit: 3 -%}
               <button class="pdp-thumb{% if forloop.first %} is-active{% endif %}" type="button" aria-label="Show image {{ forloop.index }}"><img src="{{ media | image_url: width: 200 }}" alt="" loading="lazy" width="168" height="210"></button>
             {%- endfor -%}
           {%- endif -%}
@@ -28,10 +28,11 @@
           {%- else -%}
             <img data-main src="{{ 'lattice-zip-jacket-1.jpg' | asset_url }}" alt="" width="1200" height="1500">
           {%- endif -%}
+          <button type="button" class="pdp-heart pdp-heart--stage" data-wishlist="{{ product.id }}" aria-label="Add to wishlist" aria-pressed="false"><svg class="shop-heart" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
           <button class="pdp-expand" type="button" data-expand aria-label="Open full-screen gallery"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
         </div>
         <script type="application/json" data-slides>
-          [{%- for media in product.media -%}{%- if media.media_type == 'image' -%}{"id":{{ media.id }},"src":{{ media | image_url: width: 1400 | json }},"full":{{ media | image_url: width: 2400 | json }},"alt":{{ media.alt | default: product.title | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endif -%}{%- endfor -%}]
+          [{%- for media in product.media limit: 3 -%}{%- if media.media_type == 'image' -%}{"id":{{ media.id }},"src":{{ media | image_url: width: 1400 | json }},"full":{{ media | image_url: width: 2400 | json }},"alt":{{ media.alt | default: product.title | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endif -%}{%- endfor -%}]
         </script>
         {%- comment -%} Promotion + catalogue data for pdp.js. Prices in rupees. Everything is driven by this section's settings. {%- endcomment -%}
         <script type="application/json" data-pdp-data>
@@ -47,7 +48,7 @@
               "id": {{ current.id }}, "handle": {{ product.handle | json }}, "title": {{ product.title | json }}, "type": {{ product.type | json }},
               "tag": {{ product.metafields.custom.technique | json }}, "fabric": {{ product.metafields.custom.fabric | json }},
               "price": {{ current.price | divided_by: 100.0 }}, "compare": {{ current.compare_at_price | default: 0 | divided_by: 100.0 }},
-              "img": {{ first_img | image_url: width: 300 | json }}, "url": {{ product.url | json }},
+              "img": {{ first_img | image_url: width: 800 | json }}, "url": {{ product.url | json }},
               "sizes": [{%- for v in product.variants -%}{ "id": {{ v.id }}, "title": {{ v.title | json }}, "available": {{ v.available | json }} }{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
             },
             "pairs": [
@@ -78,8 +79,9 @@
         <div class="pdp-brand">{{ product.vendor | default: 'Terzee Origins' }} — Drop 01</div>
         <h1 class="product__title" data-split>{{ product.title }}</h1>
         <div class="pdp-sub">{{ product.type }}{% if product.metafields.custom.technique != blank %} · {{ product.metafields.custom.technique }}{% endif %}</div>
-        <div class="product__desc t-body">{{ product.description }}</div>
+        <div class="pdp-rating" data-rating hidden></div>
 
+        <div class="pdp-promo" data-promo {% unless current.compare_at_price > current.price %}hidden{% endunless %}>Special price <a href="#offers">Details</a></div>
         <div class="pdp-pricebox">
           <div class="pdp-pricebox__was" data-was-row {% unless current.compare_at_price > current.price %}hidden{% endunless %}>Regular price <s data-was>{{ current.compare_at_price | money }}</s></div>
           <div class="pdp-pricebox__your"><span class="pdp-pricebox__lab">Your price</span><div class="product__price" data-price data-your-price>{{ current.price | money }}</div><span class="pdp-save" data-save hidden></span></div>
@@ -93,7 +95,7 @@
           {%- unless product.has_only_default_variant -%}
             {%- for option in product.options_with_values -%}
               <div class="sizes" data-option>
-                <div class="sizes__head"><span class="t-label">{{ option.name }}</span>{% if option.name == 'Size' %}<a class="link" href="/pages/size-guide">{{ 'products.size_guide' | t }}</a>{% endif %}</div>
+                <div class="sizes__head"><span class="t-label">{{ option.name }}: <b data-opt-val>{{ option.selected_value }}</b></span>{% if option.name == 'Size' %}<a class="link" href="/pages/size-guide">{{ 'products.size_guide' | t }}</a>{% endif %}</div>
                 <div class="sizes__grid">
                   {%- for value in option.values -%}
                     {%- liquid
@@ -110,6 +112,7 @@
                     </label>
                   {%- endfor -%}
                 </div>
+                {%- if option.name == 'Size' -%}<a class="pdp-fitlink" href="/pages/size-guide">Which size fits me?</a>{%- endif -%}
               </div>
             {%- endfor -%}
           {%- endunless -%}
@@ -129,10 +132,10 @@
 
         <div class="acc" id="details">
           <details open>
-            <summary>{{ 'products.details' | t }}<i></i></summary>
-            <div class="acc__body">{{ product.metafields.custom.details | default: section.settings.details_fallback }}</div>
+            <summary>Product details<i></i></summary>
+            <div class="acc__body">{%- if product.description != blank -%}<p>{{ product.description | strip_html }}</p>{%- endif -%}{{ product.metafields.custom.details | default: section.settings.details_fallback }}</div>
           </details>
-          <details>
+          <details open>
             <summary>{{ 'products.fabric_care' | t }}<i></i></summary>
             <div class="acc__body">{{ product.metafields.custom.fabric | default: section.settings.fabric_fallback }}</div>
           </details>
@@ -141,7 +144,27 @@
             <div class="acc__body">{{ 'products.shipping_text' | t }}</div>
           </details>
         </div>
+        {%- for p in pair_source -%}
+          {%- if p.id != product.id and pair_done != true -%}
+            {%- assign pair_done = true -%}
+            <a class="pdp-pair" href="{{ p.url }}">{%- if p.featured_image -%}<img src="{{ p.featured_image | image_url: width: 240 }}" alt="" loading="lazy" width="96" height="120">{%- endif -%}<span class="pdp-pair__t"><small>Pairs well with</small><b>{{ p.title }}</b><span>{{ p.price | money }}{% if p.compare_at_price > p.price %}<s>{{ p.compare_at_price | money }}</s>{% endif %}</span></span></a>
+          {%- endif -%}
+        {%- endfor -%}
       </div>
+      <aside class="pdp-aside" aria-label="Others you may like">
+        <h2 class="pdp-aside__h">Others you may like</h2>
+        {%- assign aside_n = 0 -%}
+        {%- for p in pair_source -%}
+          {%- if p.id != product.id and aside_n < 3 -%}
+            {%- assign aside_n = aside_n | plus: 1 -%}
+            <div class="pdp-aside__i">
+              <div class="pdp-aside__img"><a href="{{ p.url }}" tabindex="-1" aria-hidden="true">{%- if p.featured_image -%}<img src="{{ p.featured_image | image_url: width: 400 }}" alt="" loading="lazy" width="400" height="500">{%- endif -%}</a><button type="button" class="pdp-aside__heart" data-wishlist="{{ p.id }}" aria-label="Add to wishlist" aria-pressed="false"><svg class="shop-heart" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button></div>
+              <a class="pdp-aside__t" href="{{ p.url }}">{{ p.title }}</a>
+              <span class="pdp-aside__p">{{ p.price | money }}{% if p.compare_at_price > p.price %}<s>{{ p.compare_at_price | money }}</s>{% endif %}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </aside>
     </div>
   </div>
 </section>
@@ -149,53 +172,48 @@
 <section class="pdp-sec pdp-sec--ivory" id="offers" data-pdp-offers data-header-light>
   <div class="container"><p class="pdp-kick" data-pdp-rise>Offers</p><h2 class="pdp-h2" data-pdp-rise>Unlock your Terzee privileges</h2><p class="pdp-lead" data-pdp-rise>Every offer that applies to this piece, in one place. Offers marked as codes are confirmed at checkout.</p><div class="pdp-tiles" data-mount></div></div>
 </section>
-<section class="pdp-sec pdp-sec--dark" id="sets" data-pdp-sets>
-  <div class="container"><p class="pdp-kick" data-pdp-rise>Sets</p><h2 class="pdp-h2" data-pdp-rise>The more you discover, the more you save</h2><p class="pdp-lead" data-pdp-rise>Pick one piece or pair it. Your total updates as you choose.</p><div class="pdp-sets" data-mount></div></div>
-</section>
-<section class="pdp-sec pdp-sec--ivory" id="collection" data-pdp-collection data-header-light>
-  <div class="container"><p class="pdp-kick" data-pdp-rise>Complete the wardrobe</p><h2 class="pdp-h2" data-pdp-rise>Add more from Drop 01</h2><div data-mount></div></div>
-</section>
+{%- assign sim_n = 0 -%}
+<section class="pdp-sec pdp-sec--ivory" id="similar"  data-pdp-hs data-header-light><div class="container"><div class="pdp-sechead"><h2 class="pdp-h2">Similar items</h2></div><div class="pdp-hswrap"><button type="button" class="pdp-hsbtn pdp-hsbtn--prev" data-hs-prev aria-label="Previous items">&#8249;</button><div class="pdp-hs" data-hs tabindex="0" aria-label="Similar items">{%- for p in pair_source -%}{%- if p.id != product.id and sim_n < 10 -%}{%- assign sim_n = sim_n | plus: 1 -%}<div class="pdp-hs__i">{% render 'shop-card', product: p %}</div>{%- endif -%}{%- endfor -%}</div><button type="button" class="pdp-hsbtn pdp-hsbtn--next" data-hs-next aria-label="Next items">&#8250;</button></div></div></section>
 
-<section class="pdp-story">
-  <div class="pdp-story__media">{%- if story_media -%}<img src="{{ story_media | image_url: width: 1400 }}" alt="{{ product.title | escape }}" loading="lazy" width="1200" height="1500">{%- endif -%}</div>
-  <div class="pdp-story__text">
-    <p class="pdp-kick" data-pdp-rise>The piece</p>
-    <h2 data-pdp-rise>{{ product.metafields.custom.technique | default: product.title }}, made by hand.</h2>
-    <p class="t-body-lg" data-pdp-rise>{{ product.description | strip_html | truncate: 220 }}</p>
-    <div class="pdp-story__facts" data-pdp-rise>
-      <div><b>Cloth</b><span>{{ product.metafields.custom.fabric | default: section.settings.fabric_fallback | strip_html | truncate: 60 }}</span></div>
-      <div><b>Fit</b><span>Boxy, true to size</span></div>
-      <div><b>Finish</b><span>Hand finished in limited runs</span></div>
-    </div>
-  </div>
-</section>
+{%- assign more_n = 0 -%}
+<section class="pdp-sec pdp-sec--ivory" id="more"  data-pdp-hs data-header-light><div class="container"><div class="pdp-sechead"><h2 class="pdp-h2">More from Drop 01</h2></div><div class="pdp-hswrap"><button type="button" class="pdp-hsbtn pdp-hsbtn--prev" data-hs-prev aria-label="Previous items">&#8249;</button><div class="pdp-hs" data-hs tabindex="0" aria-label="More from Drop 01">{%- for p in collections.all.products reversed -%}{%- if p.id != product.id and more_n < 10 -%}{%- assign more_n = more_n | plus: 1 -%}<div class="pdp-hs__i">{% render 'shop-card', product: p %}</div>{%- endif -%}{%- endfor -%}</div><button type="button" class="pdp-hsbtn pdp-hsbtn--next" data-hs-next aria-label="Next items">&#8250;</button></div></div></section>
 
-<section class="pdp-sec pdp-sec--ivory" id="compare" data-pdp-compare data-header-light>
-  <div class="container"><p class="pdp-kick" data-pdp-rise>Compare</p><h2 class="pdp-h2" data-pdp-rise>Find your piece</h2><div class="pdp-cmps" data-mount></div></div>
-</section>
-
-<section class="pdp-sec pdp-sec--black" id="reviews">
+<section class="pdp-sec pdp-sec--black pdp-rv" id="reviews" data-rv  {% if section.settings.review_url != blank %}data-write-url="{{ section.settings.review_url }}"{% endif %} data-pid="{{ product.id }}">
   <div class="container">
-    <p class="pdp-kick" data-pdp-rise>Reviews</p><h2 class="pdp-h2" data-pdp-rise>Worn by you</h2>
-    {%- comment -%} Replace this block with your reviews app block (ratings, photos, verified-purchase labels). {%- endcomment -%}
-    <div class="pdp-rev">
-      <div><div class="pdp-rev__score">—</div><div style="opacity:.6">No ratings yet</div></div>
-      <div class="pdp-rev__empty"><h3>Be the first to review</h3><p>Reviews appear here once customers have worn the piece. Connect a reviews app to show ratings, photos and verified-purchase labels.</p></div>
+    <h2 class="pdp-h2">Ratings &amp; Reviews</h2>
+    <p class="rv__dev" data-rv-dev hidden>Development sample data &mdash; not real customer reviews. Connect your review system to show genuine reviews here.</p>
+    <script type="application/json" data-rv-data>{{ product.metafields.custom.reviews_json.value | json }}</script>
+    <div class="rv__top">
+      <div class="rv__sum">
+        <div class="rv__sumhead"><b data-rv-total>No ratings yet</b><button type="button" class="rv__write" data-rv-write hidden>Write a Review</button></div>
+        <span class="pdp-stars rv__stars" data-rv-stars aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        <div class="rv__bars" data-rv-bars role="group" aria-label="Filter reviews by rating"></div>
+      </div>
+      <div class="rv__scales" data-rv-scales hidden></div>
     </div>
+    <form class="rv__form" data-rv-form hidden>
+      <h3>Write a Review</h3>
+      <label>Rating<select name="rating"><option value="5">5 &#9733; Excellent</option><option value="4">4 &#9733; Good</option><option value="3">3 &#9733; Average</option><option value="2">2 &#9733; Poor</option><option value="1">1 &#9733; Terrible</option></select></label>
+      <label>Title<input name="title" required maxlength="80" placeholder="Sum it up in a few words"></label>
+      <label>Review<textarea name="body" required rows="4" maxlength="800" placeholder="What did you like or dislike?"></textarea></label>
+      <label>Name<input name="name" required maxlength="40" placeholder="Your name"></label>
+      <div class="rv__formbtns"><button type="submit" class="rv__submit">Submit review</button><button type="button" class="rv__cancel" data-rv-cancel>Cancel</button></div>
+    </form>
+    <div class="rv__attrs" data-rv-attrs hidden><h3>Frequently Mentioned</h3><div class="rv__chips" data-rv-chips></div></div>
+    <div class="rv__tools" data-rv-tools hidden>
+      <h3 data-rv-count></h3>
+      <div class="rv__selects">
+        <label class="rv__sel"><span>Sort by</span><select data-rv-sort><option value="recent">Newest</option><option value="helpful">Most helpful</option><option value="high">Highest rated</option><option value="low">Lowest rated</option></select></label>
+        <label class="rv__sel"><span>Filter by</span><select data-rv-filter><option value="all">All Reviews</option><option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option><option value="2">2 Stars</option><option value="1">1 Star</option><option value="verified">Verified buyers</option></select></label>
+      </div>
+    </div>
+    <div class="rv__list" data-rv-list aria-live="polite"></div>
+    <button type="button" class="rv__more" data-rv-more hidden>Read Reviews</button>
+    <div class="rv__empty" data-rv-empty hidden><h3>No reviews yet</h3><p>Reviews appear here once customers have shared their thoughts.</p></div>
   </div>
 </section>
 
-<section class="pdp-sec pdp-sec--ivory" data-header-light>
-  <div class="container">
-    <p class="pdp-kick">FAQ</p><h2 class="pdp-h2">Good to know</h2>
-    <div class="acc pdp-faq">
-      <details><summary>How does the fit run?<i></i></summary><div class="acc__body">Boxy and true to size. If you sit between sizes or want a roomier drape, size up.</div></details>
-      <details><summary>How long does delivery take?<i></i></summary><div class="acc__body">{{ 'products.shipping_text' | t }}</div></details>
-      <details><summary>Can I return or exchange?<i></i></summary><div class="acc__body">Yes — returns within 10 days, unworn with tags on.</div></details>
-      <details><summary>How do I care for it?<i></i></summary><div class="acc__body">{{ product.metafields.custom.fabric | default: section.settings.fabric_fallback }}</div></details>
-    </div>
-  </div>
-</section>
+<section class="pdp-sec pdp-sec--ivory" id="recent" data-pdp-recent data-pdp-hs data-header-light hidden><div class="container"><div class="pdp-sechead"><h2 class="pdp-h2">Recently viewed</h2><button type="button" class="pdp-edit" data-recent-edit>Edit</button></div><div class="pdp-hswrap"><button type="button" class="pdp-hsbtn pdp-hsbtn--prev" data-hs-prev aria-label="Previous items">&#8249;</button><div class="pdp-hs" data-hs data-recent-mount tabindex="0" aria-label="Recently viewed"></div><button type="button" class="pdp-hsbtn pdp-hsbtn--next" data-hs-next aria-label="Next items">&#8250;</button></div></div></section>
 
 <div class="pdp-bar" data-bar aria-label="Quick purchase">
   {%- if first_img -%}<img src="{{ first_img | image_url: width: 120 }}" alt="" width="88" height="110">{%- endif -%}
@@ -210,6 +228,7 @@
 {
   "name": "Product",
   "settings": [
+    { "type": "url", "id": "review_url", "label": "Write-a-review link", "info": "Your review app's form. Empty hides the Write a review button." },
     { "type": "textarea", "id": "details_fallback", "label": "Default details", "default": "Boxy fit, true to size. Men and unisex. Each piece is finished by hand, so small differences are part of the cloth." },
     { "type": "textarea", "id": "fabric_fallback", "label": "Default fabric & care", "default": "100% cotton. Cold wash inside out, line dry in shade, do not tumble. Frayed and patchwork pieces soften and loosen with wear — that is the point." },
     { "type": "header", "content": "Extra coupon (leave code blank to hide)" },

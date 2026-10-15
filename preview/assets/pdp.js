@@ -36,7 +36,6 @@
     cur = (i + slides.length) % slides.length;
     var s = slides[cur];
     thumbs.forEach(function (t, n) { t.classList.toggle('is-active', n === cur); t.setAttribute('aria-current', n === cur); });
-    if (thumbs[cur]) thumbs[cur].scrollIntoView({ block: 'nearest', inline: 'nearest' });
     if (instant || reduce) { main.src = s.src; main.alt = s.alt; return; }
     stage.classList.add('is-swap');
     setTimeout(function () {
@@ -71,7 +70,7 @@
   function lbShow(i) { cur = (i + slides.length) % slides.length; lbImg.src = slides[cur].full || slides[cur].src; lbImg.alt = slides[cur].alt; lbC.textContent = (cur + 1) + ' / ' + slides.length; }
   function lbOpen() { lastFocus = document.activeElement; lbShow(cur); lb.classList.add('is-open'); document.documentElement.style.overflow = 'hidden'; lb.querySelector('.pdp-lb__x').focus(); }
   function lbClose() { lb.classList.remove('is-open'); document.documentElement.style.overflow = ''; show(cur, true); lastFocus && lastFocus.focus(); }
-  stage.addEventListener('click', function () { if (!stage._swiped) lbOpen(); });
+  stage.addEventListener('click', function (e) { if (e.target.closest('.pdp-heart')) return; if (!stage._swiped) lbOpen(); });
   $('[data-expand]').addEventListener('click', function (e) { e.stopPropagation(); lbOpen(); });
   lb.querySelector('.pdp-lb__x').addEventListener('click', lbClose);
   lb.querySelector('.pdp-lb__p').addEventListener('click', function () { lbShow(cur - 1); });
@@ -164,7 +163,6 @@
     if (+P.prepaid_pct > 0) t.push(tile(num(), 'Prepaid benefit', 'Extra ' + P.prepaid_pct + '% off online payment', 'Taken at checkout when you pay online. Stacks with the other offers.', '', '<button type="button" class="pdp-apply' + (state.prepaid ? ' is-on' : '') + '" data-apply="prepaid" aria-pressed="' + state.prepaid + '">' + (state.prepaid ? 'Selected ✓' : 'I’ll pay online') + '</button>'));
     var minShip = +P.free_ship_min || 0;
     t.push(tile(num(), 'Complimentary shipping', minShip ? 'Free above ' + fmt(minShip) : 'Free on every order', minShip ? (c1.sub - c1.bundle - c1.coupon >= minShip ? 'Unlocked on this order.' : 'Add ' + fmt(minShip - (c1.sub - c1.bundle - c1.coupon)) + ' more to unlock.') : 'Across India — nothing to unlock.', '', '<span class="pdp-st is-on">' + (minShip && c1.shipping ? 'Locked' : 'Unlocked') + '</span>'));
-    if (bundlePct('B') || bundlePct('C')) t.push(tile(num(), 'Build a set', 'Save ' + (bundlePct('B') || 0) + '% on a Duo, ' + (bundlePct('C') || 0) + '% on three', 'Pair this piece with others from Drop 01.', '', '<a class="pdp-apply" href="#sets" data-scroll>Build a set</a>'));
     offersEl.innerHTML = t.join('');
   }
   function tile(n, title, benefit, cond, extra, action) {
@@ -395,4 +393,174 @@
   }
 
   syncVariant(); renderOffers(); renderSets(); renderCollection(); renderCompare(); heroPrice(); barSync(); drawerExtras();
+
+  /* ---- Horizontal carousels (Similar items / More / Recently viewed) ---- */
+  function bindHS(sec) {
+    var tr = sec.querySelector('[data-hs]'); if (!tr) return;
+    var go = function (d) { tr.scrollBy({ left: d * Math.max(240, tr.clientWidth * 0.8), behavior: reduce ? 'auto' : 'smooth' }); };
+    var pv = sec.querySelector('[data-hs-prev]'), nx = sec.querySelector('[data-hs-next]');
+    pv && pv.addEventListener('click', function () { go(-1); });
+    nx && nx.addEventListener('click', function () { go(1); });
+    var sync = function () { if (pv) pv.hidden = tr.scrollLeft < 8; if (nx) nx.hidden = tr.scrollLeft + tr.clientWidth >= tr.scrollWidth - 8; };
+    tr.addEventListener('scroll', sync, { passive: true }); window.addEventListener('resize', sync); sync();
+    setTimeout(sync, 400);
+  }
+
+  /* ---- Recently viewed (remembered per browser) with Edit mode ---- */
+  (function recent() {
+    var KEY = 'terzee_rv', sec = document.querySelector('[data-pdp-recent]'), list = [], editing = false;
+    try { list = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+    var me = D.main || {};
+    var save = function () { try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {} };
+    function draw() {
+      if (!sec) return;
+      var others = list.filter(function (x) { return x.handle !== me.handle; }).slice(0, 10);
+      sec.hidden = !others.length;
+      sec.classList.toggle('is-editing', editing);
+      sec.querySelector('[data-recent-mount]').innerHTML = others.map(function (x) {
+        return '<div class="pdp-hs__i"><div class="shop-card"><div class="shop-card__image-wrapper"><a class="shop-card__image-link" href="' + esc(x.url) + '" tabindex="-1" aria-hidden="true"><img class="shop-card__img" src="' + esc(x.img) + '" alt="' + esc(x.title) + '" width="800" height="1000" loading="lazy"></a>' + (editing ? '<button type="button" class="pdp-rm" data-rm="' + esc(x.handle) + '" aria-label="Remove ' + esc(x.title) + '">×</button>' : '') + '</div><div class="shop-card__info"><h3 class="shop-card__title"><a href="' + esc(x.url) + '">' + esc(x.title) + '</a></h3>' + (x.type ? '<span class="shop-card__category">' + esc(x.type) + '</span>' : '') + (x.tag ? '<span class="shop-card__color">' + esc(x.tag) + '</span>' : '') + '<span class="shop-card__price">' + fmt(x.price) + '</span></div></div></div>';
+      }).join('');
+      var eb = sec.querySelector('[data-recent-edit]'); if (eb) eb.textContent = editing ? 'Done' : 'Edit';
+    }
+    if (sec) {
+      sec.addEventListener('click', function (e) {
+        if (e.target.closest('[data-recent-edit]')) { editing = !editing; draw(); return; }
+        var rm = e.target.closest('[data-rm]');
+        if (rm) { list = list.filter(function (x) { return x.handle !== rm.dataset.rm; }); save(); if (!list.filter(function (x) { return x.handle !== me.handle; }).length) editing = false; draw(); }
+      });
+    }
+    draw();
+    if (me.handle) {
+      list = [{ handle: me.handle, title: me.title, type: me.type, tag: me.tag, price: me.price, img: me.img, url: me.url }].concat(list.filter(function (x) { return x.handle !== me.handle; })).slice(0, 12);
+      save();
+    }
+  })();
+  $$('[data-pdp-hs]', document).forEach(bindHS);
+
+  /* ---- Option label ("Size: M") ---- */
+  $$('[data-option]').forEach(function (o) {
+    var out = o.querySelector('[data-opt-val]'); if (!out) return;
+    o.addEventListener('change', function (e) { if (e.target && e.target.type === 'radio') out.textContent = e.target.value; });
+  });
+
+  /* ---- Special-price label ---- */
+  (function promo() {
+    var el = $('[data-promo]'); if (!el) return;
+    el.hidden = !((D.main.compare || 0) > D.main.price);
+  })();
+
+  /* ---- Ratings & Reviews ---- */
+  (function reviews() {
+    var sec = document.querySelector('[data-rv]'); if (!sec) return;
+    var raw = [];
+    try { raw = JSON.parse(sec.querySelector('[data-rv-data]').textContent) || []; } catch (e) {}
+    if (!Array.isArray(raw)) raw = [];
+    var pid = sec.getAttribute('data-pid') || 'p', UKEY = 'terzee_review_mine_' + pid, HKEY = 'terzee_review_votes';
+    var mine = [], votes = {};
+    try { mine = JSON.parse(localStorage.getItem(UKEY) || '[]'); } catch (e) {}
+    try { votes = JSON.parse(localStorage.getItem(HKEY) || '{}'); } catch (e) {}
+    var dev = sec.hasAttribute('data-dev'), writeUrl = sec.getAttribute('data-write-url');
+    var st = { sort: 'recent', filter: 'all', tag: '', shown: 5 };
+    var q = function (s) { return sec.querySelector(s); };
+    var all = function () {
+      return mine.concat(raw).map(function (r, i) {
+        return { id: r.id || ('r' + i), rating: Math.max(0, Math.min(5, +r.rating || 0)), title: r.title || '', body: r.body || '', author: r.author || 'Customer', date: r.date || '', verified: !!r.verified, size: r.size || '', tags: r.tags || [], up: +r.helpful || 0, down: +r.down || 0, fit: +r.fit || 0, length: +r.length || 0, mine: !!r.mine, loc: r.location || '' };
+      }).filter(function (r) { return r.rating; });
+    };
+    var when = function (d) { var t = Date.parse(d); return isNaN(t) ? 0 : t; };
+    var fdate = function (d) { var t = when(d); return t ? new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''; };
+    var stars = function (n) { return '<span class="pdp-stars" style="--r:' + (n / 5 * 100) + '%" aria-hidden="true">★★★★★</span>'; };
+    var thumb = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11v9H4v-9zM7 11l4-8c1.4 0 2.5 1.1 2.5 2.5V9H19a2 2 0 0 1 2 2.3l-1 7A2 2 0 0 1 18 20H7"/></svg>';
+    var mine_ = function (r) { return votes[r.id]; };
+
+    function scale(list, key, lo, hi) {
+      var v = list.filter(function (r) { return r[key]; });
+      if (!v.length) return '';
+      var avg = v.reduce(function (a, r) { return a + r[key]; }, 0) / v.length;
+      return '<div class="rv__scale"><i><u style="width:' + ((avg - 1) / 4 * 100) + '%"></u></i><span>' + lo + '</span><span>' + hi + '</span></div>';
+    }
+
+    function render() {
+      var list = all(), total = list.length;
+      var sum = list.reduce(function (a, r) { return a + r.rating; }, 0), avg = total ? sum / total : 0;
+      var counts = [0, 0, 0, 0, 0, 0]; list.forEach(function (r) { counts[r.rating]++; });
+
+      q('[data-rv-total]').textContent = total ? total + (total === 1 ? ' Star Rating' : ' Star Ratings') : 'No ratings yet';
+      q('[data-rv-stars]').style.setProperty('--r', (avg / 5 * 100) + '%');
+      var hero = document.querySelector('[data-rating]');
+      if (hero) {
+        hero.hidden = !total;
+        if (total) hero.innerHTML = stars(avg) + '<span>' + avg.toFixed(1) + '</span><a href="#reviews">(' + total + ')</a>';
+      }
+      q('[data-rv-bars]').innerHTML = [5, 4, 3, 2, 1].map(function (n) {
+        var pct = total ? counts[n] / total * 100 : 0, on = st.filter === String(n);
+        return '<button type="button" class="rv__bar' + (on ? ' is-on' : '') + '" data-star="' + n + '" aria-pressed="' + on + '" aria-label="' + n + ' stars, ' + counts[n] + ' reviews"><span>' + n + (n === 1 ? ' Star' : ' Stars') + '</span><i><u style="width:' + pct + '%"></u></i><em>' + counts[n] + '</em></button>';
+      }).join('');
+
+      var sc = scale(list, 'length', 'Too Short', 'Too Long') + scale(list, 'fit', 'Runs Small', 'Runs Large');
+      q('[data-rv-scales]').hidden = !sc; q('[data-rv-scales]').innerHTML = sc;
+
+      var tagCount = {}; list.forEach(function (r) { r.tags.forEach(function (t) { tagCount[t] = (tagCount[t] || 0) + 1; }); });
+      var tags = Object.keys(tagCount).sort(function (a, b) { return tagCount[b] - tagCount[a]; }).slice(0, 10);
+      q('[data-rv-attrs]').hidden = !tags.length;
+      q('[data-rv-chips]').innerHTML = tags.map(function (t) { return '<button type="button" class="' + (st.tag === t ? 'is-on' : '') + '" data-tag="' + esc(t) + '" aria-pressed="' + (st.tag === t) + '">' + esc(t) + '</button>'; }).join('');
+
+      var shown = list.filter(function (r) {
+        if (st.filter === 'verified' && !r.verified) return false;
+        if (/^[1-5]$/.test(st.filter) && r.rating !== +st.filter) return false;
+        if (st.tag && r.tags.indexOf(st.tag) < 0) return false;
+        return true;
+      });
+      shown.sort(function (a, b) {
+        if (st.sort === 'high') return b.rating - a.rating || when(b.date) - when(a.date);
+        if (st.sort === 'low') return a.rating - b.rating || when(b.date) - when(a.date);
+        if (st.sort === 'helpful') return (b.up + (votes[b.id] === 'up' ? 1 : 0)) - (a.up + (votes[a.id] === 'up' ? 1 : 0)) || when(b.date) - when(a.date);
+        return when(b.date) - when(a.date);
+      });
+      q('[data-rv-list]').innerHTML = shown.slice(0, st.shown).map(function (r) {
+        var long = r.body.length > 220, up = r.up + (votes[r.id] === 'up' ? 1 : 0), down = r.down + (votes[r.id] === 'down' ? 1 : 0);
+        return '<article class="rv__item" data-id="' + esc(r.id) + '"><div class="rv__who">' + stars(r.rating) + '<b>' + esc(r.author) + '</b>' + (fdate(r.date) ? '<span>' + fdate(r.date) + '</span>' : '') + (r.loc ? '<span class="rv__loc">from ' + esc(r.loc) + '</span>' : '') + (r.verified ? '<span class="rv__ok">Verified buyer</span>' : '') + (r.mine ? '<span class="rv__ok">Your review · saved on this device</span>' : '') + '</div>' +
+          '<div class="rv__text"><h4>' + esc(r.title) + '</h4><p class="rv__body' + (long ? ' is-clamp' : '') + '">' + esc(r.body) + '</p>' + (long ? '<button type="button" class="rv__readmore" data-readmore>Read more</button>' : '') + (r.size ? '<small>Size purchased: ' + esc(r.size) + '</small>' : '') + '</div>' +
+          '<div class="rv__helpful"><span>Was this helpful?</span><div><button type="button" class="' + (votes[r.id] === 'up' ? 'is-on' : '') + '" data-vote="up" data-id="' + esc(r.id) + '" aria-label="Helpful" aria-pressed="' + (votes[r.id] === 'up') + '">' + thumb + '<b>' + up + '</b></button><button type="button" class="rv__down' + (votes[r.id] === 'down' ? ' is-on' : '') + '" data-vote="down" data-id="' + esc(r.id) + '" aria-label="Not helpful" aria-pressed="' + (votes[r.id] === 'down') + '">' + thumb + '<b>' + down + '</b></button></div></div></article>';
+      }).join('');
+      q('[data-rv-count]').textContent = total ? shown.length + (shown.length === 1 ? ' Review' : ' Reviews') : '';
+      q('[data-rv-more]').hidden = shown.length <= st.shown;
+      q('[data-rv-tools]').hidden = !total;
+      q('[data-rv-empty]').hidden = !!total;
+      q('[data-rv-list]').hidden = !total;
+      if (total && !shown.length) { q('[data-rv-list]').hidden = false; q('[data-rv-list]').innerHTML = '<p class="rv__none">No reviews match this filter.</p>'; }
+      q('[data-rv-filter]').value = st.filter;
+    }
+
+    sec.addEventListener('click', function (e) {
+      var bar = e.target.closest('[data-star]');
+      if (bar) { var n = bar.dataset.star; st.filter = st.filter === n ? 'all' : n; st.shown = 5; render(); return; }
+      var tg = e.target.closest('[data-tag]');
+      if (tg) { st.tag = st.tag === tg.dataset.tag ? '' : tg.dataset.tag; st.shown = 5; render(); return; }
+      if (e.target.closest('[data-rv-more]')) { st.shown += 5; render(); return; }
+      var rm = e.target.closest('[data-readmore]');
+      if (rm) { var body = rm.previousElementSibling; var open = body.classList.toggle('is-clamp'); rm.textContent = open ? 'Read more' : 'Show less'; return; }
+      var v = e.target.closest('[data-vote]');
+      if (v) { var id = v.dataset.id, k = v.dataset.vote; if (votes[id] === k) delete votes[id]; else votes[id] = k; try { localStorage.setItem(HKEY, JSON.stringify(votes)); } catch (er) {} render(); return; }
+    });
+    q('[data-rv-sort]').addEventListener('change', function (e) { st.sort = e.target.value; render(); });
+    q('[data-rv-filter]').addEventListener('change', function (e) { st.filter = e.target.value; st.shown = 5; render(); });
+
+    var w = q('[data-rv-write]'), form = q('[data-rv-form]');
+    if (writeUrl) { w.hidden = false; w.addEventListener('click', function () { window.open(writeUrl, '_blank', 'noopener'); }); }
+    else if (dev) {
+      w.hidden = false;
+      w.addEventListener('click', function () { form.hidden = false; form.querySelector('select').focus(); });
+      q('[data-rv-cancel]').addEventListener('click', function () { form.hidden = true; });
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var f = new FormData(form);
+        mine.unshift({ id: 'mine-' + Date.now(), rating: +f.get('rating'), title: String(f.get('title')), body: String(f.get('body')), author: String(f.get('name')), date: new Date().toISOString().slice(0, 10), mine: true, tags: [] });
+        try { localStorage.setItem(UKEY, JSON.stringify(mine)); } catch (er) {}
+        form.reset(); form.hidden = true; st.shown = Math.max(st.shown, 5); render(); toast('Thanks — review saved on this device');
+      });
+    }
+    if (dev) q('[data-rv-dev]').hidden = false;
+    render();
+  })();
 })();

@@ -1,0 +1,165 @@
+{%- comment -%}
+  Our story — full page. Hero · the name · statement · three pillars · craft techniques · numbers strip · pieces · founder note · closing call.
+  Copy comes from the brand identity PDFs (name, craft, tone) with place names and other-language words left out.
+  Static markup on purpose: preview/build.py renders this same file for the static preview.
+{%- endcomment -%}
+<div class="sp">
+
+  <section class="sp-hero" aria-label="Our story">
+    <img class="sp-hero__img" src="{{ 'brand-film-poster.jpg' | asset_url }}" alt="" width="1920" height="1080" fetchpriority="high">
+    <div class="sp-hero__shade" aria-hidden="true"></div>
+    <div class="sp-hero__inner">
+      <p class="sp-kicker sp-kicker--light" data-reveal><span class="sp-dia"></span>Our story</p>
+      <h1 class="sp-hero__title" data-split>One black cloth.</h1>
+      <p class="sp-hero__tag" data-reveal>Streets, craft and a needle that never stops.</p>
+    </div>
+    <div class="sp-hero__foot" aria-hidden="true"><span>Terzee Origins</span><span>Drop 01 · AW26</span><span class="sp-hero__scroll">Scroll</span></div>
+  </section>
+
+  <section class="sp-name sp-dark" data-header-dark>
+    <div class="sp-wrap">
+      <p class="sp-kicker sp-kicker--light" data-reveal><span class="sp-dia"></span>The name</p>
+      <h2 class="sp-h2" data-split>A word that kept its needle.</h2>
+      <ol class="sp-steps">
+        <li class="sp-step" data-reveal>
+          <span class="sp-step__n">01</span>
+          <h3 class="sp-step__t">Darz</h3>
+          <p class="sp-step__k">The seam</p>
+          <p>The old word for a seam, and for the one who closes it. A tailor in every bazaar.</p>
+        </li>
+        <li class="sp-step" data-reveal>
+          <span class="sp-step__n">02</span>
+          <h3 class="sp-step__t">Terzi</h3>
+          <p class="sp-step__k">The tailor</p>
+          <p>Carried west, the word softened. Still the tailor, still the seam, still the needle.</p>
+        </li>
+        <li class="sp-step sp-step--us" data-reveal>
+          <span class="sp-step__n">03</span>
+          <h3 class="sp-step__t">Terzee</h3>
+          <p class="sp-step__k">Our spelling</p>
+          <p>A tailor working in one black cloth. For us, the name is the craft.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sp-statement" data-header-light>
+    <div class="sp-wrap sp-wrap--narrow">
+      <p class="sp-statement__q" data-reveal>Old walls, old roads, <em>one black cloth</em> &mdash; cut, stitched and worn until it remembers every street.</p>
+      <p class="sp-statement__by" data-reveal>Terzee Origins &middot; Est. 2026</p>
+    </div>
+  </section>
+
+  <section class="sp-pillars" data-header-light>
+    <figure class="sp-banner">
+      <img src="{{ 'hero-triptych-poster.jpg' | asset_url }}" alt="One Terzee jacket seen from the front, side and back" loading="lazy" width="1920" height="1080">
+    </figure>
+    <div class="sp-wrap">
+      <p class="sp-kicker" data-reveal><span class="sp-dia"></span>What we stand for</p>
+      <h2 class="sp-h2 sp-h2--wide" data-split>Three things, sewn together.</h2>
+      <ul class="sp-list">
+        <li class="sp-list__item" data-reveal>
+          <span class="sp-list__n">01</span>
+          <h3>Heritage</h3><p>Lattice screens, carved doors, weathered walls. The ornament of old streets, kept patient and precise.</p>
+        </li>
+        <li class="sp-list__item" data-reveal>
+          <span class="sp-list__n">02</span>
+          <h3>Street</h3><p>Auto-rickshaws, cassette radios, the chai stall at midnight. Clothes made to be worn fast and familiar.</p>
+        </li>
+        <li class="sp-list__item" data-reveal>
+          <span class="sp-list__n">03</span>
+          <h3>Craft</h3><p>Blanket stitch, block print, patchwork with exposed edges. The hand is always visible.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sp-craft sp-dark" data-header-dark>
+    <div class="sp-wrap">
+      <div class="sp-craft__head">
+        <div>
+          <p class="sp-kicker sp-kicker--light" data-reveal><span class="sp-dia"></span>The craft</p>
+          <h2 class="sp-h2" data-split>Every piece carries the hand that made it.</h2>
+        </div>
+        <p class="sp-craft__lede" data-reveal>Four techniques repeat across Drop 01. Learn to spot them and you can read any Terzee piece from across the street.</p>
+      </div>
+      <div class="sp-cards">
+        <article class="sp-card" data-reveal>
+          <div class="sp-card__img"><img src="{{ 'craft-technique-1.jpg' | asset_url }}" alt="Model in a dark block-printed shirt on a rocky shore at sunset" loading="lazy" width="1200" height="1200"></div>
+          <h3>Blanket stitch</h3><p>Collars, hems and appliqu&eacute; edges traced by hand in black thread.</p>
+        </article>
+        <article class="sp-card" data-reveal>
+          <div class="sp-card__img"><img src="{{ 'craft-technique-2.jpg' | asset_url }}" alt="Model in a diamond-lattice block-print jacket against a concrete wall" loading="lazy" width="1200" height="1200"></div>
+          <h3>Block print</h3><p>Lattice and diamond repeats, pressed in tone on tone. Never two prints alike.</p>
+        </article>
+        <article class="sp-card" data-reveal>
+          <div class="sp-card__img"><img src="{{ 'craft-technique-3.jpg' | asset_url }}" alt="Model in a black lattice-print zip jacket, full length" loading="lazy" width="1200" height="1200"></div>
+          <h3>Patchwork</h3><p>Raw squares in four greys, pieced with the edges left showing.</p>
+        </article>
+        <article class="sp-card" data-reveal>
+          <div class="sp-card__img"><img src="{{ 'craft-technique-4.jpg' | asset_url }}" alt="Model in a black zip jacket with patchwork pockets" loading="lazy" width="1200" height="1200"></div>
+          <h3>Frayed appliqu&eacute;</h3><p>Strips of black denim laid down and left to fray, one slow line at a time.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sp-strip" aria-label="Facts" data-header-light>
+    <div class="sp-strip__track">
+      {%- for i in (1..2) -%}
+      <ul class="sp-strip__list"{% if i == 2 %} aria-hidden="true"{% endif %}>
+        <li>100% cotton twill</li><li>Cut boxy</li><li>Limited runs</li><li>Hand stitched</li><li>Free shipping across India</li><li>Drop 01 &middot; AW26</li>
+      </ul>
+      {%- endfor -%}
+    </div>
+  </section>
+
+  <section class="sp-pieces" data-header-light>
+    <div class="sp-wrap">
+      <div class="sp-pieces__head">
+        <div>
+          <p class="sp-kicker" data-reveal><span class="sp-dia"></span>Drop 01</p>
+          <h2 class="sp-h2 sp-h2--dark" data-split>The pieces.</h2>
+        </div>
+        <a class="sp-link" href="{{ routes.collections_url }}" data-reveal>Shop all <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="sp-rail" data-stagger>
+        <a class="sp-piece sp-piece--wide" href="/products/diamond-jaal-bomber"><span class="sp-piece__img"><img src="{{ 'diamond-jaal-bomber-look-5.jpg' | asset_url }}" alt="Jaal Project jacket in a garden of white flowers" loading="lazy" width="1400" height="788"></span><span class="sp-piece__row"><span class="sp-piece__n">Jaal Project</span><span class="sp-piece__k">Jackets &middot; All-over print</span></span></a>
+        <a class="sp-piece" href="/products/archive-patchwork-jacket"><span class="sp-piece__img"><img src="{{ 'archive-patchwork-jacket-look-3.jpg' | asset_url }}" alt="Gulaabo Archive Jacket seated against red velvet" loading="lazy" width="1400" height="788"></span><span class="sp-piece__row"><span class="sp-piece__n">Gulaabo Archive Jacket</span><span class="sp-piece__k">Jackets &middot; Patchwork</span></span></a>
+        <a class="sp-piece" href="/products/diamond-jaal-bomber"><span class="sp-piece__img"><img src="{{ 'diamond-jaal-bomber-look-6.jpg' | asset_url }}" alt="Jaal Project jacket at sunset" loading="lazy" width="1400" height="788"></span><span class="sp-piece__row"><span class="sp-piece__n">Jaal Project</span><span class="sp-piece__k">Jackets &middot; At dusk</span></span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sp-letter" data-header-light>
+    <div class="sp-wrap sp-wrap--narrow">
+      <p class="sp-kicker" data-reveal><span class="sp-dia"></span>A note from the founder</p>
+      <div class="sp-letter__body" data-reveal>
+        <p class="sp-letter__hi">Dear friend of the archive,</p>
+        <p>Every piece in Drop 01 began on a street we know by heart &mdash; a lattice wall in afternoon sun, a rickshaw at dawn, a chai stall that never closes.</p>
+        <p>We cut it in one black cloth, and we sewed it so you can see the hand. Thank you for wearing it with us.</p>
+        <p class="sp-letter__sign">Zeeshan Azam Ali<span>Founder</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sp-cta sp-dark" data-header-dark>
+    <img class="sp-cta__bg" src="{{ 'cat-jackets-photo.jpg' | asset_url }}" alt="" loading="lazy" width="1600" height="900">
+    <div class="sp-cta__shade" aria-hidden="true"></div>
+    <div class="sp-wrap sp-cta__inner">
+      <p class="sp-kicker sp-kicker--light" data-reveal><span class="sp-dia"></span>Drop 01 &middot; AW26</p>
+      <h2 class="sp-cta__title" data-split>The street, archived.</h2>
+      <div class="sp-cta__row" data-reveal>
+        <a class="sp-btn" href="{{ routes.collections_url }}">Shop the drop</a>
+        <a class="sp-btn sp-btn--ghost" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg>
+          @theterzeeorigins
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% schema %}
+{ "name": "Story page", "settings": [] }
+{% endschema %}
