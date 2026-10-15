@@ -1,16 +1,35 @@
 {%- comment -%}
-  "Why us" — four columns on a stair-step, dashed dividers, big mono headings.
-  Modelled on the "Why RAWLINE?" block of the reference site.
+  Why us — bento grid. Four rounded tiles (ink / white, alternating), each built around one big figure.
+  Wide + narrow tiles on desktop, single column on mobile.
 {%- endcomment -%}
 <section class="why" data-header-light>
-  <h2 class="why__title"><em class="why__lead">{{ section.settings.lead }}</em><span class="why__name">{{ section.settings.heading }}</span></h2>
-  <div class="why__grid">
+  <header class="why__head">
+    <p class="why__eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2 class="why__title" data-split>{{ section.settings.heading }}</h2>
+    {%- if section.settings.intro != blank -%}<p class="why__intro">{{ section.settings.intro }}</p>{%- endif -%}
+  </header>
+  <div class="why__bento">
     {%- for block in section.blocks limit: 4 -%}
-      <div class="why__col" style="--step:{{ forloop.index0 }}" {{ block.shopify_attributes }}>
-        <p class="why__text">{{ block.settings.text }}</p>
-        <h3 class="why__head">{{ block.settings.title }}</h3>
-        <p class="why__sub">{{ block.settings.sub }}</p>
-      </div>
+      <article class="why__tile why__tile--{{ forloop.index }}" {{ block.shopify_attributes }}>
+        <div class="why__top">
+          <span class="why__icon">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              {%- case forloop.index -%}
+                {%- when 1 -%}<path d="M3 9h16v13H3zM19 13h5l4 4v5h-9M8 25.5a2.5 2.5 0 1 0 0-.01M23 25.5a2.5 2.5 0 1 0 0-.01"/>
+                {%- when 2 -%}<path d="M6 12h15a6 6 0 0 1 0 12H10M11 7 6 12l5 5"/>
+                {%- when 3 -%}<path d="M16 3 5 7v8c0 7 4.6 11.5 11 14 6.4-2.5 11-7 11-14V7zM11 16l3.5 3.5L21.5 12"/>
+                {%- else -%}<path d="M5 6h22v15H15l-6 5v-5H5zM11 12h10M11 16h6"/>
+              {%- endcase -%}
+            </svg>
+          </span>
+          <span class="why__pill">{{ block.settings.sub }}</span>
+        </div>
+        <div class="why__bottom">
+          <p class="why__figure">{{ block.settings.figure }}<small>{{ block.settings.unit }}</small></p>
+          <h3 class="why__name">{{ block.settings.title }}</h3>
+          <p class="why__text">{{ block.settings.text }}</p>
+        </div>
+      </article>
     {%- endfor -%}
   </div>
 </section>
@@ -18,20 +37,23 @@
 {
   "name": "Why us",
   "settings": [
-    { "type": "text", "id": "lead", "label": "Italic lead word", "default": "why" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Terzee?" }
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Terzee promise" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Why Terzee?" },
+    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Cut and sewn by hand, delivered with care. Four things we never compromise on." }
   ],
   "max_blocks": 4,
   "blocks": [ { "type": "point", "name": "Point", "settings": [
-    { "type": "textarea", "id": "text", "label": "Text", "default": "Get your order delivered quickly, straight to your door." },
+    { "type": "text", "id": "figure", "label": "Big figure", "default": "3–5" },
+    { "type": "text", "id": "unit", "label": "Figure unit", "default": "days" },
     { "type": "text", "id": "title", "label": "Title", "default": "Fast shipping" },
-    { "type": "text", "id": "sub", "label": "Sub line", "default": "3–5 business days" }
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Get your order delivered quickly, straight to your door." },
+    { "type": "text", "id": "sub", "label": "Tag", "default": "Business days" }
   ] } ],
   "presets": [ { "name": "Why us", "blocks": [
     { "type": "point" },
-    { "type": "point", "settings": { "text": "Return your items hassle-free. Our flexible policy makes it simple.", "title": "Easy returns", "sub": "7 days from delivery" } },
-    { "type": "point", "settings": { "text": "Pay for your order with confidence. Your details are always protected.", "title": "Secure payments", "sub": "Bank-grade SSL protection" } },
-    { "type": "point", "settings": { "text": "Get the help you need, fast. Our dedicated team is here for you.", "title": "Customer support", "sub": "hello@terzeeorigins.com" } }
+    { "type": "point", "settings": { "figure": "7", "unit": "days", "text": "Return your items hassle-free. Our flexible policy makes it simple.", "title": "Easy returns", "sub": "From delivery" } },
+    { "type": "point", "settings": { "figure": "SSL", "unit": "", "text": "Pay for your order with confidence. Your details are always protected.", "title": "Secure payments", "sub": "Bank-grade protection" } },
+    { "type": "point", "settings": { "figure": "Help", "unit": "", "text": "Get the help you need, fast. Our dedicated team is here for you.", "title": "Customer support", "sub": "hello@terzeeorigins.com" } }
   ] } ]
 }
 {% endschema %}

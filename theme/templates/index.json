@@ -4,103 +4,6 @@
       "type": "hero-video",
       "settings": {}
     },
-    "products": {
-      "type": "product-marquee",
-      "blocks": {
-        "s1": {
-          "type": "demo",
-          "settings": {
-            "title": "Jaal Theory",
-            "image": "lattice-zip-jacket-cutout.png",
-            "url": "/products/lattice-zip-jacket"
-          }
-        },
-        "s2": {
-          "type": "demo",
-          "settings": {
-            "title": "Jaal Project",
-            "image": "diamond-jaal-bomber-cutout.png",
-            "url": "/products/diamond-jaal-bomber"
-          }
-        },
-        "s3": {
-          "type": "demo",
-          "settings": {
-            "title": "Dhaga Division",
-            "image": "frayed-street-denim-cutout.png",
-            "url": "/products/frayed-street-denim"
-          }
-        },
-        "s4": {
-          "type": "demo",
-          "settings": {
-            "title": "Gulaabo Archive Jacket",
-            "image": "archive-patchwork-jacket-cutout.png",
-            "url": "/products/archive-patchwork-jacket"
-          }
-        },
-        "s5": {
-          "type": "demo",
-          "settings": {
-            "title": "Sannata Dept.",
-            "image": "zip-shacket-cutout.png",
-            "url": "/products/zip-shacket"
-          }
-        },
-        "s6": {
-          "type": "demo",
-          "settings": {
-            "title": "Jharokha",
-            "image": "jaal-pocket-camp-shirt-cutout.png",
-            "url": "/products/jaal-pocket-camp-shirt"
-          }
-        },
-        "s7": {
-          "type": "demo",
-          "settings": {
-            "title": "Mehraab",
-            "image": "pillar-pintuck-shirt-cutout.png",
-            "url": "/products/pillar-pintuck-shirt"
-          }
-        },
-        "s8": {
-          "type": "demo",
-          "settings": {
-            "title": "Jaal Reworked",
-            "image": "diamond-jaal-popover-cutout.png",
-            "url": "/products/diamond-jaal-popover"
-          }
-        },
-        "s9": {
-          "type": "demo",
-          "settings": {
-            "title": "Riwaayat 2.0",
-            "image": "paisley-tonal-shirt-cutout.png",
-            "url": "/products/paisley-tonal-shirt"
-          }
-        }
-      },
-      "block_order": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5",
-        "s6",
-        "s7",
-        "s8",
-        "s9"
-      ],
-      "settings": {
-        "heading": "See our products:",
-        "align": "left",
-        "limit": 12,
-        "speed": 45,
-        "direction": "left",
-        "pausable": true,
-        "overlap": false
-      }
-    },
     "featured": {
       "type": "featured-collection",
       "blocks": {
@@ -498,32 +401,40 @@
         "w0": {
           "type": "point",
           "settings": {
-            "text": "Get your order delivered quickly, straight to your door.",
+            "figure": "3–5",
+            "unit": "days",
             "title": "Fast shipping",
-            "sub": "3–5 business days"
+            "text": "Get your order delivered quickly, straight to your door.",
+            "sub": "Business days"
           }
         },
         "w1": {
           "type": "point",
           "settings": {
-            "text": "Return your items hassle-free. Our flexible policy makes it simple.",
+            "figure": "7",
+            "unit": "days",
             "title": "Easy returns",
-            "sub": "7 days from delivery"
+            "text": "Return your items hassle-free. Our flexible policy makes it simple.",
+            "sub": "From delivery"
           }
         },
         "w2": {
           "type": "point",
           "settings": {
-            "text": "Pay for your order with confidence. Your details are always protected.",
+            "figure": "SSL",
+            "unit": "",
             "title": "Secure payments",
-            "sub": "Bank-grade SSL protection"
+            "text": "Pay for your order with confidence. Your details are always protected.",
+            "sub": "Bank-grade protection"
           }
         },
         "w3": {
           "type": "point",
           "settings": {
-            "text": "Get the help you need, fast. Our dedicated team is here for you.",
+            "figure": "Help",
+            "unit": "",
             "title": "Customer support",
+            "text": "Get the help you need, fast. Our dedicated team is here for you.",
             "sub": "hello@terzeeorigins.com"
           }
         }
@@ -535,8 +446,9 @@
         "w3"
       ],
       "settings": {
-        "lead": "why",
-        "heading": "Terzee?"
+        "eyebrow": "The Terzee promise",
+        "heading": "Why Terzee?",
+        "intro": "Cut and sewn by hand, delivered with care. Four things we never compromise on."
       }
     },
     "social": {
@@ -547,7 +459,7 @@
           "settings": {
             "text": "The materials feel premium and the craftsmanship is excellent. I've worn my shirt countless times and it still looks brand new.",
             "handle": "@customer_one",
-            "style": "red",
+            "style": "ink",
             "link_text": "View on Instagram",
             "link_url": "https://www.instagram.com/theterzeeorigins/"
           }
@@ -555,7 +467,8 @@
         "b1": {
           "type": "photo",
           "settings": {
-            "asset": "look-02-back-4x5.jpg"
+            "asset": "look-02-back-4x5.jpg",
+            "handle": "@theterzeeorigins"
           }
         },
         "b2": {
@@ -563,7 +476,7 @@
           "settings": {
             "text": "I've been searching for everyday essentials that don't compromise on quality, and I finally found them here.",
             "handle": "@customer_two",
-            "style": "dark",
+            "style": "light",
             "link_text": "View on Instagram",
             "link_url": "https://www.instagram.com/theterzeeorigins/"
           }
@@ -571,13 +484,15 @@
         "b3": {
           "type": "photo",
           "settings": {
-            "asset": "diamond-jaal-bomber-campaign-2.jpg"
+            "asset": "diamond-jaal-bomber-campaign-2.jpg",
+            "handle": "@theterzeeorigins"
           }
         },
         "b4": {
           "type": "photo",
           "settings": {
-            "asset": "look-03-camp-shirt-4x5.jpg"
+            "asset": "look-03-camp-shirt-4x5.jpg",
+            "handle": "@theterzeeorigins"
           }
         },
         "b5": {
@@ -585,7 +500,7 @@
           "settings": {
             "text": "Every order I've received has been consistent in quality. The attention to detail is what makes these clothes stand out.",
             "handle": "@customer_three",
-            "style": "dark",
+            "style": "light",
             "link_text": "View on Instagram",
             "link_url": "https://www.instagram.com/theterzeeorigins/"
           }
@@ -593,7 +508,8 @@
         "b6": {
           "type": "photo",
           "settings": {
-            "asset": "archive-patchwork-jacket-campaign-1.jpg"
+            "asset": "archive-patchwork-jacket-campaign-1.jpg",
+            "handle": "@theterzeeorigins"
           }
         },
         "b7": {
@@ -601,7 +517,7 @@
           "settings": {
             "text": "From the moment I unpacked my order, I could tell the craftsmanship was on another level. It feels built to last.",
             "handle": "@customer_four",
-            "style": "red",
+            "style": "ink",
             "link_text": "View on Instagram",
             "link_url": "https://www.instagram.com/theterzeeorigins/"
           }
@@ -609,7 +525,8 @@
         "b8": {
           "type": "photo",
           "settings": {
-            "asset": "look-01-bomber-4x5.jpg"
+            "asset": "look-01-bomber-4x5.jpg",
+            "handle": "@theterzeeorigins"
           }
         },
         "b9": {
@@ -617,7 +534,7 @@
           "settings": {
             "text": "The fit is spot on and the stitching is clean. It's the piece I reach for first every time.",
             "handle": "@customer_five",
-            "style": "red",
+            "style": "ink",
             "link_text": "View on Instagram",
             "link_url": "https://www.instagram.com/theterzeeorigins/"
           }
@@ -625,7 +542,8 @@
         "b10": {
           "type": "photo",
           "settings": {
-            "asset": "frayed-street-denim-3.jpg"
+            "asset": "frayed-street-denim-3.jpg",
+            "handle": "@theterzeeorigins"
           }
         },
         "b11": {
@@ -633,7 +551,7 @@
           "settings": {
             "text": "Heavy cloth, sharp details and it only gets better with wear. Worth every rupee.",
             "handle": "@customer_six",
-            "style": "dark",
+            "style": "light",
             "link_text": "View on Instagram",
             "link_url": "https://www.instagram.com/theterzeeorigins/"
           }
@@ -654,15 +572,15 @@
         "b11"
       ],
       "settings": {
-        "heading": "Social",
-        "lead": "wall",
+        "eyebrow": "Social",
+        "heading": "Worn in the wild",
+        "follow_text": "Follow @theterzeeorigins",
         "ig_url": "https://www.instagram.com/theterzeeorigins/"
       }
     }
   },
   "order": [
     "hero",
-    "products",
     "featured",
     "craft",
     "seasonal",
