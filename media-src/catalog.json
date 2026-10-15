@@ -10,7 +10,19 @@
   ],
   "desc": "A lattice block print along the hem and collar, traced by hand in black blanket stitch. Heavy cotton twill, two-way zip, boxy fit.",
   "fabric": "100% cotton twill · block print · blanket stitch",
-  "campaign": []
+  "campaign": [],
+  "looks": [
+   "lattice-zip-jacket-look-1.jpg",
+   "lattice-zip-jacket-look-2.jpg",
+   "lattice-zip-jacket-look-3.jpg",
+   "lattice-zip-jacket-look-4.jpg",
+   "lattice-zip-jacket-look-5.jpg",
+   "lattice-zip-jacket-look-6.jpg",
+   "lattice-zip-jacket-look-7.jpg",
+   "lattice-zip-jacket-look-8.jpg",
+   "lattice-zip-jacket-look-9.jpg",
+   "lattice-zip-jacket-look-10.jpg"
+  ]
  },
  {
   "handle": "diamond-jaal-bomber",
@@ -29,6 +41,14 @@
    "diamond-jaal-bomber-campaign-2.jpg",
    "diamond-jaal-bomber-campaign-3.jpg",
    "diamond-jaal-bomber-campaign-4.jpg"
+  ],
+  "looks": [
+   "diamond-jaal-bomber-look-1.jpg",
+   "diamond-jaal-bomber-look-2.jpg",
+   "diamond-jaal-bomber-look-3.jpg",
+   "diamond-jaal-bomber-look-4.jpg",
+   "diamond-jaal-bomber-look-5.jpg",
+   "diamond-jaal-bomber-look-6.jpg"
   ]
  },
  {
@@ -60,6 +80,11 @@
   "campaign": [
    "archive-patchwork-jacket-campaign-1.jpg",
    "archive-patchwork-jacket-campaign-2.jpg"
+  ],
+  "looks": [
+   "archive-patchwork-jacket-look-1.jpg",
+   "archive-patchwork-jacket-look-2.jpg",
+   "archive-patchwork-jacket-look-3.jpg"
   ]
  },
  {
@@ -86,7 +111,13 @@
   ],
   "desc": "A camp collar, two block-printed pockets, a printed patch at the chest. Cut loose for the heat.",
   "fabric": "Cotton poplin · block-printed pockets",
-  "campaign": []
+  "campaign": [],
+  "looks": [
+   "jaal-pocket-camp-shirt-look-1.jpg",
+   "jaal-pocket-camp-shirt-look-2.jpg",
+   "jaal-pocket-camp-shirt-look-3.jpg",
+   "jaal-pocket-camp-shirt-look-4.jpg"
+  ]
  },
  {
   "handle": "pillar-pintuck-shirt",

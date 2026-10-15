@@ -1,1 +1,69 @@
-{ "sections": { "main": { "type": "main-list-collections", "settings": {} } }, "order": ["main"] }
+{
+  "sections": {
+    "split": {
+      "type": "collection-split",
+      "blocks": {
+        "p1": {
+          "type": "panel",
+          "settings": {
+            "title": "Shirts",
+            "asset": "col-shirts.jpg",
+            "url": "/collections/shirts",
+            "focus_x": 50,
+            "focus_y": 30
+          }
+        },
+        "p2": {
+          "type": "panel",
+          "settings": {
+            "title": "Jackets",
+            "asset": "col-jackets.jpg",
+            "url": "/collections/jackets",
+            "focus_x": 47,
+            "focus_y": 40
+          }
+        },
+        "p3": {
+          "type": "panel",
+          "settings": {
+            "title": "Denim",
+            "asset": "col-denim.jpg",
+            "url": "/collections/denim",
+            "focus_x": 52,
+            "focus_y": 35
+          }
+        },
+        "p4": {
+          "type": "panel",
+          "settings": {
+            "title": "New arrivals",
+            "asset": "col-new.jpg",
+            "url": "/collections/new-arrivals",
+            "focus_x": 50,
+            "focus_y": 30
+          }
+        },
+        "p5": {
+          "type": "panel",
+          "settings": {
+            "title": "Shop all",
+            "asset": "col-all.jpg",
+            "url": "/collections/all",
+            "focus_x": 50,
+            "focus_y": 40
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5"
+      ]
+    }
+  },
+  "order": [
+    "split"
+  ]
+}

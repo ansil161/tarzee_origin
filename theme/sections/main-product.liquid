@@ -2,6 +2,14 @@
   assign current = product.selected_or_first_available_variant
   assign first_img = product.featured_media
   assign story_media = product.media.last
+  assign badge = ''
+  if product.tags contains 'best-seller'
+    assign badge = 'Best seller'
+  elsif product.tags contains 'new'
+    assign badge = 'New'
+  elsif product.tags contains 'limited'
+    assign badge = 'Limited'
+  endif
   if section.settings.pair_collection != blank
     assign pair_source = section.settings.pair_collection.products
   elsif recommendations.performed and recommendations.products_count > 0
@@ -22,7 +30,7 @@
           {%- endif -%}
         </div>
         <div class="pdp-stage" data-stage>
-          {%- if current.compare_at_price > current.price -%}<span class="pdp-badge">Sale</span>{%- elsif product.metafields.custom.technique != blank -%}<span class="pdp-badge">{{ product.metafields.custom.technique }}</span>{%- endif -%}
+          {%- if current.compare_at_price > current.price -%}<span class="pdp-badge">Sale</span>{%- elsif badge != blank -%}<span class="pdp-badge">{{ badge }}</span>{%- endif -%}
           {%- if first_img -%}
             <img data-main src="{{ first_img | image_url: width: 1400 }}" alt="{{ first_img.alt | default: product.title | escape }}" width="1200" height="1500" fetchpriority="high">
           {%- else -%}
@@ -45,7 +53,7 @@
             },
             "main": {
               "id": {{ current.id }}, "handle": {{ product.handle | json }}, "title": {{ product.title | json }}, "type": {{ product.type | json }},
-              "tag": {{ product.metafields.custom.technique | json }}, "fabric": {{ product.metafields.custom.fabric | json }},
+              "tag": {{ product.metafields.custom.technique | json }}, "fabric": {{ product.metafields.custom.fabric | json }}, "badge": {{ badge | json }},
               "price": {{ current.price | divided_by: 100.0 }}, "compare": {{ current.compare_at_price | default: 0 | divided_by: 100.0 }},
               "img": {{ first_img | image_url: width: 300 | json }}, "url": {{ product.url | json }},
               "sizes": [{%- for v in product.variants -%}{ "id": {{ v.id }}, "title": {{ v.title | json }}, "available": {{ v.available | json }} }{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
@@ -59,6 +67,7 @@
                   {
                     "id": {{ p.selected_or_first_available_variant.id }}, "handle": {{ p.handle | json }}, "title": {{ p.title | json }}, "type": {{ p.type | json }},
                     "tag": {{ p.metafields.custom.technique | json }}, "fabric": {{ p.metafields.custom.fabric | json }},
+                    "badge": {% if p.tags contains 'best-seller' %}"Best seller"{% elsif p.tags contains 'new' %}"New"{% elsif p.tags contains 'limited' %}"Limited"{% else %}""{% endif %},
                     "price": {{ p.price | divided_by: 100.0 }}, "compare": {{ p.compare_at_price | default: 0 | divided_by: 100.0 }},
                     "img": {{ p.featured_image | image_url: width: 600 | json }}, "url": {{ p.url | json }},
                     "sizes": [{%- for v in p.variants -%}{ "id": {{ v.id }}, "title": {{ v.title | json }}, "available": {{ v.available | json }} }{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
@@ -80,12 +89,12 @@
         <div class="pdp-sub">{{ product.type }}{% if product.metafields.custom.technique != blank %} · {{ product.metafields.custom.technique }}{% endif %}</div>
         <div class="product__desc t-body">{{ product.description }}</div>
 
-        <div class="pdp-pricebox">
-          <div class="pdp-pricebox__was" data-was-row {% unless current.compare_at_price > current.price %}hidden{% endunless %}>Regular price <s data-was>{{ current.compare_at_price | money }}</s></div>
-          <div class="pdp-pricebox__your"><span class="pdp-pricebox__lab">Your price</span><div class="product__price" data-price data-your-price>{{ current.price | money }}</div><span class="pdp-save" data-save hidden></span></div>
-          <div class="pdp-tax">{% if shop.taxes_included %}Inclusive of all taxes{% else %}Taxes calculated at checkout{% endif %} · {{ settings.free_shipping_text }}</div>
-        </div>
-        <div class="pdp-best" data-bestdeal hidden><div class="pdp-best__t"><small>Best deal today</small>As low as<b data-bd-price></b><span data-bd-how></span></div><button type="button" data-unlock>Unlock my deal</button></div>
+        <div class="pdp-price2">
+      <div class="pdp-priceline"><div class="product__price" data-price data-your-price>{{ current.price | money }}</div><s data-was {% unless current.compare_at_price > current.price %}hidden{% endunless %}>{{ current.compare_at_price | money }}</s><span class="pdp-off" data-off hidden></span></div>
+      <p class="pdp-saveline" data-saveline hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.3 8 8 9 4.7-1 8-4.5 8-9V6zM8.5 12l2.5 2.5 4.5-5"/></svg><b data-save-amt></b><span data-save-note></span></p>
+      <p class="pdp-tax">{% if shop.taxes_included %}Inclusive of all taxes{% else %}Taxes calculated at checkout{% endif %} · {{ settings.free_shipping_text }}</p>
+    </div>
+    <div class="pdp-ofc" data-offer-card></div>
 
         <form method="post" action="{{ routes.cart_add_url }}" data-product-form data-pdp-form data-ajax-cart data-title="{{ product.title | escape }}" data-price="{{ current.price | divided_by: 100.0 }}" data-img="{{ first_img | image_url: width: 300 }}">
           <script type="application/json" data-variants>{{ product.variants | json }}</script>
@@ -129,12 +138,16 @@
 
         <div class="acc" id="details">
           <details open>
-            <summary>{{ 'products.details' | t }}<i></i></summary>
+            <summary>Description<i></i></summary>
             <div class="acc__body">{{ product.metafields.custom.details | default: section.settings.details_fallback }}</div>
           </details>
           <details>
             <summary>{{ 'products.fabric_care' | t }}<i></i></summary>
             <div class="acc__body">{{ product.metafields.custom.fabric | default: section.settings.fabric_fallback }}</div>
+          </details>
+          <details>
+            <summary>Size &amp; fit<i></i></summary>
+            <div class="acc__body">Boxy fit, true to size. If you sit between sizes or want a roomier drape, size up.</div>
           </details>
           <details>
             <summary>{{ 'products.shipping_returns' | t }}<i></i></summary>
@@ -146,14 +159,28 @@
   </div>
 </section>
 
-<section class="pdp-sec pdp-sec--ivory" id="offers" data-pdp-offers data-header-light>
-  <div class="container"><p class="pdp-kick" data-pdp-rise>Offers</p><h2 class="pdp-h2" data-pdp-rise>Unlock your Terzee privileges</h2><p class="pdp-lead" data-pdp-rise>Every offer that applies to this piece, in one place. Offers marked as codes are confirmed at checkout.</p><div class="pdp-tiles" data-mount></div></div>
+{%- if product.media.size > 2 -%}
+<section class="pdp-sec pdp-look" id="look" data-pdp-look>
+  <div class="container">
+    <p class="pdp-kick" data-pdp-rise>The look</p><h2 class="pdp-h2" data-pdp-rise>More of this piece</h2>
+    <p class="pdp-lead" data-pdp-rise>See how it moves, layers and sits.</p>
+    <div class="pdp-look__grid">
+      {%- for media in product.media offset: 1 -%}
+        {%- if media.media_type == 'image' -%}
+          <button type="button" class="pdp-look__i" data-look="{{ forloop.index0 }}" aria-label="Open image {{ forloop.index }}"><img src="{{ media | image_url: width: 1000 }}" alt="{{ media.alt | default: product.title | escape }}" loading="lazy" width="1000" height="1250"></button>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <script type="application/json" data-look-slides>[{%- assign first = true -%}{%- for media in product.media offset: 1 -%}{%- if media.media_type == 'image' -%}{%- unless first -%},{%- endunless -%}{%- assign first = false -%}{"src":{{ media | image_url: width: 1000 | json }},"full":{{ media | image_url: width: 2400 | json }},"alt":{{ media.alt | default: product.title | json }}}{%- endif -%}{%- endfor -%}]</script>
+  </div>
 </section>
+{%- endif -%}
+
 <section class="pdp-sec pdp-sec--dark" id="sets" data-pdp-sets>
-  <div class="container"><p class="pdp-kick" data-pdp-rise>Sets</p><h2 class="pdp-h2" data-pdp-rise>The more you discover, the more you save</h2><p class="pdp-lead" data-pdp-rise>Pick one piece or pair it. Your total updates as you choose.</p><div class="pdp-sets" data-mount></div></div>
+  <div class="container"><p class="pdp-kick" data-pdp-rise>Outfits</p><h2 class="pdp-h2" data-pdp-rise>Complete your look</h2><p class="pdp-lead" data-pdp-rise>Buy one piece, build a two-item outfit or a three-item collection. Your total updates as you choose.</p><div class="pdp-sets" data-mount></div></div>
 </section>
 <section class="pdp-sec pdp-sec--ivory" id="collection" data-pdp-collection data-header-light>
-  <div class="container"><p class="pdp-kick" data-pdp-rise>Complete the wardrobe</p><h2 class="pdp-h2" data-pdp-rise>Add more from Drop 01</h2><div data-mount></div></div>
+  <div class="container"><p class="pdp-kick" data-pdp-rise>From Drop 01</p><h2 class="pdp-h2" data-pdp-rise>You may also like</h2><div data-mount></div></div>
 </section>
 
 <section class="pdp-story">
