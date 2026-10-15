@@ -67,31 +67,26 @@
   lb.className = 'pdp-lb'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true'); lb.setAttribute('aria-label', 'Product images');
   lb.innerHTML = '<button class="pdp-lb__x" aria-label="Close">✕</button><button class="pdp-lb__p" aria-label="Previous image">←</button><img alt=""><button class="pdp-lb__n" aria-label="Next image">→</button><div class="pdp-lb__c"></div>';
   document.body.appendChild(lb);
-  var lbSlides = slides;
   var lbImg = lb.querySelector('img'), lbC = lb.querySelector('.pdp-lb__c'), lastFocus = null;
-  function lbShow(i) { lbI = (i + lbSlides.length) % lbSlides.length; lbImg.src = lbSlides[lbI].full || lbSlides[lbI].src; lbImg.alt = lbSlides[lbI].alt; lbC.textContent = (lbI + 1) + ' / ' + lbSlides.length; }
-  var lbI = 0;
-  function lbOpen(set, i) { lbSlides = set || slides; lastFocus = document.activeElement; lbShow(i === undefined ? cur : i); lb.classList.add('is-open'); document.documentElement.style.overflow = 'hidden'; lb.querySelector('.pdp-lb__x').focus(); }
-  function lbClose() { lb.classList.remove('is-open'); document.documentElement.style.overflow = ''; if (lbSlides === slides) { cur = lbI; show(cur, true); } lastFocus && lastFocus.focus(); }
+  function lbShow(i) { cur = (i + slides.length) % slides.length; lbImg.src = slides[cur].full || slides[cur].src; lbImg.alt = slides[cur].alt; lbC.textContent = (cur + 1) + ' / ' + slides.length; }
+  function lbOpen() { lastFocus = document.activeElement; lbShow(cur); lb.classList.add('is-open'); document.documentElement.style.overflow = 'hidden'; lb.querySelector('.pdp-lb__x').focus(); }
+  function lbClose() { lb.classList.remove('is-open'); document.documentElement.style.overflow = ''; show(cur, true); lastFocus && lastFocus.focus(); }
   stage.addEventListener('click', function () { if (!stage._swiped) lbOpen(); });
   $('[data-expand]').addEventListener('click', function (e) { e.stopPropagation(); lbOpen(); });
   lb.querySelector('.pdp-lb__x').addEventListener('click', lbClose);
-  lb.querySelector('.pdp-lb__p').addEventListener('click', function () { lbShow(lbI - 1); });
-  lb.querySelector('.pdp-lb__n').addEventListener('click', function () { lbShow(lbI + 1); });
+  lb.querySelector('.pdp-lb__p').addEventListener('click', function () { lbShow(cur - 1); });
+  lb.querySelector('.pdp-lb__n').addEventListener('click', function () { lbShow(cur + 1); });
   lb.addEventListener('click', function (e) { if (e.target === lb) lbClose(); });
   document.addEventListener('keydown', function (e) {
     if (!lb.classList.contains('is-open')) return;
     if (e.key === 'Escape') lbClose();
-    else if (e.key === 'ArrowLeft') lbShow(lbI - 1);
-    else if (e.key === 'ArrowRight') lbShow(lbI + 1);
+    else if (e.key === 'ArrowLeft') lbShow(cur - 1);
+    else if (e.key === 'ArrowRight') lbShow(cur + 1);
     else if (e.key === 'Tab') { var f = lb.querySelectorAll('button'), a = f[0], z = f[f.length - 1]; if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); } }
   });
   var lx = null;
   lb.addEventListener('touchstart', function (e) { lx = e.touches[0].clientX; }, { passive: true });
-  lb.addEventListener('touchend', function (e) { if (lx === null) return; var dx = e.changedTouches[0].clientX - lx; lx = null; if (Math.abs(dx) > 40) lbShow(lbI + (dx < 0 ? 1 : -1)); });
-
-  var lookData = []; try { lookData = JSON.parse((document.querySelector('[data-look-slides]') || {}).textContent || '[]'); } catch (e) {}
-  document.addEventListener('click', function (e) { var b = e.target.closest('[data-look]'); if (b && lookData.length) lbOpen(lookData, +b.dataset.look); });
+  lb.addEventListener('touchend', function (e) { if (lx === null) return; var dx = e.changedTouches[0].clientX - lx; lx = null; if (Math.abs(dx) > 40) lbShow(cur + (dx < 0 ? 1 : -1)); });
 
   /* ---------- Hero basics: qty, dispatch ---------- */
   var form = $('[data-pdp-form]'), qty = $('[data-qty-input]');
@@ -112,7 +107,7 @@
 
   /* ---------- Promo state ---------- */
   var state = { mode: 'A', coupon: store.get('terzee_coupon') === '1', prepaid: store.get('terzee_prepaid') === '1', picks: {} };
-  var MODES = { A: { n: 1, label: 'Buy one item' }, B: { n: 2, label: 'Two-item outfit' }, C: { n: 3, label: 'Three-item collection' } };
+  var MODES = { A: { n: 1, label: 'Just your piece' }, B: { n: 2, label: 'The Duo Edit' }, C: { n: 3, label: 'The Signature Collection' } };
   function bundlePct(m) { var b = P.bundle || {}; return m === 'B' ? (+b.duo_pct || 0) : m === 'C' ? (+b.trio_pct || 0) : 0; }
   function modeItems(m) {
     var items = [mainItem(m === 'A' ? null : 1)];
@@ -158,26 +153,22 @@
     (function tick(t) { var k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 3); el.textContent = prefix + fmt(from + (v - from) * e); if (k < 1) el._raf = requestAnimationFrame(tick); })(t0);
   }
 
-  /* ---------- Offer card (hero) ---------- */
-  var offersEl = $('[data-offer-card]');
-  var ICON_OK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-  function potential() { return calc({ items: [Object.assign(mainItem(1), { compare: D.main.compare || 0 })], mode: 'A', coupon: !!C, prepaid: +P.prepaid_pct > 0 }); }
+  /* ---------- Offer stack ---------- */
+  var offersEl = document.querySelector('[data-pdp-offers] [data-mount]');
   function renderOffers() {
     if (!offersEl) return;
-    var hasPre = +P.prepaid_pct > 0;
-    if (!C && !hasPre) { offersEl.hidden = true; return; }
-    offersEl.hidden = false;
-    var pot = potential(), minShip = +P.free_ship_min || 0, h = '<p class="pdp-ofc__k">Exclusive shopping benefits</p>';
-    if (pot.saved > 0) h += '<div class="pdp-ofc__save"><span>You save</span><b>' + fmt(pot.saved) + '</b><em>' + [C && pot.coupon ? 'with code ' + esc(C.code) : '', pot.prepaid ? 'prepaid payment' : ''].filter(Boolean).join(' + ') + '</em></div>';
-    if (C) {
-      h += '<p class="pdp-ofc__l">Extra savings with a valid coupon</p><div class="pdp-ofc__code"><div class="pdp-ofc__c"><small>Code</small><b>' + esc(C.code) + '</b></div>' +
-        '<button type="button" class="pdp-ofc__copy" data-copy="' + esc(C.code) + '"><span data-copy-label>Copy code</span></button>' +
-        '<button type="button" class="pdp-ofc__apply' + (state.coupon ? ' is-on' : '') + '" data-apply="coupon" aria-pressed="' + state.coupon + '">' + (state.coupon ? ICON_OK + ' Offer selected' : 'Apply offer') + '</button></div>' +
-        '<p class="pdp-ofc__n">' + (state.coupon ? esc(C.code) + ' is carried to checkout and validated there. ' : '') + ((+C.min) ? 'Minimum order ' + fmt(C.min) + '. ' : '') + (C.stacks ? '' : 'Does not combine with set savings.') + '</p>';
-    }
-    if (hasPre) h += '<div class="pdp-ofc__row"><div><b>Prepaid benefit</b><span>Extra ' + P.prepaid_pct + '% off when you pay online</span></div><button type="button" class="pdp-ofc__tog' + (state.prepaid ? ' is-on' : '') + '" data-apply="prepaid" aria-pressed="' + state.prepaid + '">' + (state.prepaid ? ICON_OK + ' Selected' : 'Select') + '</button></div>';
-    h += '<div class="pdp-ofc__row is-ship"><div><b>' + (minShip ? 'Free shipping above ' + fmt(minShip) : 'Free shipping') + '</b><span>' + (minShip ? 'Add more to unlock' : 'On every order across India') + '</span></div><span class="pdp-ofc__ok">' + ICON_OK + '</span></div>';
-    offersEl.innerHTML = h;
+    var t = [], n = 0, num = function () { n++; return '0' + n; };
+    var c1 = current();
+    if (D.main.compare > D.main.price) t.push(tile(num(), 'Instant savings', 'Save ' + fmt(D.main.compare - D.main.price) + ' (' + Math.round((D.main.compare - D.main.price) / D.main.compare * 100) + '% off)', 'Already included in your price.', '', '<span class="pdp-st is-on">Applied</span>'));
+    if (C) t.push(tile(num(), 'Extra coupon savings', C.pct + '% off your order', (+C.min ? 'Min. order ' + fmt(C.min) + '. ' : '') + 'Does not combine with set savings — the better offer applies.', '<div class="pdp-code"><b>' + esc(C.code) + '</b><button type="button" data-copy="' + esc(C.code) + '"><span data-copy-label>Copy code</span></button></div>', '<button type="button" class="pdp-apply' + (state.coupon ? ' is-on' : '') + '" data-apply="coupon" aria-pressed="' + state.coupon + '">' + (state.coupon ? 'Applied ✓' : 'Apply') + '</button>'));
+    if (+P.prepaid_pct > 0) t.push(tile(num(), 'Prepaid benefit', 'Extra ' + P.prepaid_pct + '% off online payment', 'Taken at checkout when you pay online. Stacks with the other offers.', '', '<button type="button" class="pdp-apply' + (state.prepaid ? ' is-on' : '') + '" data-apply="prepaid" aria-pressed="' + state.prepaid + '">' + (state.prepaid ? 'Selected ✓' : 'I’ll pay online') + '</button>'));
+    var minShip = +P.free_ship_min || 0;
+    t.push(tile(num(), 'Complimentary shipping', minShip ? 'Free above ' + fmt(minShip) : 'Free on every order', minShip ? (c1.sub - c1.bundle - c1.coupon >= minShip ? 'Unlocked on this order.' : 'Add ' + fmt(minShip - (c1.sub - c1.bundle - c1.coupon)) + ' more to unlock.') : 'Across India — nothing to unlock.', '', '<span class="pdp-st is-on">' + (minShip && c1.shipping ? 'Locked' : 'Unlocked') + '</span>'));
+    if (bundlePct('B') || bundlePct('C')) t.push(tile(num(), 'Build a set', 'Save ' + (bundlePct('B') || 0) + '% on a Duo, ' + (bundlePct('C') || 0) + '% on three', 'Pair this piece with others from Drop 01.', '', '<a class="pdp-apply" href="#sets" data-scroll>Build a set</a>'));
+    offersEl.innerHTML = t.join('');
+  }
+  function tile(n, title, benefit, cond, extra, action) {
+    return '<article class="pdp-tile"><span class="pdp-tile__n">' + n + '</span><h3>' + title + '</h3><p class="pdp-tile__b">' + benefit + '</p><p class="pdp-tile__c">' + cond + '</p>' + extra + '<div class="pdp-tile__a">' + action + '</div></article>';
   }
 
   /* ---------- Sets + calculator ---------- */
@@ -215,29 +206,39 @@
       '<div class="pdp-calc__save' + (c.saved > 0 ? '' : ' is-zero') + '"><span>You save</span><b data-calc-save>' + fmt(c.saved) + '</b></div>' +
       '<div class="pdp-calc__tot"><span>Your total</span><b data-calc-total>' + fmt(c.total) + '</b></div>' +
       (c.note ? '<p class="pdp-calc__n">' + c.note + '</p>' : '') +
-      '<button class="btn btn--red" type="button" data-add-set><span>Add selected items to bag</span></button>' +
+      '<button class="btn btn--red" type="button" data-add-set><span>Add this set to bag</span></button>' +
       '<p class="pdp-calc__f">' + (state.coupon && C ? 'Code ' + esc(C.code) + ' is carried to checkout, where it is validated. ' : '') + (state.prepaid ? 'Prepaid benefit is applied at checkout when you pay online. ' : '') + 'Final amount is confirmed at checkout.</p>';
     var s = el.querySelector('[data-calc-save]'), t = el.querySelector('[data-calc-total]');
     s._v = el._ps; t._v = el._pt; setNum(s, c.saved); setNum(t, c.total); el._ps = c.saved; el._pt = c.total;
   }
 
-  function tagEl(b) { return b ? '<span class="pdp-tag">' + esc(b) + '</span>' : ''; }
-  /* ---------- Cross-sell carousel ---------- */
+  /* ---------- Collection carousel ---------- */
   var colEl = document.querySelector('[data-pdp-collection] [data-mount]');
   function renderCollection() {
     if (!colEl) return;
     if (!pairs.length) { colEl.closest('section').hidden = true; return; }
-    colEl.innerHTML = '<div class="pdp-rail" data-rail tabindex="0" aria-label="You may also like">' + pairs.map(function (p, i) {
-      var fs = firstSize(p), sold = !p.sizes.some(function (s) { return s.available; }), hasSizes = p.sizes.length > 1 || (p.sizes[0] && p.sizes[0].title !== 'Default Title');
-      var chips = hasSizes ? '<div class="pdp-chips" role="group" aria-label="Sizes for ' + esc(p.title) + '">' + p.sizes.map(function (s) { return '<button type="button" class="pdp-chip' + (s.id === fs.id && !sold ? ' is-on' : '') + '" data-chip="' + i + '" data-sid="' + esc(s.id) + '" data-st="' + esc(s.title) + '"' + (s.available ? '' : ' disabled') + '>' + esc(s.title) + '</button>'; }).join('') + '</div>' : '';
-      var off = p.compare > p.price ? '<span class="pdp-pc__off">−' + Math.round((p.compare - p.price) / p.compare * 100) + '%</span>' : '';
-      return '<article class="pdp-pc' + (sold ? ' is-sold' : '') + '"><a class="pdp-pc__img" href="' + esc(p.url) + '">' + tagEl(p.badge) + '<img src="' + esc(p.img) + '" alt="' + esc(p.title) + '" loading="lazy" width="600" height="750"></a><div class="pdp-pc__b"><span class="pdp-pc__k">' + esc(p.type) + '</span><h3><a href="' + esc(p.url) + '">' + esc(p.title) + '</a></h3><div class="pdp-pc__p"><b>' + fmt(p.price) + '</b>' + (p.compare > p.price ? '<s>' + fmt(p.compare) + '</s>' + off + '<span class="pdp-save">Save ' + fmt(p.compare - p.price) + '</span>' : '') + '</div>' + chips +
-        '<button type="button" class="pdp-qa" data-qa="' + i + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : 'Quick add') + '</button></div></article>';
-    }).join('') + '</div>';
+    colEl.innerHTML = '<div class="pdp-rail" data-rail tabindex="0" aria-label="Complementary pieces">' + pairs.map(function (p, i) {
+      var fs = firstSize(p), sold = !p.sizes.some(function (s) { return s.available; });
+      var opts = p.sizes.length > 1 || (p.sizes[0] && p.sizes[0].title !== 'Default Title') ? '<select data-pick-size="' + i + '" aria-label="Size for ' + esc(p.title) + '">' + p.sizes.map(function (s) { return '<option value="' + esc(s.id) + '" data-t="' + esc(s.title) + '"' + (s.id === fs.id ? ' selected' : '') + (s.available ? '' : ' disabled') + '>' + esc(s.title) + (s.available ? '' : ' — sold out') + '</option>'; }).join('') + '</select>' : '';
+      return '<article class="pdp-pc' + (sold ? ' is-sold' : '') + '"><a class="pdp-pc__img" href="' + esc(p.url) + '"><img src="' + esc(p.img) + '" alt="' + esc(p.title) + '" loading="lazy" width="600" height="750"></a><div class="pdp-pc__b"><span class="pdp-pc__k">' + esc(p.type) + '</span><h3><a href="' + esc(p.url) + '">' + esc(p.title) + '</a></h3><div class="pdp-pc__p"><b>' + fmt(p.price) + '</b>' + (p.compare > p.price ? '<s>' + fmt(p.compare) + '</s><span class="pdp-save">Save ' + fmt(p.compare - p.price) + '</span>' : '') + '</div>' + opts +
+        '<label class="pdp-pc__add"><input type="checkbox" data-pick="' + i + '"' + (sold ? ' disabled' : '') + '><span>' + (sold ? 'Sold out' : 'Add to selection') + '</span></label></div></article>';
+    }).join('') + '</div><div class="pdp-pick" data-pick-sum></div>';
+    renderPick();
   }
-  function quickItem(i) {
-    var p = pairs[i], chip = colEl.querySelector('.pdp-chip.is-on[data-chip="' + i + '"]'), s = firstSize(p);
-    return { id: chip ? chip.dataset.sid : s.id, qty: 1, title: p.title, price: p.price, compare: p.compare, img: p.img, size: chip ? chip.dataset.st : s.title };
+  function picked() {
+    var out = [];
+    $$('[data-pick]', colEl).forEach(function (c) {
+      if (!c.checked) return; var i = +c.dataset.pick, p = pairs[i], sel = colEl.querySelector('[data-pick-size="' + i + '"]'), s = firstSize(p), size = s.title, id = s.id;
+      if (sel) { id = sel.value; size = sel.options[sel.selectedIndex].dataset.t; }
+      out.push({ id: id, qty: 1, title: p.title, price: p.price, compare: p.compare, img: p.img, size: size });
+    });
+    return out;
+  }
+  function renderPick() {
+    var el = colEl && colEl.querySelector('[data-pick-sum]'); if (!el) return;
+    var it = picked(), c = calc({ items: it, mode: 'A', coupon: false, prepaid: false });
+    el.innerHTML = '<div><span>Selected items</span><b>' + it.length + '</b></div><div><span>Original total</span><b>' + fmt(c.regular) + '</b></div><div><span>Your total</span><b>' + fmt(c.total) + '</b></div>' + (c.saved > 0 ? '<div class="is-g"><span>You save</span><b>' + fmt(c.saved) + '</b></div>' : '') +
+      '<button class="btn btn--red" type="button" data-add-picked' + (it.length ? '' : ' disabled') + '><span>Add selected products</span></button>' + (it.length && bundlePct('B') ? '<a class="pdp-pick__h" href="#sets" data-scroll>Build a set above to save up to ' + Math.max(bundlePct('B'), bundlePct('C')) + '%</a>' : '');
   }
 
   /* ---------- Comparison ---------- */
@@ -248,7 +249,7 @@
     if (rows.length < 2) { cmpEl.closest('section').hidden = true; return; }
     cmpEl.innerHTML = rows.map(function (p) {
       var sizes = (p.sizes || []).map(function (s) { return s.title; }).filter(function (t) { return t !== 'Default Title'; }).join(' · ');
-      return '<article class="pdp-cmp' + (p.here ? ' is-here' : '') + '"><div class="pdp-cmp__img">' + tagEl(p.badge) + '<img src="' + esc(p.img) + '" alt="' + esc(p.title) + '" loading="lazy" width="600" height="750"></div><h3>' + esc(p.title) + '</h3><dl><div><dt>Type</dt><dd>' + esc(p.type || '—') + '</dd></div><div><dt>Technique</dt><dd>' + esc(p.tag || '—') + '</dd></div><div><dt>Cloth</dt><dd>' + esc(p.fabric || '—') + '</dd></div><div><dt>Sizes</dt><dd>' + esc(sizes || '—') + '</dd></div></dl><div class="pdp-cmp__p"><b>' + fmt(p.price) + '</b>' + (p.compare > p.price ? '<s>' + fmt(p.compare) + '</s>' : '') + '</div>' + (p.here ? '<span class="pdp-cmp__here">You are here</span>' : '<a class="btn btn--ink" href="' + esc(p.url) + '"><span>View piece</span></a>') + '</article>';
+      return '<article class="pdp-cmp' + (p.here ? ' is-here' : '') + '"><img src="' + esc(p.img) + '" alt="' + esc(p.title) + '" loading="lazy" width="600" height="750"><h3>' + esc(p.title) + '</h3><dl><div><dt>Type</dt><dd>' + esc(p.type || '—') + '</dd></div><div><dt>Technique</dt><dd>' + esc(p.tag || '—') + '</dd></div><div><dt>Cloth</dt><dd>' + esc(p.fabric || '—') + '</dd></div><div><dt>Sizes</dt><dd>' + esc(sizes || '—') + '</dd></div></dl><div class="pdp-cmp__p"><b>' + fmt(p.price) + '</b>' + (p.compare > p.price ? '<s>' + fmt(p.compare) + '</s>' : '') + '</div>' + (p.here ? '<span class="pdp-cmp__here">You are here</span>' : '<a class="btn btn--ink" href="' + esc(p.url) + '"><span>View piece</span></a>') + '</article>';
     }).join('');
   }
 
@@ -274,18 +275,17 @@
   function heroPrice() {
     var q = parseInt(qty.value, 10) || 1, p = D.main.price, cmp = D.main.compare || 0;
     var yp = $('[data-your-price]'); if (yp) setNum(yp, p);
-    var was = $('[data-was]'), off = $('[data-off]'), sl = $('[data-saveline]');
-    var pot = potential();
-    var amt = 0, note = '', badge = '';
-    if (cmp > p) { amt = (cmp - p) * q; note = 'Regular price ' + fmt(cmp) + ' · instant discount'; badge = '−' + Math.round((cmp - p) / cmp * 100) + '%'; was.hidden = false; was.textContent = fmt(cmp); }
-    else {
-      was.hidden = true;
-      if (pot.saved > 0 && C) badge = 'Extra ' + C.pct + '% with code'; /* the rupee saving itself is shown once, in the offer card */
-    }
-    off.hidden = !badge; off.textContent = badge;
-    sl.hidden = !(amt > 0);
-    if (amt > 0) { sl.querySelector('[data-save-amt]').textContent = fmt(amt); sl.querySelector('[data-save-note]').textContent = note; }
+    var was = $('[data-was]'), sv = $('[data-save]'), wr = $('[data-was-row]');
+    if (cmp > p) { if (wr) wr.hidden = false; was.textContent = fmt(cmp); sv.hidden = false; sv.textContent = 'You save ' + fmt((cmp - p) * q) + ' (' + Math.round((cmp - p) / cmp * 100) + '%)'; }
+    else { if (wr) wr.hidden = true; sv.hidden = true; }
     var cta = $('[data-cta-price]'); if (cta) cta.textContent = ' — ' + fmt(p * q);
+    var bd = $('[data-bestdeal]');
+    if (bd) {
+      var best = calc({ items: [Object.assign(mainItem(1), { compare: cmp })], mode: 'A', coupon: !!C, prepaid: +P.prepaid_pct > 0 }), base = p;
+      var ok = best.total < base;
+      bd.hidden = !ok;
+      if (ok) { bd.querySelector('[data-bd-price]').textContent = fmt(best.total); bd.querySelector('[data-bd-how]').textContent = [C && best.coupon ? 'code ' + C.code : '', best.prepaid ? 'prepaid' : ''].filter(Boolean).join(' + '); }
+    }
   }
   function barSync() {
     if (!bar) return;
@@ -312,6 +312,7 @@
   document.addEventListener('change', function (e) {
     var t = e.target;
     if (t.name === 'pdp-mode') { state.mode = t.value; $$('.pdp-opt', document).forEach(function (o) { o.classList.toggle('is-on', o.contains(t)); }); update(); }
+    else if (t.matches && t.matches('[data-pick],[data-pick-size]')) renderPick();
   });
   form.addEventListener('change', function () { setTimeout(function () { syncVariant(); update(); renderSets(); }, 0); });
   document.addEventListener('click', function (e) {
@@ -325,10 +326,8 @@
     if (cp) {
       var code = cp.dataset.copy, l = cp.querySelector('[data-copy-label]'), old = l.textContent;
       var done = function () { cp.classList.add('is-done'); l.textContent = 'Copied'; toast('Code ' + code + ' copied'); setTimeout(function () { cp.classList.remove('is-done'); l.textContent = old; }, 1800); };
-      var fail = function () { toast('Couldn’t copy — select the code and copy it'); };
-      var ok = false, ta = document.createElement('textarea'); ta.value = code; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select();
-      try { ok = document.execCommand('copy'); } catch (er) {} ta.remove();
-      if (ok) done(); else if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, fail); else fail();
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, done);
+      else { var ta = document.createElement('textarea'); ta.value = code; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (er) {} ta.remove(); done(); }
       return;
     }
     var sc = e.target.closest('[data-scroll]');
@@ -337,10 +336,8 @@
     if (un) { if (C) { state.coupon = true; store.set('terzee_coupon', '1'); } if (+P.prepaid_pct > 0) { state.prepaid = true; store.set('terzee_prepaid', '1'); } update(); drawerExtras(); var s = document.getElementById('sets'); s && s.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); toast('Best deal selected'); return; }
     var as = e.target.closest('[data-add-set]');
     if (as) { run(as, modeItems(state.mode).map(function (i, n) { if (n === 0 && state.mode === 'A') i.qty = parseInt(qty.value, 10) || 1; return i; })); return; }
-    var chip = e.target.closest('[data-chip]');
-    if (chip && !chip.disabled) { $$('[data-chip="' + chip.dataset.chip + '"]', document).forEach(function (c) { c.classList.toggle('is-on', c === chip); }); return; }
-    var qa = e.target.closest('[data-qa]');
-    if (qa) { run(qa, [quickItem(+qa.dataset.qa)]); return; }
+    var apk = e.target.closest('[data-add-picked]');
+    if (apk) { run(apk, picked()); return; }
     var ba = e.target.closest('[data-bar-add]');
     if (ba) { run(ba, modeItems(state.mode).map(function (i, n) { if (n === 0 && state.mode === 'A') i.qty = parseInt(qty.value, 10) || 1; return i; })); return; }
     var bn = e.target.closest('[data-buy-now]');

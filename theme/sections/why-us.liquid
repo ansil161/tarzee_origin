@@ -1,0 +1,37 @@
+{%- comment -%}
+  "Why us" — four columns on a stair-step, dashed dividers, big mono headings.
+  Modelled on the "Why RAWLINE?" block of the reference site.
+{%- endcomment -%}
+<section class="why" data-header-light>
+  <h2 class="why__title"><em class="why__lead">{{ section.settings.lead }}</em><span class="why__name">{{ section.settings.heading }}</span></h2>
+  <div class="why__grid">
+    {%- for block in section.blocks limit: 4 -%}
+      <div class="why__col" style="--step:{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+        <p class="why__text">{{ block.settings.text }}</p>
+        <h3 class="why__head">{{ block.settings.title }}</h3>
+        <p class="why__sub">{{ block.settings.sub }}</p>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Why us",
+  "settings": [
+    { "type": "text", "id": "lead", "label": "Italic lead word", "default": "why" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Terzee?" }
+  ],
+  "max_blocks": 4,
+  "blocks": [ { "type": "point", "name": "Point", "settings": [
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Get your order delivered quickly, straight to your door." },
+    { "type": "text", "id": "title", "label": "Title", "default": "Fast shipping" },
+    { "type": "text", "id": "sub", "label": "Sub line", "default": "3–5 business days" }
+  ] } ],
+  "presets": [ { "name": "Why us", "blocks": [
+    { "type": "point" },
+    { "type": "point", "settings": { "text": "Return your items hassle-free. Our flexible policy makes it simple.", "title": "Easy returns", "sub": "7 days from delivery" } },
+    { "type": "point", "settings": { "text": "Pay for your order with confidence. Your details are always protected.", "title": "Secure payments", "sub": "Bank-grade SSL protection" } },
+    { "type": "point", "settings": { "text": "Get the help you need, fast. Our dedicated team is here for you.", "title": "Customer support", "sub": "hello@terzeeorigins.com" } }
+  ] } ]
+}
+{% endschema %}

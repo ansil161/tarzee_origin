@@ -22,6 +22,14 @@ GALLERY_EXTRA = {'lattice-zip-jacket': 'detail-jaal.jpg', 'jaal-pocket-camp-shir
 # Hover image for cards = the product's first on-model photo (the campaign shots). Flat-lay, detail and lookbook
 # shots never qualify; a product with no on-model photo gets no hover image.
 ALT = {p['handle']: p['campaign'][0] for p in cat if p.get('campaign')}
+# Editorial 4:5 'hero' shots (catalog.json): hero[0] is the card/PDP primary image, hero[1] the hover image, the rest join the PDP gallery.
+PRI = {p['handle']: p['hero'][0] for p in cat if p.get('hero')}
+PRI800 = {h: n[:-4] + '-800.jpg' for h, n in PRI.items()}
+for p in cat:
+    if len(p.get('hero', [])) > 1: ALT[p['handle']] = p['hero'][1]
+    if p.get('hero') and ALT.get(p['handle']) == p['hero'][0]: ALT.pop(p['handle'])  # no distinct 2nd photo = no hover image
+def pri(h): return PRI.get(h) or img(h, 1)
+def pri800(h): return PRI800.get(h) or f'{h}-1-800.jpg'
 TAGS = {'lattice-zip-jacket': 'New drop', 'frayed-street-denim': 'Limited'}
 
 def head(title, base='', body_class=''):
@@ -32,7 +40,7 @@ def head(title, base='', body_class=''):
 <title>{e(title)} – Terzee Origins</title>
 <link rel="icon" type="image/png" href="{base}assets/ze-monogram-white.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800&family=Marhey:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800&family=Marhey:wght@400;500;600&family=Azeret+Mono:wght@400;500;700&family=Source+Serif+4:ital,wght@1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{base}assets/base.css">
 <style>:root{{--logo-w:120px}}</style>
 <script>window.TERZEE={{smoothScroll:true,cursor:true,moneyFormat:"₹{{{{amount_no_decimals}}}}",t:{{empty:"Your bag is empty.",remove:"Remove",added:"Added to bag",add:"Add to bag",soldOut:"Sold out"}}}};</script>
@@ -92,13 +100,13 @@ def card(p, base=''):
     alt = ALT.get(p['handle']); tag = TAGS.get(p['handle'])
     return f'''<a class="card" href="{base}products/{p['handle']}.html" data-cursor="view">
   <div class="card__media">{f'<span class="card__tag">{tag}</span>' if tag else ''}{f'<img class="alt" src="{base}assets/{alt}" alt="" loading="lazy" width="900" height="1125">' if alt else ''}<img class="main" src="{base}assets/{img(p['handle'],1)}" alt="{e(p['title'])}" loading="lazy" width="900" height="1125">
-    <div class="card__quick"><form data-preview-cart data-title="{e(p['title'])}" data-price="{p['price']}" data-img="{base}assets/{img(p['handle'],1)}"><button class="btn" type="submit"><span>Add to bag</span></button></form></div></div>
+    <div class="card__quick"><form data-preview-cart data-title="{e(p['title'])}" data-price="{p['price']}" data-img="{base}assets/{pri800(p['handle'])}"><button class="btn" type="submit"><span>Add to bag</span></button></form></div></div>
   <div class="card__info"><div><h3 class="card__title">{e(p['title'])}</h3><div class="card__meta">{p['type']} · {p['tag']}</div></div><div class="card__price">{rupee(p['price'])}</div></div></a>'''
 
 def pmarquee(base=''):
     lists = ''
     for i in range(2):
-        items = ''.join(f'<li class="pmarquee__item"><a class="pmarquee__link" href="{base}products/{p["handle"]}.html"{" tabindex=\"-1\"" if i else ""}><img class="pmarquee__image" src="{base}assets/{p["handle"]}-cutout.png" alt="" width="600" height="731" loading="lazy"><span class="visually-hidden">{e(p["title"])}</span></a></li>' for p in cat)
+        items = ''.join(f'<li class="pmarquee__item"><a class="pmarquee__link" href="{base}products/{p["handle"]}.html"{" tabindex=\"-1\"" if i else ""}><img class="pmarquee__image" src="{base}assets/{pri800(p["handle"])}" alt="" width="600" height="731" loading="lazy"><span class="visually-hidden">{e(p["title"])}</span></a></li>' for p in cat)
         lists += f'<ul class="pmarquee__list"{" aria-hidden=\"true\"" if i else ""}>{items}</ul>'
     return f'''<section class="pmarquee section--light" data-header-light>
   <h2 class="pmarquee__heading pmarquee__heading--left" id="pmarquee-home">See our products:</h2>
@@ -120,7 +128,7 @@ def shop_card(p, i, base=''):
     return f"""<div class="shop-card" data-shop-card data-product-id="{p['handle']}" data-cats="{cats_of(p)}">
   <div class="shop-card__image-wrapper">
     <button type="button" class="shop-wishlist" data-wishlist="{p['handle']}" aria-label="Add to wishlist" aria-pressed="false"><svg class="shop-heart" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>{badge}
-    <a class="shop-card__image-link" href="{base}products/{p['handle']}.html" draggable="false" tabindex="-1" aria-hidden="true"><img class="shop-card__img" src="{base}assets/{img(p['handle'],1)}" alt="{e(p['title'])}" width="800" height="1000" loading="lazy" draggable="false">{f'<img class="shop-card__img shop-card__img--alt" src="{base}assets/{alt}" alt="" width="800" height="1000" loading="lazy" draggable="false">' if alt else ''}</a>
+    <a class="shop-card__image-link" href="{base}products/{p['handle']}.html" draggable="false" tabindex="-1" aria-hidden="true"><img class="shop-card__img" src="{base}assets/{pri(p['handle'])}" alt="{e(p['title'])}" width="800" height="1000" loading="lazy" draggable="false">{f'<img class="shop-card__img shop-card__img--alt" src="{base}assets/{alt}" alt="" width="800" height="1000" loading="lazy" draggable="false">' if alt else ''}</a>
   </div>
   <div class="shop-card__info"><h3 class="shop-card__title"><a href="{base}products/{p['handle']}.html">{e(p['title'])}</a></h3><span class="shop-card__category">{p['type']}</span><span class="shop-card__color" data-shop-color>{p['tag']}</span><span class="shop-card__price">{rupee(p['price'])}</span></div>
 </div>"""
@@ -138,7 +146,7 @@ def sd_card(handle, compare, tag):
             + f'<button type="button" class="shop-wishlist" data-wishlist="{handle}" aria-label="Add to wishlist" aria-pressed="false">{HEART}</button>'
             + f'<a class="sd-card__link" href="{url}" aria-label="{e(p["title"])}">'
             + (f'<img class="alt" src="assets/{alt}" alt="" loading="lazy" width="900" height="1125">' if alt else '')
-            + f'<img class="main" src="assets/{img(handle, 1)}" alt="{e(p["title"])}" loading="lazy" width="900" height="1125"></a></div>'
+            + f'<img class="main" src="assets/{pri(handle)}" alt="{e(p["title"])}" loading="lazy" width="900" height="1125"></a></div>'
             + f'<div class="sd-card__info"><a class="sd-card__title" href="{url}">{e(p["title"])}</a><div class="sd-card__price">{rupee(p["price"])}'
             + (f' <s>{compare}</s>' if compare else '') + '</div><span class="sd-card__swatch" aria-hidden="true" title="Black"></span></div></article>')
 
@@ -176,13 +184,17 @@ home += '''
     <div class="sd__content"><h2 class="sd__title">Seasonal Drop</h2><a class="pill pill--paper" href="collection.html">Shop Now</a></div></div>
   <div class="sd__grid">''' + ''.join(sd_card(p, c, t) for p, c, t in SD) + '''</div>
 </section>
+<section class="why" data-header-light><h2 class="why__title"><em class="why__lead">why</em><span class="why__name">Terzee?</span></h2><div class="why__grid"><div class="why__col" style="--step:0"><p class="why__text">Get your order delivered quickly, straight to your door.</p><h3 class="why__head">Fast shipping</h3><p class="why__sub">3–5 business days</p></div><div class="why__col" style="--step:1"><p class="why__text">Return your items hassle-free. Our flexible policy makes it simple.</p><h3 class="why__head">Easy returns</h3><p class="why__sub">7 days from delivery</p></div><div class="why__col" style="--step:2"><p class="why__text">Pay for your order with confidence. Your details are always protected.</p><h3 class="why__head">Secure payments</h3><p class="why__sub">Bank-grade SSL protection</p></div><div class="why__col" style="--step:3"><p class="why__text">Get the help you need, fast. Our dedicated team is here for you.</p><h3 class="why__head">Customer support</h3><p class="why__sub">hello@terzeeorigins.com</p></div></div></section>
 <section class="cats" data-header-light>
   <h2 class="cats__title" data-split>Shop by Categories</h2>
   <div class="cats__grid">
     <a class="cat cat--tall cat--photo" href="collection.html" style="--img-x:30%;--img-y:7%;--img-h:112%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR JACKETS</p><h3 class="cat__title">Built For Daily Confidence</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-jackets-photo.jpg" alt="" loading="lazy" width="1600" height="900" style="object-position:47% 40%"></a>
-    <a class="cat cat--wide cat--photo" href="collection.html" style="--img-x:36%;--img-y:-6%;--img-h:200%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR SHIRTS</p><h3 class="cat__title">Designed For Modern Living</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-shirts-photo.jpg" alt="" loading="lazy" width="1100" height="1375" style="object-position:50% 36%"></a>
+    <a class="cat cat--wide cat--photo" href="collection.html" style="--img-x:36%;--img-y:-6%;--img-h:200%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR SHIRTS</p><h3 class="cat__title">Designed For Modern Living</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-shirts-photo.jpg" alt="" loading="lazy" width="1100" height="1375" style="object-position:50% 28%"></a>
   </div>
 </section>
+'''
+home += '''
+<section class="sw" data-header-light><div class="sw__head"><h2 class="sw__title"><span class="sw__a">Social</span><em class="sw__b">wall</em></h2><nav class="sw__links"><a href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener">Instagram</a></nav></div><div class="sw__wall"><figure class="sw__card sw__card--red"><blockquote>“The materials feel premium and the craftsmanship is excellent. I've worn my shirt countless times and it still looks brand new.”</blockquote><figcaption><span>-@customer_one</span><a href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener">View on Instagram</a></figcaption></figure><div class="sw__photo"><img src="assets/look-02-back-4x5.jpg" alt="" loading="lazy" width="600" height="800"></div><figure class="sw__card sw__card--dark"><blockquote>“I've been searching for everyday essentials that don't compromise on quality, and I finally found them here.”</blockquote><figcaption><span>-@customer_two</span><a href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener">View on Instagram</a></figcaption></figure><div class="sw__photo"><img src="assets/diamond-jaal-bomber-campaign-2.jpg" alt="" loading="lazy" width="600" height="800"></div><div class="sw__photo"><img src="assets/look-03-camp-shirt-4x5.jpg" alt="" loading="lazy" width="600" height="800"></div><figure class="sw__card sw__card--dark"><blockquote>“Every order I've received has been consistent in quality. The attention to detail is what makes these clothes stand out.”</blockquote><figcaption><span>-@customer_three</span><a href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener">View on Instagram</a></figcaption></figure><div class="sw__photo"><img src="assets/archive-patchwork-jacket-campaign-1.jpg" alt="" loading="lazy" width="600" height="800"></div><figure class="sw__card sw__card--red"><blockquote>“From the moment I unpacked my order, I could tell the craftsmanship was on another level. It feels built to last.”</blockquote><figcaption><span>-@customer_four</span><a href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener">View on Instagram</a></figcaption></figure><div class="sw__photo"><img src="assets/look-01-bomber-4x5.jpg" alt="" loading="lazy" width="600" height="800"></div><figure class="sw__card sw__card--red"><blockquote>“The fit is spot on and the stitching is clean. It's the piece I reach for first every time.”</blockquote><figcaption><span>-@customer_five</span><a href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener">View on Instagram</a></figcaption></figure><div class="sw__photo"><img src="assets/frayed-street-denim-3.jpg" alt="" loading="lazy" width="600" height="800"></div><figure class="sw__card sw__card--dark"><blockquote>“Heavy cloth, sharp details and it only gets better with wear. Worth every rupee.”</blockquote><figcaption><span>-@customer_six</span><a href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener">View on Instagram</a></figcaption></figure></div></section>
 '''
 home += '''
 <section class="ig" data-header-light>
@@ -218,7 +230,7 @@ types = sorted({p['type'] for p in cat}); techs = sorted({p['tag'] for p in cat}
 shop_js = _re.search(r'<script>([\s\S]*?)</script>', open(os.path.join(ROOT, 'theme', 'sections', 'main-collection.liquid'), encoding='utf-8').read()).group(1)
 SORTS = [('manual', 'Featured'), ('best-selling', 'Best selling'), ('title-ascending', 'Alphabetically, A-Z'), ('title-descending', 'Alphabetically, Z-A'), ('price-ascending', 'Price, low to high'), ('price-descending', 'Price, high to low'), ('created-descending', 'Date, new to old')]
 sort_opts = ''.join(f'<option value="{v}">{t}</option>' for v, t in SORTS)
-SPLIT = [('Shirts', 'col-shirts.jpg', 'shirts', 50, 30), ('Jackets', 'col-jackets.jpg', 'jackets', 47, 40), ('Denim', 'col-denim.jpg', 'denim', 52, 35), ('New arrivals', 'col-new.jpg', 'new', 50, 30), ('Shop all', 'col-all.jpg', 'all', 50, 40)]
+SPLIT = [('Shirts', 'col-shirts.jpg', 'shirts', 50, 30), ('Jackets', 'col-jackets.jpg', 'jackets', 47, 40), ('New arrivals', 'col-new.jpg', 'new', 50, 30), ('Shop all', 'col-all.jpg', 'all', 50, 40)]
 ARROW = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
 split_html = '<section class="csplit" data-header-light aria-label="Shop by category"><ul class="csplit__list">' + ''.join(
     f'<li class="csplit__item"><a class="csplit__link" href="collection.html?c={k}" data-split-link="{k}"><img class="csplit__img" src="assets/{a}" alt="" loading="{"eager" if i == 0 else "lazy"}" width="1122" height="1402" style="object-position:{x}% {y}%"><span class="csplit__text"><span class="csplit__title">{t}</span><span class="csplit__cta">Shop now{ARROW}</span></span></a></li>'
@@ -270,14 +282,19 @@ FAQ = [
 BADGES = {'lattice-zip-jacket': 'New', 'diamond-jaal-bomber': 'Best seller', 'frayed-street-denim': 'Limited', 'archive-patchwork-jacket': 'Limited'}
 SIZES_ALL = ["S", "M", "L", "XL", "XXL"]
 def slides_for(p):
-    out = [(f'../assets/{img(p["handle"],n+1)}', f'../assets/{img(p["handle"],n+1)}', f'../assets/{p["handle"]}-{n+1}-800.jpg') for n in range(len(p['photos']))]
+    hero = p.get('hero', [])
+    out = [(f'../assets/{c}', f'../assets/{c}', f'../assets/{c[:-4]}-800.jpg') for c in hero]
+    out += [(f'../assets/{img(p["handle"],n+1)}', f'../assets/{img(p["handle"],n+1)}', f'../assets/{p["handle"]}-{n+1}-800.jpg') for n in range(len(p['photos']))]
     extra = list(p.get('campaign', []))
     if p['handle'] in GALLERY_EXTRA: extra.append(GALLERY_EXTRA[p['handle']])
-    for c in extra: out.append((f'../assets/{c}', f'../assets/{c}', f'../assets/{c}'))
+    seen = set(hero)
+    for c in extra:
+        if c in seen: continue
+        out.append((f'../assets/{c}', f'../assets/{c}', f'../assets/{c}'))
     return out
 def pdp_item(q, idx=0):
     return {'id': q['handle'], 'handle': q['handle'], 'title': q['title'], 'type': q['type'], 'tag': q['tag'], 'fabric': q['fabric'],
-            'badge': BADGES.get(q['handle'], ''), 'price': q['price'], 'compare': 0, 'img': f'../assets/{q["handle"]}-1-800.jpg', 'url': f'{q["handle"]}.html',
+            'badge': BADGES.get(q['handle'], ''), 'price': q['price'], 'compare': 0, 'img': f'../assets/{pri800(q["handle"])}', 'url': f'{q["handle"]}.html',
             'sizes': [{'id': f'{q["handle"]}-{s}', 'title': s, 'available': not (s == 'XXL' and idx % 3 == 0)} for s in SIZES_ALL]}
 for i, p in enumerate(cat):
     sl = slides_for(p)
@@ -298,7 +315,7 @@ for i, p in enumerate(cat):
     page += f'''<section class="pdp-hero" data-pdp><div class="container"><div class="product product--pdp">
   <div class="pdp-gallery{' no-thumbs' if len(sl)<2 else ''}" data-gallery>
     <div class="pdp-thumbs" role="group" aria-label="Product images">{thumbs if len(sl)>1 else ''}</div>
-    <div class="pdp-stage" data-stage>{f'<span class="pdp-badge">{e(BADGES[p["handle"]])}</span>' if p['handle'] in BADGES else ''}<img data-main src="{sl[0][0]}" alt="{e(p['title'])} — view 1" width="1200" height="1500"><button class="pdp-expand" type="button" data-expand aria-label="Open full-screen gallery">{IC['expand']}</button></div>
+    <div class="pdp-stage" data-stage><span class="pdp-badge">{e(TAGS.get(p['handle'],'Drop 01'))}</span><img data-main src="{sl[0][0]}" alt="{e(p['title'])} — view 1" width="1200" height="1500"><button class="pdp-expand" type="button" data-expand aria-label="Open full-screen gallery">{IC['expand']}</button></div>
     <script type="application/json" data-slides>{slides_json}</script>
     <script type="application/json" data-pdp-data>{data}</script>
   </div>
@@ -308,13 +325,13 @@ for i, p in enumerate(cat):
     <h1 class="product__title" data-split>{e(p['title'])}</h1>
     <div class="pdp-sub">{p['type']} · {p['tag']}</div>
     <div class="product__desc t-body">{e(p['desc'])}</div>
-    <div class="pdp-price2">
-      <div class="pdp-priceline"><div class="product__price" data-price data-your-price>{rupee(p['price'])}</div><s data-was hidden></s><span class="pdp-off" data-off hidden></span></div>
-      <p class="pdp-saveline" data-saveline hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.3 8 8 9 4.7-1 8-4.5 8-9V6zM8.5 12l2.5 2.5 4.5-5"/></svg><b data-save-amt></b><span data-save-note></span></p>
-      <p class="pdp-tax">Inclusive of all taxes · Free shipping across India</p>
+    <div class="pdp-pricebox">
+      <div class="pdp-pricebox__was" data-was-row hidden>Regular price <s data-was></s></div>
+      <div class="pdp-pricebox__your"><span class="pdp-pricebox__lab">Your price</span><div class="product__price" data-price data-your-price>{rupee(p['price'])}</div><span class="pdp-save" data-save hidden></span></div>
+      <div class="pdp-tax">Inclusive of all taxes · Free shipping across India</div>
     </div>
-    <div class="pdp-ofc" data-offer-card></div>
-    <form data-preview-cart data-pdp-form data-title="{e(p['title'])}" data-price="{p['price']}" data-img="../assets/{img(p['handle'],1)}">
+    <div class="pdp-best" data-bestdeal hidden><div class="pdp-best__t"><small>Best deal today</small>As low as<b data-bd-price></b><span data-bd-how></span></div><button type="button" data-unlock>Unlock my deal</button></div>
+    <form data-preview-cart data-pdp-form data-title="{e(p['title'])}" data-price="{p['price']}" data-img="../assets/{pri800(p['handle'])}">
       <div class="sizes" data-option><div class="sizes__head"><span class="t-label">Size</span><a class="link" href="#details">Fit &amp; details</a></div>
         <div class="sizes__grid">{''.join(f'<label><input type="radio" name="size" value="{s}"{" checked" if s=="M" else ""}{" disabled" if s=="XXL" and i%3==0 else ""}><span>{s}</span></label>' for s in SIZES_ALL)}</div></div>
       <div class="pdp-buy">
@@ -330,15 +347,14 @@ for i, p in enumerate(cat):
       <div>{IC['needle']}<span><b>Cut &amp; sewn by hand.</b> Limited runs, Drop 01.</span></div>
     </div>
     <div class="acc" id="details">
-      <details open><summary>Description<i></i></summary><div class="acc__body">Boxy fit, true to size. Men and unisex. Each piece is finished by hand, so small differences are part of the cloth.</div></details>
+      <details open><summary>Details<i></i></summary><div class="acc__body">Boxy fit, true to size. Men and unisex. Each piece is finished by hand, so small differences are part of the cloth.</div></details>
       <details><summary>Fabric &amp; care<i></i></summary><div class="acc__body">{e(p['fabric'])}. Cold wash inside out, line dry in shade, do not tumble.</div></details>
-      <details><summary>Size &amp; fit<i></i></summary><div class="acc__body">Boxy fit, true to size. If you sit between sizes or want a roomier drape, size up.</div></details>
       <details><summary>Shipping &amp; returns<i></i></summary><div class="acc__body">Free shipping across India. Dispatched in 2–4 days. Returns within 10 days, unworn, tags on.</div></details>
     </div>
   </div></div></div></section>
-{look_html}
-<section class="pdp-sec pdp-sec--dark" id="sets" data-pdp-sets><div class="container"><p class="pdp-kick" data-pdp-rise>Outfits</p><h2 class="pdp-h2" data-pdp-rise>Complete your look</h2><p class="pdp-lead" data-pdp-rise>Buy one piece, build a two-item outfit or a three-item collection. Your total updates as you choose.</p><div class="pdp-sets" data-mount></div></div></section>
-<section class="pdp-sec pdp-sec--ivory" id="collection" data-pdp-collection data-header-light><div class="container"><p class="pdp-kick" data-pdp-rise>From Drop 01</p><h2 class="pdp-h2" data-pdp-rise>You may also like</h2><div data-mount></div></div></section>
+<section class="pdp-sec pdp-sec--ivory" id="offers" data-pdp-offers data-header-light><div class="container"><p class="pdp-kick" data-pdp-rise>Offers</p><h2 class="pdp-h2" data-pdp-rise>Unlock your Terzee privileges</h2><p class="pdp-lead" data-pdp-rise>Every offer that applies to this piece, in one place. Offers marked as codes are confirmed at checkout.</p><div class="pdp-tiles" data-mount></div></div></section>
+<section class="pdp-sec pdp-sec--dark" id="sets" data-pdp-sets><div class="container"><p class="pdp-kick" data-pdp-rise>Sets</p><h2 class="pdp-h2" data-pdp-rise>The more you discover, the more you save</h2><p class="pdp-lead" data-pdp-rise>Pick one piece or pair it. Your total updates as you choose.</p><div class="pdp-sets" data-mount></div></div></section>
+<section class="pdp-sec pdp-sec--ivory" id="collection" data-pdp-collection data-header-light><div class="container"><p class="pdp-kick" data-pdp-rise>Complete the wardrobe</p><h2 class="pdp-h2" data-pdp-rise>Add more from Drop 01</h2><div data-mount></div></div></section>
 <section class="pdp-story"><div class="pdp-story__media"><img src="{story_img}" alt="{e(p['title'])} styled" loading="lazy" width="1200" height="1500"></div>
   <div class="pdp-story__text"><p class="pdp-kick" data-pdp-rise>The piece</p><h2 data-pdp-rise>{e(p['tag'])}, made by hand.</h2><p class="t-body-lg" data-pdp-rise>{e(p['desc'])}</p>
     <div class="pdp-story__facts" data-pdp-rise><div><b>Cloth</b><span>{e(p['fabric'].split(' · ')[0])}</span></div><div><b>Fit</b><span>Boxy, true to size</span></div><div><b>Finish</b><span>Hand finished in limited runs</span></div></div></div></section>
@@ -348,7 +364,7 @@ for i, p in enumerate(cat):
   <div class="pdp-rev__empty"><h3>Be the first to review</h3><p>Reviews appear here once customers have worn the piece. Connect your reviews app to show ratings, photos and verified-purchase labels.</p></div></div></div></section>
 <section class="pdp-sec pdp-sec--ivory" data-header-light><div class="container"><p class="pdp-kick">FAQ</p><h2 class="pdp-h2">Good to know</h2>
   <div class="acc pdp-faq">{''.join(f'<details><summary>{q}<i></i></summary><div class="acc__body">{a}</div></details>' for q, a in FAQ)}</div></div></section>
-<div class="pdp-bar" data-bar aria-label="Quick purchase"><img src="../assets/{p['handle']}-1-800.jpg" alt="" width="88" height="110"><div class="pdp-bar__i"><b data-bar-price>{rupee(p['price'])}</b><span class="pdp-save" data-bar-save hidden></span><span><span data-bar-name>{e(p['title'])}</span> <span data-bar-size></span></span></div><button class="btn btn--red" type="button" data-bar-add><span>Add to bag</span></button></div>'''
+<div class="pdp-bar" data-bar aria-label="Quick purchase"><img src="../assets/{pri800(p['handle'])}" alt="" width="88" height="110"><div class="pdp-bar__i"><b data-bar-price>{rupee(p['price'])}</b><span class="pdp-save" data-bar-save hidden></span><span><span data-bar-name>{e(p['title'])}</span> <span data-bar-size></span></span></div><button class="btn btn--red" type="button" data-bar-add><span>Add to bag</span></button></div>'''
     page += footer(base='../') + '<script src="../assets/pdp.js"></script>'
     open(os.path.join(OUT, 'products', p['handle'] + '.html'), 'w', encoding='utf-8').write(page)
 

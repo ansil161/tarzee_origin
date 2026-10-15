@@ -10,7 +10,7 @@
         "s1": {
           "type": "demo",
           "settings": {
-            "title": "Lattice Zip Jacket",
+            "title": "Jaal Theory",
             "image": "lattice-zip-jacket-cutout.png",
             "url": "/products/lattice-zip-jacket"
           }
@@ -18,7 +18,7 @@
         "s2": {
           "type": "demo",
           "settings": {
-            "title": "Diamond Jaal Bomber",
+            "title": "Jaal Project",
             "image": "diamond-jaal-bomber-cutout.png",
             "url": "/products/diamond-jaal-bomber"
           }
@@ -26,7 +26,7 @@
         "s3": {
           "type": "demo",
           "settings": {
-            "title": "Frayed Street Denim",
+            "title": "Dhaga Division",
             "image": "frayed-street-denim-cutout.png",
             "url": "/products/frayed-street-denim"
           }
@@ -34,7 +34,7 @@
         "s4": {
           "type": "demo",
           "settings": {
-            "title": "Archive Patchwork Jacket",
+            "title": "Gulaabo Archive Jacket",
             "image": "archive-patchwork-jacket-cutout.png",
             "url": "/products/archive-patchwork-jacket"
           }
@@ -42,7 +42,7 @@
         "s5": {
           "type": "demo",
           "settings": {
-            "title": "Zip Shacket",
+            "title": "Sannata Dept.",
             "image": "zip-shacket-cutout.png",
             "url": "/products/zip-shacket"
           }
@@ -50,7 +50,7 @@
         "s6": {
           "type": "demo",
           "settings": {
-            "title": "Jaal Pocket Camp Shirt",
+            "title": "Jharokha",
             "image": "jaal-pocket-camp-shirt-cutout.png",
             "url": "/products/jaal-pocket-camp-shirt"
           }
@@ -58,7 +58,7 @@
         "s7": {
           "type": "demo",
           "settings": {
-            "title": "Pillar Pintuck Shirt",
+            "title": "Mehraab",
             "image": "pillar-pintuck-shirt-cutout.png",
             "url": "/products/pillar-pintuck-shirt"
           }
@@ -66,7 +66,7 @@
         "s8": {
           "type": "demo",
           "settings": {
-            "title": "Diamond Jaal Popover",
+            "title": "Jaal Reworked",
             "image": "diamond-jaal-popover-cutout.png",
             "url": "/products/diamond-jaal-popover"
           }
@@ -74,7 +74,7 @@
         "s9": {
           "type": "demo",
           "settings": {
-            "title": "Paisley Tonal Shirt",
+            "title": "Riwaayat 2.0",
             "image": "paisley-tonal-shirt-cutout.png",
             "url": "/products/paisley-tonal-shirt"
           }
@@ -107,7 +107,7 @@
         "p1": {
           "type": "demo",
           "settings": {
-            "title": "Lattice Zip Jacket",
+            "title": "Jaal Theory",
             "price": "₹6,490",
             "meta": "Jackets · Block print",
             "image": "lattice-zip-jacket-1.jpg",
@@ -119,7 +119,7 @@
         "p2": {
           "type": "demo",
           "settings": {
-            "title": "Diamond Jaal Bomber",
+            "title": "Jaal Project",
             "price": "₹7,490",
             "meta": "Jackets · All-over print",
             "image": "diamond-jaal-bomber-1.jpg",
@@ -131,7 +131,7 @@
         "p3": {
           "type": "demo",
           "settings": {
-            "title": "Frayed Street Denim",
+            "title": "Dhaga Division",
             "price": "₹8,990",
             "meta": "Jackets · Frayed appliqué",
             "image": "frayed-street-denim-1.jpg",
@@ -143,7 +143,7 @@
         "p4": {
           "type": "demo",
           "settings": {
-            "title": "Archive Patchwork Jacket",
+            "title": "Gulaabo Archive Jacket",
             "price": "₹9,490",
             "meta": "Jackets · Patchwork",
             "image": "archive-patchwork-jacket-1.jpg",
@@ -155,7 +155,7 @@
         "p5": {
           "type": "demo",
           "settings": {
-            "title": "Jaal Pocket Camp Shirt",
+            "title": "Jharokha",
             "price": "₹4,490",
             "meta": "Shirts · Block print",
             "image": "jaal-pocket-camp-shirt-1.jpg",
@@ -167,7 +167,7 @@
         "p6": {
           "type": "demo",
           "settings": {
-            "title": "Pillar Pintuck Shirt",
+            "title": "Mehraab",
             "price": "₹4,290",
             "meta": "Shirts · Pintuck",
             "image": "pillar-pintuck-shirt-1.jpg",
@@ -179,7 +179,7 @@
         "p7": {
           "type": "demo",
           "settings": {
-            "title": "Diamond Jaal Popover",
+            "title": "Jaal Reworked",
             "price": "₹4,990",
             "meta": "Shirts · All-over print",
             "image": "diamond-jaal-popover-1.jpg",
@@ -191,7 +191,7 @@
         "p8": {
           "type": "demo",
           "settings": {
-            "title": "Zip Shacket",
+            "title": "Sannata Dept.",
             "price": "₹5,990",
             "meta": "Shackets · Statements",
             "image": "zip-shacket-1.jpg",
@@ -273,7 +273,10 @@
             "eyebrow": "FOR JACKETS",
             "title": "Built For Daily Confidence",
             "cta": "Shop Now",
-            "asset": "cat-jackets.png",
+            "asset": "cat-jackets-photo.jpg",
+            "photo": true,
+            "focus_x": 47,
+            "focus_y": 40,
             "url": "/collections/jackets",
             "img_x": 30,
             "img_y": 7,
@@ -286,7 +289,10 @@
             "eyebrow": "FOR SHIRTS",
             "title": "Designed For Modern Living",
             "cta": "Shop Now",
-            "asset": "cat-shirts.png",
+            "asset": "cat-shirts-photo.jpg",
+            "photo": true,
+            "focus_x": 50,
+            "focus_y": 28,
             "url": "/collections/shirts",
             "img_x": 36,
             "img_y": -6,
@@ -344,7 +350,7 @@
         "s1": {
           "type": "demo",
           "settings": {
-            "title": "Lattice Zip Jacket",
+            "title": "Jaal Theory",
             "price": "₹6,490",
             "compare": "₹7,990",
             "tag": "-19%",
@@ -356,7 +362,7 @@
         "s2": {
           "type": "demo",
           "settings": {
-            "title": "Diamond Jaal Bomber",
+            "title": "Jaal Project",
             "price": "₹7,490",
             "compare": "",
             "tag": "New",
@@ -368,7 +374,7 @@
         "s3": {
           "type": "demo",
           "settings": {
-            "title": "Frayed Street Denim",
+            "title": "Dhaga Division",
             "price": "₹8,990",
             "compare": "₹10,990",
             "tag": "-18%",
@@ -380,7 +386,7 @@
         "s4": {
           "type": "demo",
           "settings": {
-            "title": "Archive Patchwork Jacket",
+            "title": "Gulaabo Archive Jacket",
             "price": "₹9,490",
             "compare": "",
             "tag": "Limited",
@@ -485,6 +491,173 @@
         "subtitle": "Follow the latest looks, moments and stories.",
         "speed": 40
       }
+    },
+    "why": {
+      "type": "why-us",
+      "blocks": {
+        "w0": {
+          "type": "point",
+          "settings": {
+            "text": "Get your order delivered quickly, straight to your door.",
+            "title": "Fast shipping",
+            "sub": "3–5 business days"
+          }
+        },
+        "w1": {
+          "type": "point",
+          "settings": {
+            "text": "Return your items hassle-free. Our flexible policy makes it simple.",
+            "title": "Easy returns",
+            "sub": "7 days from delivery"
+          }
+        },
+        "w2": {
+          "type": "point",
+          "settings": {
+            "text": "Pay for your order with confidence. Your details are always protected.",
+            "title": "Secure payments",
+            "sub": "Bank-grade SSL protection"
+          }
+        },
+        "w3": {
+          "type": "point",
+          "settings": {
+            "text": "Get the help you need, fast. Our dedicated team is here for you.",
+            "title": "Customer support",
+            "sub": "hello@terzeeorigins.com"
+          }
+        }
+      },
+      "block_order": [
+        "w0",
+        "w1",
+        "w2",
+        "w3"
+      ],
+      "settings": {
+        "lead": "why",
+        "heading": "Terzee?"
+      }
+    },
+    "social": {
+      "type": "social-wall",
+      "blocks": {
+        "b0": {
+          "type": "quote",
+          "settings": {
+            "text": "The materials feel premium and the craftsmanship is excellent. I've worn my shirt countless times and it still looks brand new.",
+            "handle": "@customer_one",
+            "style": "red",
+            "link_text": "View on Instagram",
+            "link_url": "https://www.instagram.com/theterzeeorigins/"
+          }
+        },
+        "b1": {
+          "type": "photo",
+          "settings": {
+            "asset": "look-02-back-4x5.jpg"
+          }
+        },
+        "b2": {
+          "type": "quote",
+          "settings": {
+            "text": "I've been searching for everyday essentials that don't compromise on quality, and I finally found them here.",
+            "handle": "@customer_two",
+            "style": "dark",
+            "link_text": "View on Instagram",
+            "link_url": "https://www.instagram.com/theterzeeorigins/"
+          }
+        },
+        "b3": {
+          "type": "photo",
+          "settings": {
+            "asset": "diamond-jaal-bomber-campaign-2.jpg"
+          }
+        },
+        "b4": {
+          "type": "photo",
+          "settings": {
+            "asset": "look-03-camp-shirt-4x5.jpg"
+          }
+        },
+        "b5": {
+          "type": "quote",
+          "settings": {
+            "text": "Every order I've received has been consistent in quality. The attention to detail is what makes these clothes stand out.",
+            "handle": "@customer_three",
+            "style": "dark",
+            "link_text": "View on Instagram",
+            "link_url": "https://www.instagram.com/theterzeeorigins/"
+          }
+        },
+        "b6": {
+          "type": "photo",
+          "settings": {
+            "asset": "archive-patchwork-jacket-campaign-1.jpg"
+          }
+        },
+        "b7": {
+          "type": "quote",
+          "settings": {
+            "text": "From the moment I unpacked my order, I could tell the craftsmanship was on another level. It feels built to last.",
+            "handle": "@customer_four",
+            "style": "red",
+            "link_text": "View on Instagram",
+            "link_url": "https://www.instagram.com/theterzeeorigins/"
+          }
+        },
+        "b8": {
+          "type": "photo",
+          "settings": {
+            "asset": "look-01-bomber-4x5.jpg"
+          }
+        },
+        "b9": {
+          "type": "quote",
+          "settings": {
+            "text": "The fit is spot on and the stitching is clean. It's the piece I reach for first every time.",
+            "handle": "@customer_five",
+            "style": "red",
+            "link_text": "View on Instagram",
+            "link_url": "https://www.instagram.com/theterzeeorigins/"
+          }
+        },
+        "b10": {
+          "type": "photo",
+          "settings": {
+            "asset": "frayed-street-denim-3.jpg"
+          }
+        },
+        "b11": {
+          "type": "quote",
+          "settings": {
+            "text": "Heavy cloth, sharp details and it only gets better with wear. Worth every rupee.",
+            "handle": "@customer_six",
+            "style": "dark",
+            "link_text": "View on Instagram",
+            "link_url": "https://www.instagram.com/theterzeeorigins/"
+          }
+        }
+      },
+      "block_order": [
+        "b0",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11"
+      ],
+      "settings": {
+        "heading": "Social",
+        "lead": "wall",
+        "ig_url": "https://www.instagram.com/theterzeeorigins/"
+      }
     }
   },
   "order": [
@@ -493,7 +666,9 @@
     "featured",
     "craft",
     "seasonal",
+    "why",
     "tiles",
+    "social",
     "instagram",
     "jacket",
     "newsletter"

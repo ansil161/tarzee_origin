@@ -23,16 +23,6 @@
             "focus_y": 40
           }
         },
-        "p3": {
-          "type": "panel",
-          "settings": {
-            "title": "Denim",
-            "asset": "col-denim.jpg",
-            "url": "/collections/denim",
-            "focus_x": 52,
-            "focus_y": 35
-          }
-        },
         "p4": {
           "type": "panel",
           "settings": {
@@ -57,7 +47,6 @@
       "block_order": [
         "p1",
         "p2",
-        "p3",
         "p4",
         "p5"
       ]

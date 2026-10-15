@@ -20,7 +20,8 @@ out = os.path.join(ROOT, 'shopify', 'products.csv')
 with open(out, 'w', newline='', encoding='utf-8') as f:
     w = csv.DictWriter(f, fieldnames=cols); w.writeheader()
     for p in cat:
-        imgs = [f"{p['handle']}-{i+1}.jpg" for i in range(len(p['photos']))]
+        imgs = list(p.get('hero', []))  # editorial 4:5 shots first: 1st = card image, 2nd = collection hover image
+        imgs += [f"{p['handle']}-{i+1}.jpg" for i in range(len(p['photos']))]
         imgs += p.get('campaign', [])  # campaign shots: 2nd image is the collection hover image
         body = f"<p>{p['desc']}</p><p><em>{p['fabric']}</em></p>"
         tags = ','.join(['drop-01', p['type'].lower(), p['tag'].lower().replace(' ', '-')] + (['new'] if p['handle'] == 'lattice-zip-jacket' else []) + (['limited'] if p['handle'] == 'frayed-street-denim' else []))
@@ -38,6 +39,6 @@ with open(out, 'w', newline='', encoding='utf-8') as f:
                             'Variant Inventory Policy': 'deny', 'Variant Fulfillment Service': 'manual', 'Variant Price': str(p['price']),
                             'Variant Requires Shipping': 'TRUE', 'Variant Taxable': 'TRUE'})
             if i < len(imgs):
-                row.update({'Image Src': base + imgs[i], 'Image Position': str(i + 1), 'Image Alt Text': p['title']})
+                row.update({'Image Src': base + imgs[i], 'Image Position': str(i + 1), 'Image Alt Text': p['title'] + (' - model wearing' if i == 1 and p.get('hero') else '')})
             w.writerow(row)
 print('wrote', out)

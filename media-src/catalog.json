@@ -1,7 +1,7 @@
 [
   {
     "handle": "lattice-zip-jacket",
-    "title": "Lattice Zip Jacket",
+    "title": "Jaal Theory",
     "type": "Jackets",
     "tag": "Block print",
     "price": 6490,
@@ -24,11 +24,19 @@
       "lattice-zip-jacket-look-8.jpg",
       "lattice-zip-jacket-look-9.jpg",
       "lattice-zip-jacket-look-10.jpg"
+    ],
+    "hero": [
+      "lattice-zip-jacket-hero-1.jpg",
+      "lattice-zip-jacket-hero-2.jpg",
+      "lattice-zip-jacket-hero-3.jpg",
+      "lattice-zip-jacket-hero-4.jpg",
+      "lattice-zip-jacket-hero-5.jpg",
+      "lattice-zip-jacket-hero-6.jpg"
     ]
   },
   {
     "handle": "diamond-jaal-bomber",
-    "title": "Diamond Jaal Bomber",
+    "title": "Jaal Project",
     "type": "Jackets",
     "tag": "All-over print",
     "price": 7490,
@@ -51,11 +59,17 @@
       "diamond-jaal-bomber-look-4.jpg",
       "diamond-jaal-bomber-look-5.jpg",
       "diamond-jaal-bomber-look-6.jpg"
+    ],
+    "hero": [
+      "diamond-jaal-bomber-hero-1.jpg",
+      "diamond-jaal-bomber-hero-2.jpg",
+      "diamond-jaal-bomber-hero-3.jpg",
+      "diamond-jaal-bomber-hero-4.jpg"
     ]
   },
   {
     "handle": "frayed-street-denim",
-    "title": "Frayed Street Denim",
+    "title": "Dhaga Division",
     "type": "Jackets",
     "tag": "Frayed appliqué",
     "price": 8990,
@@ -68,11 +82,15 @@
     "fabric": "Heavy black denim · hand-laid appliqué",
     "campaign": [
       "frayed-street-denim-campaign-1.jpg"
+    ],
+    "hero": [
+      "frayed-street-denim-campaign-1.jpg",
+      "detail-frayed.jpg"
     ]
   },
   {
     "handle": "archive-patchwork-jacket",
-    "title": "Archive Patchwork Jacket",
+    "title": "Gulaabo Archive Jacket",
     "type": "Jackets",
     "tag": "Patchwork",
     "price": 9490,
@@ -89,11 +107,17 @@
       "archive-patchwork-jacket-look-1.jpg",
       "archive-patchwork-jacket-look-2.jpg",
       "archive-patchwork-jacket-look-3.jpg"
+    ],
+    "hero": [
+      "archive-patchwork-jacket-hero-1.jpg",
+      "archive-patchwork-jacket-hero-2.jpg",
+      "archive-patchwork-jacket-campaign-1.jpg",
+      "archive-patchwork-jacket-campaign-2.jpg"
     ]
   },
   {
     "handle": "zip-shacket",
-    "title": "Zip Shacket",
+    "title": "Sannata Dept.",
     "type": "Shackets",
     "tag": "Statements",
     "price": 5990,
@@ -104,11 +128,14 @@
     "fabric": "Heavy cotton twill · boxy fit",
     "campaign": [
       "zip-shacket-campaign-1.jpg"
+    ],
+    "hero": [
+      "zip-shacket-campaign-1.jpg"
     ]
   },
   {
     "handle": "jaal-pocket-camp-shirt",
-    "title": "Jaal Pocket Camp Shirt",
+    "title": "Jharokha",
     "type": "Shirts",
     "tag": "Block print",
     "price": 4490,
@@ -125,11 +152,17 @@
       "jaal-pocket-camp-shirt-look-2.jpg",
       "jaal-pocket-camp-shirt-look-3.jpg",
       "jaal-pocket-camp-shirt-look-4.jpg"
+    ],
+    "hero": [
+      "jaal-pocket-camp-shirt-hero-1.jpg",
+      "jaal-pocket-camp-shirt-hero-2.jpg",
+      "jaal-pocket-camp-shirt-hero-3.jpg",
+      "jaal-pocket-camp-shirt-hero-4.jpg"
     ]
   },
   {
     "handle": "pillar-pintuck-shirt",
-    "title": "Pillar Pintuck Shirt",
+    "title": "Mehraab",
     "type": "Shirts",
     "tag": "Pintuck",
     "price": 4290,
@@ -140,11 +173,14 @@
     "fabric": "Cotton · tonal pintuck panels",
     "campaign": [
       "pillar-pintuck-shirt-campaign-1.jpg"
+    ],
+    "hero": [
+      "pillar-pintuck-shirt-campaign-1.jpg"
     ]
   },
   {
     "handle": "diamond-jaal-popover",
-    "title": "Diamond Jaal Popover",
+    "title": "Jaal Reworked",
     "type": "Shirts",
     "tag": "All-over print",
     "price": 4990,
@@ -155,11 +191,15 @@
     "fabric": "Cotton · all-over block print",
     "campaign": [
       "diamond-jaal-popover-campaign-1.jpg"
+    ],
+    "hero": [
+      "diamond-jaal-popover-campaign-1.jpg",
+      "detail-jaal.jpg"
     ]
   },
   {
     "handle": "paisley-tonal-shirt",
-    "title": "Paisley Tonal Shirt",
+    "title": "Riwaayat 2.0",
     "type": "Shirts",
     "tag": "Embroidery",
     "price": 4690,
@@ -171,6 +211,154 @@
     "fabric": "Cotton · hand embroidery",
     "campaign": [
       "paisley-tonal-shirt-campaign-1.jpg"
+    ],
+    "hero": [
+      "paisley-tonal-shirt-campaign-1.jpg",
+      "detail-paisley.jpg"
+    ]
+  },
+  {
+    "handle": "shab",
+    "title": "Shab",
+    "type": "Jackets",
+    "tag": "Block print",
+    "price": 6990,
+    "photos": [],
+    "desc": "A black cotton-twill work jacket with hand block-printed panels over the chest pockets. Two-way zip, boxy fit.",
+    "fabric": "Heavy cotton twill · block-print pockets · two-way zip",
+    "campaign": [],
+    "looks": [],
+    "hero": [
+      "shab-hero-1.jpg",
+      "shab-hero-2.jpg"
+    ]
+  },
+  {
+    "handle": "virasat",
+    "title": "Virāsat",
+    "type": "Jackets",
+    "tag": "Patchwork",
+    "price": 8490,
+    "photos": [],
+    "desc": "Mixed black and charcoal cotton panels pieced together and stitched by hand into a stand-collar jacket. No two seams fall the same way.",
+    "fabric": "Cotton panels · hand-stitched patchwork · stand collar",
+    "campaign": [],
+    "looks": [],
+    "hero": [
+      "virasat-hero-1.jpg",
+      "virasat-hero-2.jpg"
+    ]
+  },
+  {
+    "handle": "siyahkaar",
+    "title": "Siyahkaar",
+    "type": "Shirts",
+    "tag": "Embroidery",
+    "price": 4990,
+    "photos": [],
+    "desc": "An all-black camp-collar shirt with tonal thread embroidery run along the placket and cuffs. Soft drape, relaxed length.",
+    "fabric": "Cotton poplin · tonal embroidery · camp collar",
+    "campaign": [],
+    "looks": [],
+    "hero": [
+      "siyahkaar-hero-1.jpg",
+      "siyahkaar-hero-2.jpg"
+    ]
+  },
+  {
+    "handle": "khaak-denim-jacket",
+    "title": "Khaak",
+    "type": "Jackets",
+    "tag": "Washed denim",
+    "price": 7990,
+    "photos": [],
+    "desc": "A boxy denim jacket washed to a dust-grey, with brass buttons and seams that fade white at the edges.",
+    "fabric": "Heavy denim · stone wash · brass buttons",
+    "campaign": [],
+    "looks": [],
+    "hero": [
+      "khaak-denim-jacket-hero-1.jpg",
+      "khaak-denim-jacket-hero-2.jpg"
+    ]
+  },
+  {
+    "handle": "dehleez",
+    "title": "Dehleez",
+    "type": "Shackets",
+    "tag": "Topstitch",
+    "price": 6490,
+    "photos": [],
+    "desc": "A black overshirt-jacket with a heavy zip front, flap pockets and tonal topstitching. Built to layer over anything.",
+    "fabric": "Cotton drill · tonal topstitch · heavy zip",
+    "campaign": [],
+    "looks": [],
+    "hero": [
+      "dehleez-hero-1.jpg",
+      "dehleez-hero-2.jpg"
+    ]
+  },
+  {
+    "handle": "gali-culture",
+    "title": "Gali Culture",
+    "type": "Shirts",
+    "tag": "Block print",
+    "price": 4490,
+    "photos": [],
+    "desc": "A boxy short-sleeve shirt with a bold white block print across the chest. Loose through the body, easy in summer.",
+    "fabric": "Cotton poplin · block print · boxy fit",
+    "campaign": [],
+    "looks": [],
+    "hero": [
+      "gali-culture-hero-1.jpg",
+      "gali-culture-hero-2.jpg"
+    ]
+  },
+  {
+    "handle": "rugged-khaakh",
+    "title": "Rugged Khaakh",
+    "type": "Jackets",
+    "tag": "Canvas",
+    "price": 7490,
+    "photos": [],
+    "desc": "A washed khaki canvas chore jacket with four patch pockets, a corduroy collar and metal snaps. Gets better the more it is worn.",
+    "fabric": "Washed canvas · corduroy collar · metal snaps",
+    "campaign": [],
+    "looks": [],
+    "hero": [
+      "rugged-khaakh-hero-1.jpg",
+      "rugged-khaakh-hero-2.jpg"
+    ]
+  },
+  {
+    "handle": "katran-club",
+    "title": "Katran Club",
+    "type": "Jackets",
+    "tag": "Patchwork",
+    "price": 8990,
+    "photos": [],
+    "desc": "Offcuts of black, grey and navy fabric stitched into one zip jacket, raw edges left showing on purpose.",
+    "fabric": "Fabric offcuts · raw-edge patchwork · zip front",
+    "campaign": [],
+    "looks": [],
+    "hero": [
+      "katran-club-hero-1.jpg",
+      "katran-club-hero-2.jpg"
+    ]
+  },
+  {
+    "handle": "sheher-after-dark",
+    "title": "Sheher After Dark",
+    "type": "Shackets",
+    "tag": "Satin finish",
+    "price": 6990,
+    "photos": [],
+    "desc": "A black satin-finish overshirt-jacket with a snap front and tonal embroidery across the back yoke. Made for after dark.",
+    "fabric": "Satin-finish cotton · tonal embroidery · snap front",
+    "campaign": [],
+    "looks": [],
+    "hero": [
+      "sheher-after-dark-hero-1.jpg",
+      "sheher-after-dark-hero-2.jpg"
     ]
   }
 ]
