@@ -317,62 +317,6 @@
         "speed": 40
       }
     },
-    "why": {
-      "type": "why-us",
-      "blocks": {
-        "w0": {
-          "type": "point",
-          "settings": {
-            "figure": "3–5",
-            "unit": "days",
-            "title": "Fast shipping",
-            "text": "Get your order delivered quickly, straight to your door.",
-            "sub": "Business days"
-          }
-        },
-        "w1": {
-          "type": "point",
-          "settings": {
-            "figure": "7",
-            "unit": "days",
-            "title": "Easy returns",
-            "text": "Return your items hassle-free. Our flexible policy makes it simple.",
-            "sub": "From delivery"
-          }
-        },
-        "w2": {
-          "type": "point",
-          "settings": {
-            "figure": "SSL",
-            "unit": "",
-            "title": "Secure payments",
-            "text": "Pay for your order with confidence. Your details are always protected.",
-            "sub": "Bank-grade protection"
-          }
-        },
-        "w3": {
-          "type": "point",
-          "settings": {
-            "figure": "Help",
-            "unit": "",
-            "title": "Customer support",
-            "text": "Get the help you need, fast. Our dedicated team is here for you.",
-            "sub": "hello@terzeeorigins.com"
-          }
-        }
-      },
-      "block_order": [
-        "w0",
-        "w1",
-        "w2",
-        "w3"
-      ],
-      "settings": {
-        "eyebrow": "The Terzee promise",
-        "heading": "Why Terzee?",
-        "intro": "Cut and sewn by hand, delivered with care. Four things we never compromise on."
-      }
-    },
     "social": {
       "type": "social-wall",
       "blocks": {
@@ -506,7 +450,6 @@
     "featured",
     "craft",
     "seasonal",
-    "why",
     "tiles",
     "social",
     "instagram",
