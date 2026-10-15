@@ -136,7 +136,7 @@ def shop_card(p, i, base=''):
 
 # ---------------- HOME ----------------
 
-SD = [('lattice-zip-jacket', '₹7,990', '-19%'), ('diamond-jaal-bomber', '', 'New'), ('virasat', '', 'Limited'), ('archive-patchwork-jacket', '', 'Limited')]
+SD = [('lattice-zip-jacket', '₹7,990', '-19%'), ('diamond-jaal-bomber', '', 'New'), ('jaal-pocket-camp-shirt', '', 'Limited'), ('archive-patchwork-jacket', '', 'Limited')]
 HEART = '<svg class="shop-heart" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.6 3 5.5 6.3 5.2c1.9-.2 3.6.8 4.7 2.3 1.1-1.5 2.8-2.5 4.7-2.3 3.3.3 5.1 3.4 3.8 6.6C19.5 16.4 12 21 12 21z"/></svg>'
 def sd_card(handle, compare, tag):
     p = next(x for x in cat if x['handle'] == handle)
@@ -165,7 +165,7 @@ home += '''
   <div class="section-head"><div><div class="eyebrow t-label"><span class="dia"></span>Drop 01</div><h2 class="t-display" data-split>New arrivals</h2></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:14px"><a class="link" href="collection.html">Shop all</a></div></div>
   <div class="shop-grid shop-grid--home" data-stagger>''' + ''.join(shop_card(p, i) for i, p in enumerate(cat[:4])) + '''<div class="shop-banner"><img src="assets/new-arrivals-banner.jpg" alt="Model in the diamond jaal bomber against a painted floral backdrop" width="1672" height="941" loading="lazy"><div class="shop-banner__copy"><h3 class="shop-banner__title">Diamond Jaal</h3><p class="shop-banner__sub">Block-print bomber · New drop</p><a class="pill pill--paper" href="collection.html">Shop Now</a></div></div>''' + ''.join(shop_card(p, i) for i, p in enumerate(cat[4:8], 4)) + '''</div>
 </div></section>
-<section class="craft"><div class="craft__inner"><div class="craft__copy"><p class="craft__eyebrow">Craft</p><h2 class="craft__title" data-split>Every piece carries the hand that made it.</h2><p class="craft__text">Blanket stitch, block print, patchwork with exposed edges. Slow work, kept patient and precise — the hand is always visible.</p><a class="craft__cta" href="story.html">Our story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div><div class="craft__stage"><div class="craft__frame"><img src="assets/craft-model.jpg" alt="" width="1400" height="1750" loading="lazy"></div><ol class="craft__cards"><li class="craft__card"><span class="craft__n">01</span><span class="craft__name">Blanket stitch</span><span class="craft__detail">collars, hems, appliqué</span></li><li class="craft__card"><span class="craft__n">02</span><span class="craft__name">Block print</span><span class="craft__detail">lattice and diamond repeats</span></li><li class="craft__card"><span class="craft__n">03</span><span class="craft__name">Patchwork</span><span class="craft__detail">raw squares, four greys</span></li><li class="craft__card"><span class="craft__n">04</span><span class="craft__name">Frayed appliqué</span><span class="craft__detail">built from strips of denim</span></li></ol></div></div></section>
+<section class="craft"><div class="craft__inner"><div class="craft__copy"><p class="craft__eyebrow">Craft</p><h2 class="craft__title" data-split>Every piece carries the hand that made it.</h2><p class="craft__text">Blanket stitch, block print, patchwork with exposed edges. Slow work, kept patient and precise — the hand is always visible.</p><a class="craft__cta" href="story.html">Our story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><div class="logo3d craft__logo" data-logo3d data-module="assets/logo3d.js" role="img" aria-label="Terzee Origins logo in polished black metal, slowly rotating"><img class="logo3d__fallback" data-logo3d-fallback src="assets/logo-3d-fallback.png" alt="" width="1000" height="711" loading="lazy"><canvas data-logo3d-canvas aria-hidden="true"></canvas></div><script>(function(){var el=document.currentScript.previousElementSibling;if(!el||el.__l3d)return;el.__l3d=true;function go(){var s=document.createElement('script');s.src=el.dataset.module;s.async=true;document.head.appendChild(s)}if(!('IntersectionObserver' in window))return go();var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();go()}},{rootMargin:'600px 0px'});io.observe(el)})();</script></div><div class="craft__stage"><div class="craft__frame"><img src="assets/craft-model.jpg" alt="" width="1400" height="1750" loading="lazy"></div><ol class="craft__cards"><li class="craft__card"><span class="craft__n">01</span><span class="craft__name">Blanket stitch</span><span class="craft__detail">collars, hems, appliqué</span></li><li class="craft__card"><span class="craft__n">02</span><span class="craft__name">Block print</span><span class="craft__detail">lattice and diamond repeats</span></li><li class="craft__card"><span class="craft__n">03</span><span class="craft__name">Patchwork</span><span class="craft__detail">raw squares, four greys</span></li><li class="craft__card"><span class="craft__n">04</span><span class="craft__name">Frayed appliqué</span><span class="craft__detail">built from strips of denim</span></li></ol></div></div></section>
 <section class="sd" data-header-light>
   <div class="sd__panel"><img class="sd__bg" src="assets/seasonal-panel.jpg" alt="" loading="lazy" width="1400" height="2100">
     <div class="sd__content"><h2 class="sd__title">Seasonal Drop</h2><a class="pill pill--paper" href="collection.html">Shop Now</a></div></div>
@@ -305,6 +305,85 @@ def pdp_item(q, idx=0):
     return {'id': q['handle'], 'handle': q['handle'], 'title': q['title'], 'type': q['type'], 'tag': q['tag'], 'fabric': q['fabric'],
             'badge': BADGES.get(q['handle'], ''), 'price': q['price'], 'compare': SPECIAL_WAS.get(q['handle'], 0), 'img': f'../assets/{pri800(q["handle"])}', 'url': f'{q["handle"]}.html',
             'sizes': [{'id': f'{q["handle"]}-{s}', 'title': s, 'available': not (s == 'XXL' and idx % 3 == 0)} for s in SIZES_ALL]}
+
+# ---------------- PDP (custom) — static mirror of theme/sections/main-product-custom.liquid ----------------
+# The live preview/Netlify site is static, so the Liquid section is mirrored here. Its CSS + JS are read straight
+# from the section file so both stay identical.
+_PDPX_SRC = open(os.path.join(ROOT, 'theme', 'sections', 'main-product-custom.liquid'), encoding='utf-8').read()
+_PDPX_CSS = _re.search(r'<style>([\s\S]*?)</style>', _PDPX_SRC).group(1)
+_PDPX_JS = _re.search(r'<script>([\s\S]*?)</script>', _PDPX_SRC).group(1)
+_PDPX_POLICY = _re.search(r'"id": "policy".*?"default": "(.*?)" \}', _PDPX_SRC, _re.S).group(1).replace('\\"', '"')
+_PDPX_OFFERS = [('₹150 OFF', 'Prepaid above ₹1049', 'UFOFF150FIRE'), ('₹300 OFF', 'Prepaid above ₹2069', 'UFOFF300FIRE'),
+                ('₹550 OFF', 'Prepaid above ₹3599', 'UFOFF550FIRE'), ('₹850 OFF', '', 'UFOFF850FIRE')]
+_TICK = '<svg viewBox="0 0 12 12" width="9" height="9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6.5 4.8 9 10 3"/></svg>'
+def pdpx_section(p, i, sl):
+    price = p['price']; was = SPECIAL_WAS.get(p['handle'], 0)
+    sizes = [(s, not (s == 'XXL' and i % 3 == 0)) for s in SIZES_ALL]
+    variants = [{'id': 1000 * (i + 1) + n, 'options': [s], 'price': price * 100, 'compare_at_price': was * 100 if was else None, 'available': ok,
+                 'featured_media': {'id': 1}} for n, (s, ok) in enumerate(sizes)]
+    sl_all = list(sl)
+    for _n in p.get('looks', []):   # more on-model photos so the stack (4) + Key Highlights (3) never repeat an image
+        if not any(_n in t[0] for t in sl_all): sl_all.append((f'../assets/{_n}', f'../assets/{_n}', f'../assets/{_n}'))
+    stack = sl_all[:4]
+    slides = ''.join(f'<div class="pdpx__slide" data-media-id="{n+1}" role="button" tabindex="0" aria-label="Open image {n+1}"><img src="{a}" data-full="{a}" alt="{e(p["title"])} — view {n+1}" width="800" height="1000"' + (' fetchpriority="high"' if n == 0 else ' loading="lazy"') + '></div>' for n, (a, _b, _c) in enumerate(stack))
+    thumbbar = ''
+    offers = ''.join(f'<div class="pdpx__offer"><b class="pdpx__offer-title">{a}</b>' + (f'<span class="pdpx__offer-sub">{s_}</span>' if s_ else '') + f'<span class="pdpx__offer-foot"><span class="pdpx__code">{c}</span><span class="pdpx__auto">{_TICK}Auto Applied</span></span></div>' for a, s_, c in _PDPX_OFFERS)
+    pills = ''.join(f'<label class="pdpx__size{"" if ok else " is-out"}"><input type="radio" name="size" value="{s}" data-pdpx-size{" checked" if s == "M" else ""}{"" if ok else " disabled"}><span>{s}</span></label>' for s, ok in sizes)
+    save = f'SAVE {int((was - price) * 100 / was)}%' if was else ''
+    ruler = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="8" width="20" height="8" rx="1"/><path d="M6 8v3M10 8v4M14 8v3M18 8v4"/></svg>'
+    chart = '<div class="pdpx__rte"><p><strong>Fit:</strong> boxy, true to size. Men and unisex.</p><p>Between two sizes, or want a roomier drape? Size up.</p><p>Sizes: ' + ', '.join(s for s, _ in sizes) + '.</p></div>'
+    globals()['_LAST_SL_ALL'] = sl_all
+    return f"""<section class="pdpx" data-pdpx data-size-index="0" data-color-index="-1" data-options='["M"]' data-currency="INR" data-locale="en-IN" data-sold-out="SOLD OUT" data-atc="ADD TO CART"><div class="pdpx__wrap">
+<div class="pdpx__gallery" data-pdpx-gallery><div class="pdpx__track" data-pdpx-track tabindex="0" aria-label="Product images">{slides}</div>{thumbbar}</div>
+<div class="pdpx__info"><h1 class="pdpx__title">{e(p['title'])}</h1>
+<div class="pdpx__rating" data-pdpx-rating hidden></div>
+<div class="pdpx__price"><span class="pdpx__now" data-pdpx-price>{rupee(price)}</span><s class="pdpx__was" data-pdpx-was{'' if was else ' hidden'}>{rupee(was) if was else ''}</s><span class="pdpx__save" data-pdpx-save{'' if was else ' hidden'}>{save}</span></div>
+<div class="pdpx__offers"><p class="pdpx__label">Available offers</p><div class="pdpx__offerrow" tabindex="0" aria-label="Available offers">{offers}</div></div>
+<button type="button" class="pdpx__sizelink" data-pdpx-open="chart">{ruler}<span>Sizing chart</span></button>
+<dialog class="pdpx__modal" data-pdpx-modal="chart" aria-label="Sizing chart"><button type="button" class="pdpx__modal-x" data-pdpx-close aria-label="Close">&times;</button><div class="pdpx__modal-body">{chart}</div></dialog>
+<p class="pdpx__model">Model is 5'8" (172 cm), 70 kg, Wearing M Size</p>
+<form class="pdpx__form" data-preview-cart data-title="{e(p['title'])}" data-price="{price}" data-img="../assets/{pri800(p['handle'])}"><input type="hidden" name="id" value="{variants[2]['id']}" data-pdpx-id><p class="pdpx__sizelabel">Size - <span data-pdpx-sizeval>M</span></p><div class="pdpx__sizes" role="radiogroup" aria-label="Size">{pills}</div><button type="submit" class="pdpx__atc" data-pdpx-atc>ADD TO CART</button></form>
+<script type="application/json" data-pdpx-variants>{json.dumps(variants)}</script>
+<div class="pdpx__tabs" data-pdpx-tabs><div class="pdpx__tablist" role="tablist"><button type="button" role="tab" class="pdpx__tab" id="pdpx-t-desc" aria-controls="pdpx-p-desc" aria-selected="false">Description</button><button type="button" role="tab" class="pdpx__tab" id="pdpx-t-det" aria-controls="pdpx-p-det" aria-selected="false">Details</button><button type="button" role="tab" class="pdpx__tab is-active" id="pdpx-t-pol" aria-controls="pdpx-p-pol" aria-selected="true">Exchange Policy</button></div>
+<div class="pdpx__panel pdpx__rte" role="tabpanel" id="pdpx-p-desc" aria-labelledby="pdpx-t-desc" hidden><p>{e(p['desc'])}</p></div>
+<div class="pdpx__panel pdpx__rte" role="tabpanel" id="pdpx-p-det" aria-labelledby="pdpx-t-det" hidden><p>{e(p['fabric'])}. Cold wash inside out, line dry in shade, do not tumble.</p><p>Boxy fit, true to size. Each piece is finished by hand, so small differences are part of the cloth.</p></div>
+<div class="pdpx__panel pdpx__rte" role="tabpanel" id="pdpx-p-pol" aria-labelledby="pdpx-t-pol">{_PDPX_POLICY}</div></div>
+</div></div><dialog class="pdpx__lb" data-pdpx-lb aria-label="Product images"><button type="button" class="pdpx__lb-x" data-lb-close aria-label="Close">&times;</button><button type="button" class="pdpx__lb-nav pdpx__lb-prev" data-lb-prev aria-label="Previous image">&#8249;</button><img class="pdpx__lb-img" data-lb-img alt="" width="1200" height="1500"><button type="button" class="pdpx__lb-nav pdpx__lb-next" data-lb-next aria-label="Next image">&#8250;</button><span class="pdpx__lb-count" data-lb-count></span>  </dialog><div class="pdpx__sticky" data-pdpx-sticky><div class="pdpx__sticky-in"><img src="../assets/{pri800(p['handle'])}" alt="" width="42" height="52" loading="lazy"><div class="pdpx__sticky-info"><p class="pdpx__sticky-title">{e(p['title'])}</p><div class="pdpx__price"><span class="pdpx__now" data-pdpx-s-price>{rupee(price)}</span><s class="pdpx__was" data-pdpx-s-was{'' if was else ' hidden'}>{rupee(was) if was else ''}</s><span class="pdpx__save" data-pdpx-s-save{'' if was else ' hidden'}>{save}</span></div></div><div class="pdpx__sticky-selects"><select data-pdpx-select="0" aria-label="Size">{"".join(f'<option value="{s}"{" selected" if s == "M" else ""}>{s}</option>' for s, _ok in sizes)}</select></div><button type="button" class="pdpx__sticky-add" data-pdpx-sticky-add>Add</button></div></div></section>"""
+
+def _sec_assets(name):
+    src = open(os.path.join(ROOT, 'theme', 'sections', name), encoding='utf-8').read()
+    return _re.search(r'<style>([\s\S]*?)</style>', src).group(1), _re.search(r'<script>([\s\S]*?)</script>', src).group(1)
+_PDH_CSS = _re.search(r'<style>([\s\S]*?)</style>', open(os.path.join(ROOT, 'theme', 'sections', 'product-highlights.liquid'), encoding='utf-8').read()).group(1)
+_PDB_CSS, _PDB_JS = _sec_assets('product-bundle.liquid')
+_PDR_SRC = open(os.path.join(ROOT, 'theme', 'sections', 'product-reviews.liquid'), encoding='utf-8').read()
+_PDR_CSS = _re.search(r'<style>([\s\S]*?)</style>', _PDR_SRC).group(1)
+_PDR_JS = _re.search(r'<script>([\s\S]*?)</script>', _PDR_SRC).group(1)
+_PDR_BODY = _re.search(r'(<section class="pdr"[\s\S]*?</section>)', _PDR_SRC).group(1)
+def pdr_html(p, i):
+    h = _PDR_BODY.replace('data-pid="{{ product.id }}" {% if section.settings.review_url != blank %}data-write-url="{{ section.settings.review_url }}"{% endif %}', 'data-dev data-pid="' + p['handle'] + '"')
+    h = h.replace('{{ section.settings.heading }}', 'Ratings &amp; Reviews')
+    h = h.replace('{{ product.metafields.custom.reviews_json.value | json }}', rv_json(i))
+    return h
+def pdp_extra(p, i, sl, partner):
+    caps = [p['tag'], 'Cut & sewn by hand', 'Boxy fit, true to size', p['fabric'].split(' · ')[0], p['type'], 'Drop 01']
+    rest = _LAST_SL_ALL[4:7]
+    figs = ''.join(f'<figure class="pdh__item"><img src="{t[2]}" alt="{e(caps[n % len(caps)])}" width="800" height="1000" loading="lazy"><figcaption>{e(caps[n % len(caps)])}</figcaption></figure>' for n, t in enumerate(rest))
+    hi = (f'<section class="pdh"><h2 class="pdh__title">Key Highlights</h2><div class="pdh__track" style="--n:{len(rest)}">{figs}</div></section>') if rest else ''
+    def row(q, qi, first):
+        was_q = SPECIAL_WAS.get(q['handle'], 0)
+        vs = [{'id': 5000 * (qi + 1) + n, 'options': [s], 'price': q['price'] * 100, 'compare_at_price': was_q * 100 if was_q else None, 'available': True} for n, s in enumerate(SIZES_ALL)]
+        opts = ''.join(f'<option value="{s}"{" selected" if s == "M" else ""}>{s}</option>' for s in SIZES_ALL)
+        return (f'<div class="pdb__row" data-pdb-item data-title="{e(q["title"])}" data-img="../assets/{pri800(q["handle"])}"><input type="checkbox" class="pdb__check" checked data-pdb-check aria-label="Include {e(q["title"])}">'
+                f'<div class="pdb__main"><a class="pdb__name" href="{q["handle"]}.html">{e(q["title"])}</a><span class="pdb__price"><b data-pdb-price>{rupee(q["price"])}</b> <s data-pdb-was{"" if was_q else " hidden"}>{rupee(was_q) if was_q else ""}</s></span>'
+                f'<span class="pdb__selects"><select data-pdb-opt="0" aria-label="Size">{opts}</select></span><script type="application/json" data-pdb-variants>{json.dumps(vs)}</script></div></div>')
+    bundle = ('<section class="pdb" data-pdb data-currency="INR" data-locale="en-IN"><p class="pdb__eyebrow">Frequently bought together</p><div class="pdb__body"><div class="pdb__imgs">'
+              f'<img src="../assets/{pri800(p["handle"])}" alt="" width="200" height="250" loading="lazy"><span class="pdb__plus" aria-hidden="true">+</span><img src="../assets/{pri800(partner["handle"])}" alt="" width="200" height="250" loading="lazy"></div>'
+              f'<div class="pdb__list">{row(p, i, True)}{row(partner, i + 1, False)}<p class="pdb__total">Total Price: <b data-pdb-total></b> <s data-pdb-total-was></s></p><button type="button" class="pdb__add" data-pdb-add>Add selected to cart</button></div></div></section>')
+    css = '<style>' + _PDH_CSS + _PDB_CSS + _PDR_CSS + '</style>'
+    return css + hi + bundle + pdr_html(p, i), '<script>' + _PDB_JS + _PDR_JS + '</script>'
+
+_HS_JS = """<script>(function(){document.querySelectorAll('[data-pdp-hs]').forEach(function(s){var t=s.querySelector('[data-hs]'),p=s.querySelector('[data-hs-prev]'),n=s.querySelector('[data-hs-next]');if(!t)return;var go=function(d){t.scrollBy({left:d*Math.max(240,t.clientWidth*.8),behavior:'smooth'})};var sync=function(){if(p)p.hidden=t.scrollLeft<8;if(n)n.hidden=t.scrollLeft+t.clientWidth>=t.scrollWidth-8};p&&p.addEventListener('click',function(){go(-1)});n&&n.addEventListener('click',function(){go(1)});t.addEventListener('scroll',sync,{passive:true});sync();setTimeout(sync,400)})})();</script>"""
+
 for i, p in enumerate(cat):
     sl = slides_for(p)[:3]   # PDP gallery: main photo + 3 thumbnails below
     slides_json = json.dumps([{'src': a, 'full': b, 'alt': f'{p["title"]} — view {n+1}'} for n, (a, b, c) in enumerate(sl)])
@@ -409,7 +488,12 @@ for i, p in enumerate(cat):
 </section>
 <section class="pdp-sec pdp-sec--ivory" id="recent" data-pdp-recent data-pdp-hs data-header-light hidden><div class="container"><div class="pdp-sechead"><h2 class="pdp-h2">Recently viewed</h2><button type="button" class="pdp-edit" data-recent-edit>Edit</button></div><div class="pdp-hswrap"><button type="button" class="pdp-hsbtn pdp-hsbtn--prev" data-hs-prev aria-label="Previous items">&#8249;</button><div class="pdp-hs" data-hs data-recent-mount tabindex="0" aria-label="Recently viewed"></div><button type="button" class="pdp-hsbtn pdp-hsbtn--next" data-hs-next aria-label="Next items">&#8250;</button></div></div></section>
 <div class="pdp-bar" data-bar aria-label="Quick purchase"><img src="../assets/{pri800(p['handle'])}" alt="" width="88" height="110"><div class="pdp-bar__i"><b data-bar-price>{rupee(p['price'])}</b><span class="pdp-save" data-bar-save hidden></span><span><span data-bar-name>{e(p['title'])}</span> <span data-bar-size></span></span></div><button class="btn btn--red" type="button" data-bar-add><span>Add to bag</span></button></div>'''
-    page += footer(base='../') + '<script src="../assets/pdp.js"></script>'
+    _sim = _re.search(r'<section class="pdp-sec pdp-sec--ivory" id="similar".*?</section>\n', page, _re.S).group(0)
+    page = (head(p['title'], base='../', body_class='template-product') + header(base='../', over=False)
+            + '<style>' + _PDPX_CSS + '</style>' + pdpx_section(p, i, sl))
+    _ex_html, _ex_js = pdp_extra(p, i, sl, (others + same)[0])
+    page += _ex_html + _sim
+    page += footer(base='../') + '<script>' + _PDPX_JS + '</script>' + _ex_js + _HS_JS
     open(os.path.join(OUT, 'products', p['handle'] + '.html'), 'w', encoding='utf-8').write(page)
 
 # ---------------- STORY ----------------

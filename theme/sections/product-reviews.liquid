@@ -1,0 +1,231 @@
+{%- comment -%}
+  Ratings & Reviews — summary, 5-to-1 star bars (click to filter), fit scales, "frequently mentioned" chips,
+  sort + filter, review list with helpful / not helpful, load more, write-a-review.
+
+  Reviews come from the product metafield  custom.reviews_json  (type: JSON), a list like:
+    [{ "rating": 5, "title": "Great fit", "body": "...", "author": "A. K.", "date": "2026-09-28",
+       "verified": true, "size": "M", "tags": ["Fit","Quality"], "fit": 3, "length": 3, "helpful": 2, "down": 0 }]
+  fit / length are 1-5 (3 = true to size / just right). Everything except rating is optional.
+  No data = a clean empty state. The star rating under the product title is filled in from the same data.
+  A review app can replace this section; set "Write-a-review link" to its form.
+{%- endcomment -%}
+<section class="pdr" id="reviews" data-pdr data-pid="{{ product.id }}" {% if section.settings.review_url != blank %}data-write-url="{{ section.settings.review_url }}"{% endif %}>
+  <h2 class="pdr__title">{{ section.settings.heading }}</h2>
+  <script type="application/json" data-pdr-data>{{ product.metafields.custom.reviews_json.value | json }}</script>
+
+  <div class="pdr__top">
+    <div class="pdr__sum">
+      <div class="pdr__score"><b data-pdr-avg>&mdash;</b><span class="pdr__stars" data-pdr-stars aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
+      <p class="pdr__total" data-pdr-total>No ratings yet</p>
+      <div class="pdr__bars" data-pdr-bars role="group" aria-label="Filter reviews by rating"></div>
+      <button type="button" class="pdr__write" data-pdr-write hidden>Write a review</button>
+    </div>
+    <div class="pdr__scales" data-pdr-scales hidden></div>
+  </div>
+
+  <form class="pdr__form" data-pdr-form hidden>
+    <h3>Write a review</h3>
+    <label>Rating<select name="rating"><option value="5">5 &#9733; Excellent</option><option value="4">4 &#9733; Good</option><option value="3">3 &#9733; Average</option><option value="2">2 &#9733; Poor</option><option value="1">1 &#9733; Terrible</option></select></label>
+    <label>Title<input name="title" required maxlength="80" placeholder="Sum it up in a few words"></label>
+    <label>Review<textarea name="body" required rows="4" maxlength="800" placeholder="What did you like or dislike?"></textarea></label>
+    <label>Name<input name="name" required maxlength="40" placeholder="Your name"></label>
+    <div class="pdr__formbtns"><button type="submit" class="pdr__btn">Submit review</button><button type="button" class="pdr__btn pdr__btn--ghost" data-pdr-cancel>Cancel</button></div>
+  </form>
+
+  <div class="pdr__attrs" data-pdr-attrs hidden><h3>Frequently mentioned</h3><div class="pdr__chips" data-pdr-chips></div></div>
+
+  <div class="pdr__tools" data-pdr-tools hidden>
+    <h3 data-pdr-count></h3>
+    <div class="pdr__selects">
+      <label class="pdr__sel"><span>Sort by</span><select data-pdr-sort><option value="recent">Newest</option><option value="helpful">Most helpful</option><option value="high">Highest rated</option><option value="low">Lowest rated</option></select></label>
+      <label class="pdr__sel"><span>Filter by</span><select data-pdr-filter><option value="all">All reviews</option><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option><option value="verified">Verified buyers</option></select></label>
+    </div>
+  </div>
+  <div class="pdr__list" data-pdr-list aria-live="polite"></div>
+  <button type="button" class="pdr__more" data-pdr-more hidden>Read more reviews</button>
+  <div class="pdr__empty" data-pdr-empty hidden><h3>No reviews yet</h3><p>Reviews appear here once customers have shared their thoughts.</p></div>
+</section>
+
+<style>
+  .pdr{--pdr-ink:#121212;--pdr-line:#e5e5e5;--pdr-mute:#595959;--pdr-green:#16a34a;background:#fff;color:var(--pdr-ink);font-family:inherit;letter-spacing:.04em;padding:40px 16px;max-width:1500px;margin:0 auto}
+  .pdr *{box-sizing:border-box}
+  .pdr [hidden]{display:none!important}
+  .pdr__title{margin:0 0 24px;text-align:center;font-family:inherit;font-size:22px;line-height:1.3;font-weight:600;letter-spacing:.06em;text-transform:none}
+  .pdr__stars{font-size:20px;letter-spacing:.1em;background:linear-gradient(90deg,#000 var(--r,0%),#d4d4d4 var(--r,0%));-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+  .pdr__top{display:grid;grid-template-columns:1fr;gap:28px;padding-bottom:28px;border-bottom:1px solid var(--pdr-line)}
+  .pdr__score{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .pdr__score b{font-size:48px;line-height:1;font-weight:700;letter-spacing:0}
+  .pdr__total{margin:6px 0 0;font-size:14px;color:var(--pdr-mute)}
+  .pdr__bars{display:grid;gap:6px;margin-top:18px;max-width:440px}
+  .pdr__bar{display:grid;grid-template-columns:62px minmax(0,1fr) 30px;align-items:center;gap:12px;padding:3px 0;border:0;background:none;font:inherit;font-size:14px;color:inherit;cursor:pointer;text-align:left}
+  .pdr__bar span{text-decoration:underline;text-underline-offset:3px}
+  .pdr__bar.is-on span{font-weight:700}
+  .pdr__bar i{display:block;height:10px;background:#ececec;border-radius:6px;overflow:hidden}
+  .pdr__bar u{display:block;height:100%;min-width:10px;background:#000;border-radius:6px;text-decoration:none;transition:width .6s ease}
+  .pdr__bar em{font-style:normal;text-align:right}
+  .pdr__write{margin-top:20px;height:49px;width:100%;max-width:440px;border:0;border-radius:8px;background:#000;color:#fff;font:inherit;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+  .pdr__write:hover{opacity:.88}
+  .pdr__scales{display:grid;gap:30px;align-content:start;max-width:440px}
+  .pdr__scale{display:grid;grid-template-columns:1fr 1fr;gap:10px 0;font-size:14px}
+  .pdr__scale i{grid-column:1/-1;display:block;height:8px;background:#ececec;border-radius:4px;overflow:hidden}
+  .pdr__scale u{display:block;height:100%;background:#000;text-decoration:none;border-radius:4px}
+  .pdr__scale span:last-child{text-align:right}
+  .pdr__form{display:grid;gap:12px;max-width:520px;margin:24px 0 0;padding:20px;border:1px solid var(--pdr-line);border-radius:8px;background:#fafafa}
+  .pdr__form h3,.pdr__attrs h3,.pdr__tools h3{margin:0;font-family:inherit;font-size:16px;font-weight:600;letter-spacing:.06em}
+  .pdr__form label{display:grid;gap:6px;font-size:12px;font-weight:600;letter-spacing:.06em}
+  .pdr__form input,.pdr__form textarea,.pdr__form select{font:inherit;font-size:14px;padding:11px 12px;border:1px solid #bdbdbd;border-radius:6px;background:#fff;color:#000;letter-spacing:0}
+  .pdr__formbtns{display:flex;gap:10px}
+  .pdr__btn{height:44px;padding:0 22px;border:1px solid #000;border-radius:8px;background:#000;color:#fff;font:inherit;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer}
+  .pdr__btn--ghost{background:#fff;color:#000}
+  .pdr__attrs{padding:24px 0;border-bottom:1px solid var(--pdr-line)}
+  .pdr__chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .pdr__chips button{padding:10px 18px;border:1px solid #9a9a9a;border-radius:40px;background:#fff;font:inherit;font-size:14px;letter-spacing:.5px;color:#000;cursor:pointer;transition:background .2s,color .2s}
+  .pdr__chips button:hover,.pdr__chips button.is-on{background:#000;color:#fff;border-color:#000}
+  .pdr__tools{padding-top:24px}
+  .pdr__selects{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px}
+  .pdr__sel{position:relative;display:block;min-width:min(100%,260px)}
+  .pdr__sel span{position:absolute;top:-9px;left:12px;padding:0 6px;background:#fff;font-size:11px;color:var(--pdr-mute)}
+  .pdr__sel select{width:100%;font:inherit;font-size:15px;padding:13px 14px;border:1px solid #8a8a8a;border-radius:8px;background:#fff;color:#000;letter-spacing:0}
+  .pdr__list{margin-top:6px}
+  .pdr__item{display:grid;grid-template-columns:1fr;gap:12px;padding:24px 0;border-bottom:1px solid var(--pdr-line)}
+  .pdr__who{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;font-size:13px}
+  .pdr__who .pdr__stars{flex-basis:100%;font-size:18px}
+  .pdr__who b{font-size:15px}
+  .pdr__who span{color:var(--pdr-mute)}
+  .pdr__ok{color:var(--pdr-green)!important}
+  .pdr__text h4{margin:0;font-family:inherit;font-size:18px;font-weight:600;letter-spacing:.04em}
+  .pdr__body{margin:8px 0 0;max-width:64ch;font-size:14px;line-height:1.7;color:#333}
+  .pdr__body.is-clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .pdr__readmore{margin-top:4px;padding:0;border:0;background:none;font:inherit;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;color:inherit;cursor:pointer}
+  .pdr__text small{display:block;margin-top:8px;font-size:12px;color:var(--pdr-mute)}
+  .pdr__helpful{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--pdr-mute)}
+  .pdr__helpful button{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border:1px solid #9a9a9a;border-radius:8px;background:#fff;font:inherit;font-size:14px;font-weight:600;color:#333;cursor:pointer}
+  .pdr__helpful button.is-on{background:#000;color:#fff;border-color:#000}
+  .pdr__down svg{transform:rotate(180deg)}
+  .pdr__more{display:block;margin:28px auto 0;width:min(100%,360px);height:49px;border:2px solid #000;border-radius:8px;background:#fff;font:inherit;font-size:15px;font-weight:700;letter-spacing:.5px;color:#000;cursor:pointer;transition:background .2s,color .2s}
+  .pdr__more:hover{background:#000;color:#fff}
+  .pdr__none{padding:24px 0;color:var(--pdr-mute)}
+  .pdr__empty{padding:36px 24px;border:1px solid var(--pdr-line);border-radius:8px;text-align:center;margin-top:8px}
+  .pdr__empty h3{margin:0 0 6px;font-family:inherit;font-size:18px;font-weight:600}
+  .pdr__empty p{margin:0;color:var(--pdr-mute);font-size:14px}
+  @media (min-width:900px){
+    .pdr{padding:56px 50px}
+    .pdr__top{grid-template-columns:minmax(300px,440px) minmax(0,1fr);gap:96px}
+    .pdr__scales{padding-top:70px}
+    .pdr__item{grid-template-columns:minmax(150px,220px) minmax(0,1fr) auto;gap:48px;align-items:start}
+    .pdr__who{display:grid;gap:6px;align-content:start}
+    .pdr__helpful{flex-direction:column;align-items:flex-end}
+    .pdr__helpful div{display:flex;gap:10px}
+  }
+</style>
+
+<script>
+  (function () {
+    document.querySelectorAll('[data-pdr]').forEach(function (sec) {
+      if (sec.__pdr) return; sec.__pdr = true;
+      var raw = []; try { raw = JSON.parse(sec.querySelector('[data-pdr-data]').textContent) || []; } catch (e) {}
+      if (!Array.isArray(raw)) raw = [];
+      var pid = sec.getAttribute('data-pid') || 'p', UKEY = 'terzee_review_mine_' + pid, HKEY = 'terzee_review_votes';
+      var mine = [], votes = {};
+      try { mine = JSON.parse(localStorage.getItem(UKEY) || '[]'); } catch (e) {}
+      try { votes = JSON.parse(localStorage.getItem(HKEY) || '{}'); } catch (e) {}
+      var dev = sec.hasAttribute('data-dev'), writeUrl = sec.getAttribute('data-write-url');
+      var st = { sort: 'recent', filter: 'all', tag: '', shown: 5 };
+      var q = function (s) { return sec.querySelector(s); };
+      var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+      var all = function () {
+        return mine.concat(raw).map(function (r, i) {
+          return { id: r.id || ('r' + i), rating: Math.max(0, Math.min(5, +r.rating || 0)), title: r.title || '', body: r.body || '', author: r.author || 'Customer', date: r.date || '', verified: !!r.verified, size: r.size || '', tags: r.tags || [], up: +r.helpful || 0, down: +r.down || 0, fit: +r.fit || 0, length: +r.length || 0, mine: !!r.mine };
+        }).filter(function (r) { return r.rating; });
+      };
+      var when = function (d) { var t = Date.parse(d); return isNaN(t) ? 0 : t; };
+      var fdate = function (d) { var t = when(d); return t ? new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''; };
+      var stars = function (n) { return '<span class="pdr__stars" style="--r:' + (n / 5 * 100) + '%" aria-hidden="true">★★★★★</span>'; };
+      var thumb = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11v9H4v-9zM7 11l4-8c1.4 0 2.5 1.1 2.5 2.5V9H19a2 2 0 0 1 2 2.3l-1 7A2 2 0 0 1 18 20H7"/></svg>';
+      function scale(list, key, lo, hi) {
+        var v = list.filter(function (r) { return r[key]; }); if (!v.length) return '';
+        var avg = v.reduce(function (a, r) { return a + r[key]; }, 0) / v.length;
+        return '<div class="pdr__scale"><i><u style="width:' + ((avg - 1) / 4 * 100) + '%"></u></i><span>' + lo + '</span><span>' + hi + '</span></div>';
+      }
+      function render() {
+        var list = all(), total = list.length;
+        var sum = list.reduce(function (a, r) { return a + r.rating; }, 0), avg = total ? sum / total : 0;
+        var counts = [0, 0, 0, 0, 0, 0]; list.forEach(function (r) { counts[r.rating]++; });
+        q('[data-pdr-avg]').textContent = total ? avg.toFixed(1) : '—';
+        q('[data-pdr-stars]').style.setProperty('--r', (avg / 5 * 100) + '%');
+        q('[data-pdr-total]').textContent = total ? total + (total === 1 ? ' rating' : ' ratings') : 'No ratings yet';
+        document.querySelectorAll('[data-pdpx-rating]').forEach(function (h) {
+          h.hidden = !total;
+          if (total) h.innerHTML = stars(avg).replace('pdr__stars', 'pdr__stars pdr__stars--sm') + '<span>' + avg.toFixed(1) + '</span><a href="#reviews">(' + total + ')</a>';
+        });
+        q('[data-pdr-bars]').innerHTML = [5, 4, 3, 2, 1].map(function (n) {
+          var pct = total ? counts[n] / total * 100 : 0, on = st.filter === String(n);
+          return '<button type="button" class="pdr__bar' + (on ? ' is-on' : '') + '" data-star="' + n + '" aria-pressed="' + on + '" aria-label="' + n + ' stars, ' + counts[n] + ' reviews"><span>' + n + (n === 1 ? ' Star' : ' Stars') + '</span><i><u style="width:' + pct + '%"></u></i><em>' + counts[n] + '</em></button>';
+        }).join('');
+        var sc = scale(list, 'length', 'Too short', 'Too long') + scale(list, 'fit', 'Runs small', 'Runs large');
+        q('[data-pdr-scales]').hidden = !sc; q('[data-pdr-scales]').innerHTML = sc;
+        var tagCount = {}; list.forEach(function (r) { r.tags.forEach(function (t) { tagCount[t] = (tagCount[t] || 0) + 1; }); });
+        var tags = Object.keys(tagCount).sort(function (a, b) { return tagCount[b] - tagCount[a]; }).slice(0, 10);
+        q('[data-pdr-attrs]').hidden = !tags.length;
+        q('[data-pdr-chips]').innerHTML = tags.map(function (t) { return '<button type="button" class="' + (st.tag === t ? 'is-on' : '') + '" data-tag="' + esc(t) + '" aria-pressed="' + (st.tag === t) + '">' + esc(t) + '</button>'; }).join('');
+        var shown = list.filter(function (r) {
+          if (st.filter === 'verified' && !r.verified) return false;
+          if (/^[1-5]$/.test(st.filter) && r.rating !== +st.filter) return false;
+          if (st.tag && r.tags.indexOf(st.tag) < 0) return false;
+          return true;
+        });
+        shown.sort(function (a, b) {
+          if (st.sort === 'high') return b.rating - a.rating || when(b.date) - when(a.date);
+          if (st.sort === 'low') return a.rating - b.rating || when(b.date) - when(a.date);
+          if (st.sort === 'helpful') return (b.up + (votes[b.id] === 'up' ? 1 : 0)) - (a.up + (votes[a.id] === 'up' ? 1 : 0)) || when(b.date) - when(a.date);
+          return when(b.date) - when(a.date);
+        });
+        q('[data-pdr-list]').innerHTML = shown.slice(0, st.shown).map(function (r) {
+          var long = r.body.length > 220, up = r.up + (votes[r.id] === 'up' ? 1 : 0), down = r.down + (votes[r.id] === 'down' ? 1 : 0);
+          return '<article class="pdr__item"><div class="pdr__who">' + stars(r.rating) + '<b>' + esc(r.author) + '</b>' + (fdate(r.date) ? '<span>' + fdate(r.date) + '</span>' : '') + (r.verified ? '<span class="pdr__ok">Verified buyer</span>' : '') + (r.mine ? '<span class="pdr__ok">Your review · saved on this device</span>' : '') + '</div>' +
+            '<div class="pdr__text"><h4>' + esc(r.title) + '</h4><p class="pdr__body' + (long ? ' is-clamp' : '') + '">' + esc(r.body) + '</p>' + (long ? '<button type="button" class="pdr__readmore" data-readmore>Read more</button>' : '') + (r.size ? '<small>Size purchased: ' + esc(r.size) + '</small>' : '') + '</div>' +
+            '<div class="pdr__helpful"><span>Was this helpful?</span><div><button type="button" class="' + (votes[r.id] === 'up' ? 'is-on' : '') + '" data-vote="up" data-id="' + esc(r.id) + '" aria-label="Helpful" aria-pressed="' + (votes[r.id] === 'up') + '">' + thumb + up + '</button><button type="button" class="pdr__down' + (votes[r.id] === 'down' ? ' is-on' : '') + '" data-vote="down" data-id="' + esc(r.id) + '" aria-label="Not helpful" aria-pressed="' + (votes[r.id] === 'down') + '">' + thumb + down + '</button></div></div></article>';
+        }).join('');
+        q('[data-pdr-count]').textContent = total ? shown.length + (shown.length === 1 ? ' Review' : ' Reviews') : '';
+        q('[data-pdr-more]').hidden = shown.length <= st.shown;
+        q('[data-pdr-tools]').hidden = !total; q('[data-pdr-empty]').hidden = !!total; q('[data-pdr-list]').hidden = !total;
+        if (total && !shown.length) q('[data-pdr-list]').innerHTML = '<p class="pdr__none">No reviews match this filter.</p>';
+        q('[data-pdr-filter]').value = st.filter;
+      }
+      sec.addEventListener('click', function (e) {
+        var bar = e.target.closest('[data-star]'); if (bar) { var n = bar.dataset.star; st.filter = st.filter === n ? 'all' : n; st.shown = 5; render(); return; }
+        var tg = e.target.closest('[data-tag]'); if (tg) { st.tag = st.tag === tg.dataset.tag ? '' : tg.dataset.tag; st.shown = 5; render(); return; }
+        if (e.target.closest('[data-pdr-more]')) { st.shown += 5; render(); return; }
+        var rm = e.target.closest('[data-readmore]'); if (rm) { var body = rm.previousElementSibling, open = body.classList.toggle('is-clamp'); rm.textContent = open ? 'Read more' : 'Show less'; return; }
+        var v = e.target.closest('[data-vote]'); if (v) { var id = v.dataset.id, k = v.dataset.vote; if (votes[id] === k) delete votes[id]; else votes[id] = k; try { localStorage.setItem(HKEY, JSON.stringify(votes)); } catch (er) {} render(); }
+      });
+      q('[data-pdr-sort]').addEventListener('change', function (e) { st.sort = e.target.value; render(); });
+      q('[data-pdr-filter]').addEventListener('change', function (e) { st.filter = e.target.value; st.shown = 5; render(); });
+      var w = q('[data-pdr-write]'), form = q('[data-pdr-form]');
+      if (writeUrl) { w.hidden = false; w.addEventListener('click', function () { window.open(writeUrl, '_blank', 'noopener'); }); }
+      else if (dev) {
+        w.hidden = false;
+        w.addEventListener('click', function () { form.hidden = false; form.querySelector('select').focus(); });
+        q('[data-pdr-cancel]').addEventListener('click', function () { form.hidden = true; });
+        form.addEventListener('submit', function (e) {
+          e.preventDefault(); var f = new FormData(form);
+          mine.unshift({ id: 'mine-' + Date.now(), rating: +f.get('rating'), title: String(f.get('title')), body: String(f.get('body')), author: String(f.get('name')), date: new Date().toISOString().slice(0, 10), mine: true, tags: [] });
+          try { localStorage.setItem(UKEY, JSON.stringify(mine)); } catch (er) {}
+          form.reset(); form.hidden = true; render();
+        });
+      }
+      render();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product reviews",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Ratings & Reviews" },
+    { "type": "url", "id": "review_url", "label": "Write-a-review link", "info": "Your review app's form. Empty hides the Write a review button." }
+  ],
+  "presets": [ { "name": "Product reviews" } ]
+}
+{% endschema %}

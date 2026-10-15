@@ -54,65 +54,13 @@
             "tag": "",
             "url": "/products/jaal-pocket-camp-shirt"
           }
-        },
-        "p5": {
-          "type": "demo",
-          "settings": {
-            "title": "Shab",
-            "price": "₹6,990",
-            "meta": "Jackets · Block print",
-            "image": "shab-hero-1.jpg",
-            "image_alt": "shab-hero-2.jpg",
-            "tag": "",
-            "url": "/products/shab"
-          }
-        },
-        "p6": {
-          "type": "demo",
-          "settings": {
-            "title": "Virāsat",
-            "price": "₹8,490",
-            "meta": "Jackets · Patchwork",
-            "image": "virasat-hero-1.jpg",
-            "image_alt": "virasat-hero-2.jpg",
-            "tag": "",
-            "url": "/products/virasat"
-          }
-        },
-        "p7": {
-          "type": "demo",
-          "settings": {
-            "title": "Siyahkaar",
-            "price": "₹4,990",
-            "meta": "Shirts · Embroidery",
-            "image": "siyahkaar-hero-1.jpg",
-            "image_alt": "siyahkaar-hero-2.jpg",
-            "tag": "",
-            "url": "/products/siyahkaar"
-          }
-        },
-        "p8": {
-          "type": "demo",
-          "settings": {
-            "title": "Khaak",
-            "price": "₹7,990",
-            "meta": "Jackets · Washed denim",
-            "image": "khaak-denim-jacket-hero-1.jpg",
-            "image_alt": "khaak-denim-jacket-hero-2.jpg",
-            "tag": "",
-            "url": "/products/khaak-denim-jacket"
-          }
         }
       },
       "block_order": [
         "p1",
         "p2",
         "p3",
-        "p4",
-        "p5",
-        "p6",
-        "p7",
-        "p8"
+        "p4"
       ],
       "settings": {
         "eyebrow": "Drop 01",
@@ -273,18 +221,6 @@
             "url": "/products/diamond-jaal-bomber"
           }
         },
-        "s3": {
-          "type": "demo",
-          "settings": {
-            "title": "Virāsat",
-            "price": "₹8,490",
-            "compare": "",
-            "tag": "Limited",
-            "image": "virasat-hero-1.jpg",
-            "image_alt": "virasat-hero-2.jpg",
-            "url": "/products/virasat"
-          }
-        },
         "s4": {
           "type": "demo",
           "settings": {
@@ -301,7 +237,6 @@
       "block_order": [
         "s1",
         "s2",
-        "s3",
         "s4"
       ],
       "settings": {

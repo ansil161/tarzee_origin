@@ -1,1 +1,81 @@
-{ "sections": { "main": { "type": "main-product", "settings": {} }, "related": { "type": "related-products", "settings": {} } }, "order": ["main", "related"] }
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "disabled": true,
+      "settings": {}
+    },
+    "custom": {
+      "type": "main-product-custom",
+      "blocks": {
+        "o0": {
+          "type": "offer",
+          "settings": {
+            "title": "₹150 OFF",
+            "subtitle": "Prepaid above ₹1049",
+            "code": "UFOFF150FIRE",
+            "auto": true
+          }
+        },
+        "o1": {
+          "type": "offer",
+          "settings": {
+            "title": "₹300 OFF",
+            "subtitle": "Prepaid above ₹2069",
+            "code": "UFOFF300FIRE",
+            "auto": true
+          }
+        },
+        "o2": {
+          "type": "offer",
+          "settings": {
+            "title": "₹550 OFF",
+            "subtitle": "Prepaid above ₹3599",
+            "code": "UFOFF550FIRE",
+            "auto": true
+          }
+        },
+        "o3": {
+          "type": "offer",
+          "settings": {
+            "title": "₹850 OFF",
+            "subtitle": "",
+            "code": "UFOFF850FIRE",
+            "auto": true
+          }
+        }
+      },
+      "block_order": [
+        "o0",
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "settings": {}
+    },
+    "related": {
+      "type": "related-products",
+      "settings": {}
+    },
+    "highlights": {
+      "type": "product-highlights",
+      "settings": {}
+    },
+    "bundle": {
+      "type": "product-bundle",
+      "settings": {}
+    },
+    "reviews": {
+      "type": "product-reviews",
+      "settings": {}
+    }
+  },
+  "order": [
+    "custom",
+    "highlights",
+    "bundle",
+    "reviews",
+    "main",
+    "related"
+  ]
+}

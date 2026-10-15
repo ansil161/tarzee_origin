@@ -236,7 +236,8 @@
     "hero": [
       "shab-hero-1.jpg",
       "shab-hero-2.jpg"
-    ]
+    ],
+    "hidden": true
   },
   {
     "handle": "virasat",
@@ -252,7 +253,8 @@
     "hero": [
       "virasat-hero-1.jpg",
       "virasat-hero-2.jpg"
-    ]
+    ],
+    "hidden": true
   },
   {
     "handle": "siyahkaar",
@@ -268,7 +270,8 @@
     "hero": [
       "siyahkaar-hero-1.jpg",
       "siyahkaar-hero-2.jpg"
-    ]
+    ],
+    "hidden": true
   },
   {
     "handle": "khaak-denim-jacket",
@@ -284,7 +287,8 @@
     "hero": [
       "khaak-denim-jacket-hero-1.jpg",
       "khaak-denim-jacket-hero-2.jpg"
-    ]
+    ],
+    "hidden": true
   },
   {
     "handle": "dehleez",
@@ -300,7 +304,8 @@
     "hero": [
       "dehleez-hero-1.jpg",
       "dehleez-hero-2.jpg"
-    ]
+    ],
+    "hidden": true
   },
   {
     "handle": "gali-culture",
@@ -332,7 +337,8 @@
     "hero": [
       "rugged-khaakh-hero-1.jpg",
       "rugged-khaakh-hero-2.jpg"
-    ]
+    ],
+    "hidden": true
   },
   {
     "handle": "katran-club",
@@ -364,6 +370,7 @@
     "hero": [
       "sheher-after-dark-hero-1.jpg",
       "sheher-after-dark-hero-2.jpg"
-    ]
+    ],
+    "hidden": true
   }
 ]

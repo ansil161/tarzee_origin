@@ -144,6 +144,7 @@
             <div class="acc__body">{{ 'products.shipping_text' | t }}</div>
           </details>
         </div>
+        {%- assign pair_done = false -%}
         {%- for p in pair_source -%}
           {%- if p.id != product.id and pair_done != true -%}
             {%- assign pair_done = true -%}

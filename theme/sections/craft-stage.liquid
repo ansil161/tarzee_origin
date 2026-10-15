@@ -17,6 +17,13 @@
       {%- if section.settings.cta != blank -%}
         <a class="craft__cta" href="{{ section.settings.cta_url | default: '#' }}">{{ section.settings.cta }}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       {%- endif -%}
+      {%- if section.settings.show_logo -%}
+        <div class="logo3d craft__logo" data-logo3d data-module="{{ 'logo3d.js' | asset_url }}" role="img" aria-label="Terzee Origins logo in polished black metal, slowly rotating">
+          <img class="logo3d__fallback" data-logo3d-fallback src="{{ 'logo-3d-fallback.png' | asset_url }}" alt="" width="1000" height="711" loading="lazy">
+          <canvas data-logo3d-canvas aria-hidden="true"></canvas>
+        </div>
+        <script>(function(){var el=document.currentScript.previousElementSibling;if(!el||el.__l3d)return;el.__l3d=true;function go(){var s=document.createElement('script');s.src=el.dataset.module;s.async=true;document.head.appendChild(s)}if(!('IntersectionObserver' in window))return go();var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();go()}},{rootMargin:'600px 0px'});io.observe(el)})();</script>
+      {%- endif -%}
     </div>
     <div class="craft__stage">
       <div class="craft__frame">
@@ -51,6 +58,7 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "Every piece carries the hand that made it." },
     { "type": "textarea", "id": "text", "label": "Text", "default": "Blanket stitch, block print, patchwork with exposed edges. Slow work, kept patient and precise — the hand is always visible." },
     { "type": "text", "id": "cta", "label": "Button", "default": "Our story" },
+    { "type": "checkbox", "id": "show_logo", "label": "Show the rotating 3D logo", "default": true },
     { "type": "url", "id": "cta_url", "label": "Button link" },
     { "type": "url", "id": "video_url", "label": "Video URL (mp4). Empty = bundled craft loop." },
     { "type": "image_picker", "id": "image", "label": "Image (replaces the video)" },

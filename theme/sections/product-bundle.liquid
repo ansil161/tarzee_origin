@@ -1,0 +1,126 @@
+{%- comment -%}
+  Bundle — "buy together": this product + one partner, tick/untick, pick options, total, one button.
+  Partner: product metafield custom.bundle_product, else the product picked here, else the first other product in "All".
+  Discounts shown are only the compare-at prices already on the products. Any extra discount must exist in Shopify.
+{%- endcomment -%}
+{%- liquid
+  assign partner = product.metafields.custom.bundle_product.value | default: section.settings.partner
+  if partner == blank
+    for p in collections.all.products
+      if p.id != product.id and partner == blank
+        assign partner = p
+      endif
+    endfor
+  endif
+-%}
+{%- if partner != blank -%}
+<section class="pdb" data-pdb data-currency="{{ cart.currency.iso_code }}" data-locale="{{ request.locale.iso_code }}">
+  {%- if section.settings.eyebrow != blank -%}<p class="pdb__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+  <div class="pdb__body">
+    <div class="pdb__imgs">
+      {%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 400 }}" alt="" width="200" height="250" loading="lazy">{%- endif -%}
+      <span class="pdb__plus" aria-hidden="true">+</span>
+      {%- if partner.featured_image -%}<img src="{{ partner.featured_image | image_url: width: 400 }}" alt="" width="200" height="250" loading="lazy">{%- endif -%}
+    </div>
+    <div class="pdb__list">
+      {%- for p in (1..2) -%}
+        {%- if forloop.first -%}{%- assign bp = product -%}{%- else -%}{%- assign bp = partner -%}{%- endif -%}
+        {%- assign bv = bp.selected_or_first_available_variant -%}
+        <div class="pdb__row" data-pdb-item data-title="{{ bp.title | escape }}" data-img="{{ bp.featured_image | image_url: width: 300 }}">
+          <input type="checkbox" class="pdb__check" checked data-pdb-check aria-label="Include {{ bp.title | escape }}">
+          <div class="pdb__main">
+            <a class="pdb__name" href="{{ bp.url }}">{{ bp.title }}</a>
+            <span class="pdb__price"><b data-pdb-price>{{ bv.price | money }}</b>{% if bv.compare_at_price > bv.price %} <s data-pdb-was>{{ bv.compare_at_price | money }}</s>{% else %} <s data-pdb-was hidden></s>{% endif %}</span>
+            {%- unless bp.has_only_default_variant -%}
+              <span class="pdb__selects">
+                {%- for option in bp.options_with_values -%}
+                  <select data-pdb-opt="{{ forloop.index0 }}" aria-label="{{ option.name | escape }}">
+                    {%- for value in option.values -%}<option value="{{ value | escape }}" {% if bv.options[forloop.parentloop.index0] == value %}selected{% endif %}>{{ value }}</option>{%- endfor -%}
+                  </select>
+                {%- endfor -%}
+              </span>
+            {%- endunless -%}
+            <script type="application/json" data-pdb-variants>{{ bp.variants | json }}</script>
+          </div>
+        </div>
+      {%- endfor -%}
+      <p class="pdb__total">Total Price: <b data-pdb-total></b> <s data-pdb-total-was></s></p>
+      <button type="button" class="pdb__add" data-pdb-add>{{ section.settings.button }}</button>
+    </div>
+  </div>
+</section>
+<style>
+  .pdb{background:#fff;color:#000;font-family:inherit;padding:32px 16px;letter-spacing:.04em}
+  .pdb *{box-sizing:border-box}
+  .pdb__eyebrow{margin:0 0 16px;text-align:center;font-size:12px;letter-spacing:.06em}
+  .pdb__body{display:flex;flex-direction:column;align-items:center;gap:20px;max-width:880px;margin:0 auto}
+  .pdb__imgs{display:flex;align-items:center;gap:14px}
+  .pdb__imgs img{width:130px;height:auto;aspect-ratio:4/5;object-fit:cover;display:block}
+  .pdb__plus{font-size:20px;font-weight:700}
+  .pdb__list{width:100%;max-width:440px}
+  .pdb__row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+  .pdb__check{flex:none;width:18px;height:18px;margin:5px 0 0;accent-color:#000}
+  .pdb__main{display:grid;gap:4px;flex:1}
+  .pdb__name{font-size:16px;line-height:1.3;color:#000;text-decoration:none}
+  .pdb__price{font-size:16px;font-weight:700}
+  .pdb__price s{margin-left:6px;font-size:14px;color:rgba(0,0,0,.7)}
+  .pdb__selects{display:flex;gap:8px}
+  .pdb__selects select{height:28px;padding:0 8px;border:1px solid #ccc;border-radius:4px;background:#fff;font:inherit;font-size:12px;letter-spacing:0}
+  .pdb__total{margin:16px 0 12px;padding-top:12px;border-top:1px solid #e5e5e5;font-size:18px;font-weight:700}
+  .pdb__total s{margin-left:6px;font-size:14px;font-weight:700;color:rgba(0,0,0,.7)}
+  .pdb__add{width:100%;height:49px;border:0;border-radius:8px;background:#000;color:#fff;font:inherit;font-size:16px;font-weight:700;letter-spacing:.5px;cursor:pointer}
+  .pdb__add:disabled{background:#8a8a8a;cursor:not-allowed}
+  .pdb [hidden]{display:none!important}
+  @media (min-width:900px){.pdb{padding:56px 50px}.pdb__body{flex-direction:row;align-items:center;gap:48px}.pdb__imgs img{width:170px}.pdb__list{flex:1}}
+</style>
+<script>
+  (function () {
+    document.querySelectorAll('[data-pdb]').forEach(function (root) {
+      if (root.__pdb) return; root.__pdb = true;
+      var fmt = function (c) { try { return new Intl.NumberFormat(root.dataset.locale || undefined, { style: 'currency', currency: root.dataset.currency || 'INR' }).format(c / 100); } catch (e) { return (c / 100).toFixed(2); } };
+      var items = [].slice.call(root.querySelectorAll('[data-pdb-item]')).map(function (el) {
+        var variants = []; try { variants = JSON.parse(el.querySelector('[data-pdb-variants]').textContent); } catch (e) {}
+        return { el: el, variants: variants };
+      });
+      function pick(it) {
+        var sel = [].slice.call(it.el.querySelectorAll('[data-pdb-opt]')).map(function (s) { return s.value; });
+        return it.variants.filter(function (v) { return sel.length ? v.options.every(function (o, i) { return o === sel[i]; }) : true; })[0] || it.variants[0];
+      }
+      function render() {
+        var tot = 0, was = 0, any = false, ok = false;
+        items.forEach(function (it) {
+          var v = pick(it); it.v = v; if (!v) return;
+          it.el.querySelector('[data-pdb-price]').textContent = fmt(v.price);
+          var w = it.el.querySelector('[data-pdb-was]'), has = v.compare_at_price && v.compare_at_price > v.price;
+          w.hidden = !has; if (has) w.textContent = fmt(v.compare_at_price);
+          if (it.el.querySelector('[data-pdb-check]').checked) { any = true; tot += v.price; was += has ? v.compare_at_price : v.price; if (v.available) ok = true; }
+        });
+        root.querySelector('[data-pdb-total]').textContent = fmt(tot);
+        var tw = root.querySelector('[data-pdb-total-was]'); tw.hidden = was <= tot; tw.textContent = was > tot ? fmt(was) : '';
+        root.querySelector('[data-pdb-add]').disabled = !any || !ok;
+      }
+      root.addEventListener('change', render);
+      root.querySelector('[data-pdb-add]').addEventListener('click', function () {
+        var list = [];
+        items.forEach(function (it) {
+          if (!it.v || !it.el.querySelector('[data-pdb-check]').checked || !it.v.available) return;
+          list.push({ id: it.v.id, qty: 1, title: it.el.dataset.title, price: it.v.price / 100, img: it.el.dataset.img, size: (it.v.options || []).join(' / ') });
+        });
+        if (list.length && window.terzeeAddItems) window.terzeeAddItems(list);
+      });
+      render();
+    });
+  })();
+</script>
+{%- endif -%}
+{% schema %}
+{
+  "name": "Product bundle",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Frequently bought together" },
+    { "type": "product", "id": "partner", "label": "Partner product", "info": "A product metafield custom.bundle_product overrides this per product." },
+    { "type": "text", "id": "button", "label": "Button", "default": "Add selected to cart" }
+  ],
+  "presets": [ { "name": "Product bundle" } ]
+}
+{% endschema %}

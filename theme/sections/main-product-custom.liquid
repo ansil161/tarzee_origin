@@ -1,0 +1,503 @@
+{%- comment -%}
+  Product page (custom) — mobile-first info stack:
+  title · price + SAVE % · colour thumbnails · available offers · sizing chart · model info ·
+  size pills · ADD TO CART · tabs (Description / Details / Exchange Policy).
+  Font: inherits the theme font (font-family: inherit). Everything is editable in the theme editor.
+
+  Optional product metafields (Settings > Custom data > Products):
+    custom.model_info      single line text         "Model is 5'8" (172 cm), 70 kg, Wearing M Size"
+    custom.details         multi-line / rich text   Details tab
+    custom.size_chart      file (image)             size-chart image shown in the popup
+    custom.color_products  list of products         linked colour products (thumbnails link to them)
+{%- endcomment -%}
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  assign size_idx = -1
+  assign color_idx = -1
+  for option in product.options_with_values
+    assign oname = option.name | downcase
+    if oname == 'size' or oname == 'sizes'
+      assign size_idx = forloop.index0
+    endif
+    if oname == 'color' or oname == 'colour'
+      assign color_idx = forloop.index0
+    endif
+  endfor
+  assign save_pct = 0
+  if current.compare_at_price > current.price
+    assign save_pct = current.compare_at_price | minus: current.price | times: 100.0 | divided_by: current.compare_at_price | floor
+  endif
+  assign linked = product.metafields.custom.color_products.value
+  assign model_info = product.metafields.custom.model_info.value | default: section.settings.model_fallback
+  assign chart_img = product.metafields.custom.size_chart.value | default: section.settings.size_chart_image
+-%}
+
+<section class="pdpx" data-pdpx data-size-index="{{ size_idx }}" data-color-index="{{ color_idx }}" data-options='{{ current.options | json }}' data-currency="{{ cart.currency.iso_code }}" data-locale="{{ request.locale.iso_code }}" data-sold-out="{{ section.settings.sold_out_label | escape }}" data-atc="{{ section.settings.atc_label | escape }}">
+  <div class="pdpx__wrap">
+
+    {%- if section.settings.show_gallery and product.media.size > 0 -%}
+      {%- assign g_n = 0 -%}
+      <div class="pdpx__gallery" data-pdpx-gallery>
+        <div class="pdpx__track" data-pdpx-track aria-label="Product images">
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' and g_n < section.settings.gallery_count -%}
+              {%- assign g_n = g_n | plus: 1 -%}
+              <div class="pdpx__slide" data-media-id="{{ media.id }}" role="button" tabindex="0" aria-label="Open image {{ g_n }}"><img src="{{ media | image_url: width: 1000 }}" data-full="{{ media | image_url: width: 2000 }}" alt="{{ media.alt | default: product.title | escape }}" width="800" height="1000" {% if g_n == 1 %}fetchpriority="high"{% else %}loading="lazy"{% endif %}></div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div class="pdpx__info">
+
+      {%- comment -%} 1. Title {%- endcomment -%}
+      <h1 class="pdpx__title">{{ product.title }}</h1>
+      <div class="pdpx__rating" data-pdpx-rating hidden></div>
+
+      {%- comment -%} 2. Price row {%- endcomment -%}
+      <div class="pdpx__price" data-pdpx-pricerow>
+        <span class="pdpx__now" data-pdpx-price>{{ current.price | money }}</span>
+        <s class="pdpx__was" data-pdpx-was {% unless current.compare_at_price > current.price %}hidden{% endunless %}>{{ current.compare_at_price | money }}</s>
+        <span class="pdpx__save" data-pdpx-save {% unless save_pct > 0 %}hidden{% endunless %}>SAVE {{ save_pct }}%</span>
+      </div>
+
+      {%- comment -%} 3. Colour / linked-product thumbnails {%- endcomment -%}
+      {%- if linked != blank -%}
+        <div class="pdpx__thumbs" role="list" aria-label="Colours">
+          <a class="pdpx__thumb is-active" role="listitem" href="{{ product.url }}" aria-current="true" aria-label="{{ product.title | escape }}">{%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 120 }}" alt="" width="44" height="44" loading="lazy">{%- endif -%}</a>
+          {%- for p in linked -%}
+            <a class="pdpx__thumb" role="listitem" href="{{ p.url }}" aria-label="{{ p.title | escape }}">{%- if p.featured_image -%}<img src="{{ p.featured_image | image_url: width: 120 }}" alt="" width="44" height="44" loading="lazy">{%- endif -%}</a>
+          {%- endfor -%}
+        </div>
+      {%- elsif color_idx >= 0 -%}
+        {%- assign color_option = product.options_with_values[color_idx] -%}
+        <div class="pdpx__thumbs" role="radiogroup" aria-label="{{ color_option.name }}">
+          {%- for value in color_option.values -%}
+            {%- assign swatch = nil -%}
+            {%- for v in product.variants -%}
+              {%- if swatch == nil and v.options[color_idx] == value and v.featured_image -%}{%- assign swatch = v.featured_image -%}{%- endif -%}
+            {%- endfor -%}
+            <button type="button" class="pdpx__thumb{% if current.options[color_idx] == value %} is-active{% endif %}" data-color="{{ value | escape }}" role="radio" aria-checked="{% if current.options[color_idx] == value %}true{% else %}false{% endif %}" aria-label="{{ value | escape }}" title="{{ value | escape }}">
+              {%- if swatch -%}<img src="{{ swatch | image_url: width: 120 }}" alt="" width="44" height="44" loading="lazy">{%- else -%}<span class="pdpx__thumb-text">{{ value }}</span>{%- endif -%}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} 4. Available offers {%- endcomment -%}
+      {%- if section.blocks.size > 0 -%}
+        <div class="pdpx__offers">
+          <p class="pdpx__label">{{ section.settings.offers_label }}</p>
+          <div class="pdpx__offerrow" tabindex="0" aria-label="{{ section.settings.offers_label | escape }}">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'offer' -%}
+                <div class="pdpx__offer" {{ block.shopify_attributes }}>
+                  <b class="pdpx__offer-title">{{ block.settings.title }}</b>
+                  {%- if block.settings.subtitle != blank -%}<span class="pdpx__offer-sub">{{ block.settings.subtitle }}</span>{%- endif -%}
+                  <span class="pdpx__offer-foot">
+                    {%- if block.settings.code != blank -%}<span class="pdpx__code">{{ block.settings.code }}</span>{%- endif -%}
+                    {%- if block.settings.auto -%}<span class="pdpx__auto"><svg viewBox="0 0 12 12" width="9" height="9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6.5 4.8 9 10 3"/></svg>Auto Applied</span>{%- endif -%}
+                  </span>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} 5. Sizing chart link + modal {%- endcomment -%}
+      {%- if chart_img != blank or section.settings.size_chart_fallback != blank -%}
+        <button type="button" class="pdpx__sizelink" data-pdpx-open="chart">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="8" width="20" height="8" rx="1"/><path d="M6 8v3M10 8v4M14 8v3M18 8v4"/></svg>
+          <span>{{ section.settings.sizing_label }}</span>
+        </button>
+        <dialog class="pdpx__modal" data-pdpx-modal="chart" aria-label="{{ section.settings.sizing_label | escape }}">
+          <button type="button" class="pdpx__modal-x" data-pdpx-close aria-label="Close">&times;</button>
+          <div class="pdpx__modal-body">
+            {%- if chart_img != blank -%}
+              <img src="{{ chart_img | image_url: width: 1400 }}" alt="{{ section.settings.sizing_label | escape }}" width="{{ chart_img.width }}" height="{{ chart_img.height }}" loading="lazy">
+            {%- endif -%}
+            {%- if section.settings.size_chart_fallback != blank -%}<div class="pdpx__rte">{{ section.settings.size_chart_fallback }}</div>{%- endif -%}
+          </div>
+        </dialog>
+      {%- endif -%}
+
+      {%- comment -%} 6. Model info {%- endcomment -%}
+      {%- if model_info != blank -%}<p class="pdpx__model">{{ model_info }}</p>{%- endif -%}
+
+      {%- comment -%} 7 + 8. Size pills + Add to cart {%- endcomment -%}
+      {%- form 'product', product, class: 'pdpx__form', data-ajax-cart: 'true' -%}
+        <input type="hidden" name="id" value="{{ current.id }}" data-pdpx-id>
+        {%- if size_idx >= 0 -%}
+          {%- assign size_option = product.options_with_values[size_idx] -%}
+          <p class="pdpx__sizelabel">{{ size_option.name }} - <span data-pdpx-sizeval>{{ current.options[size_idx] }}</span></p>
+          <div class="pdpx__sizes" role="radiogroup" aria-label="{{ size_option.name }}">
+            {%- for value in size_option.values -%}
+              {%- assign avail = false -%}
+              {%- for v in product.variants -%}
+                {%- if v.options[size_idx] == value and v.available -%}
+                  {%- if color_idx < 0 or v.options[color_idx] == current.options[color_idx] -%}{%- assign avail = true -%}{%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+              <label class="pdpx__size{% unless avail %} is-out{% endunless %}">
+                <input type="radio" name="pdpx-size" value="{{ value | escape }}" data-pdpx-size {% if current.options[size_idx] == value %}checked{% endif %} {% unless avail %}disabled{% endunless %}>
+                <span>{{ value }}</span>
+              </label>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        <button type="submit" class="pdpx__atc" data-pdpx-atc {% unless current.available %}disabled{% endunless %}>{% if current.available %}{{ section.settings.atc_label }}{% else %}{{ section.settings.sold_out_label }}{% endif %}</button>
+      {%- endform -%}
+      <script type="application/json" data-pdpx-variants>{{ product.variants | json }}</script>
+
+      {%- comment -%} 9. Tabs {%- endcomment -%}
+      <div class="pdpx__tabs" data-pdpx-tabs>
+        <div class="pdpx__tablist" role="tablist">
+          <button type="button" role="tab" class="pdpx__tab{% if section.settings.default_tab == 'description' %} is-active{% endif %}" id="pdpx-t-desc-{{ section.id }}" aria-controls="pdpx-p-desc-{{ section.id }}" aria-selected="{% if section.settings.default_tab == 'description' %}true{% else %}false{% endif %}">{{ section.settings.tab_description }}</button>
+          <button type="button" role="tab" class="pdpx__tab{% if section.settings.default_tab == 'details' %} is-active{% endif %}" id="pdpx-t-det-{{ section.id }}" aria-controls="pdpx-p-det-{{ section.id }}" aria-selected="{% if section.settings.default_tab == 'details' %}true{% else %}false{% endif %}">{{ section.settings.tab_details }}</button>
+          <button type="button" role="tab" class="pdpx__tab{% if section.settings.default_tab == 'policy' %} is-active{% endif %}" id="pdpx-t-pol-{{ section.id }}" aria-controls="pdpx-p-pol-{{ section.id }}" aria-selected="{% if section.settings.default_tab == 'policy' %}true{% else %}false{% endif %}">{{ section.settings.tab_policy }}</button>
+        </div>
+        <div class="pdpx__panel pdpx__rte" role="tabpanel" id="pdpx-p-desc-{{ section.id }}" aria-labelledby="pdpx-t-desc-{{ section.id }}" {% unless section.settings.default_tab == 'description' %}hidden{% endunless %}>{{ product.description }}</div>
+        <div class="pdpx__panel pdpx__rte" role="tabpanel" id="pdpx-p-det-{{ section.id }}" aria-labelledby="pdpx-t-det-{{ section.id }}" {% unless section.settings.default_tab == 'details' %}hidden{% endunless %}>
+          {%- if product.metafields.custom.details != blank -%}{{ product.metafields.custom.details | metafield_tag }}{%- else -%}{{ section.settings.details_fallback }}{%- endif -%}
+        </div>
+        <div class="pdpx__panel pdpx__rte" role="tabpanel" id="pdpx-p-pol-{{ section.id }}" aria-labelledby="pdpx-t-pol-{{ section.id }}" {% unless section.settings.default_tab == 'policy' %}hidden{% endunless %}>{{ section.settings.policy }}</div>
+      </div>
+
+    </div>
+  </div>
+  <dialog class="pdpx__lb" data-pdpx-lb aria-label="Product images">
+    <button type="button" class="pdpx__lb-x" data-lb-close aria-label="Close">&times;</button>
+    <button type="button" class="pdpx__lb-nav pdpx__lb-prev" data-lb-prev aria-label="Previous image">&#8249;</button>
+    <img class="pdpx__lb-img" data-lb-img alt="" width="1200" height="1500">
+    <button type="button" class="pdpx__lb-nav pdpx__lb-next" data-lb-next aria-label="Next image">&#8250;</button>
+    <span class="pdpx__lb-count" data-lb-count></span>
+  </dialog>
+  <div class="pdpx__sticky" data-pdpx-sticky>
+    <div class="pdpx__sticky-in">
+      {%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 120 }}" alt="" width="42" height="52" loading="lazy">{%- endif -%}
+      <div class="pdpx__sticky-info">
+        <p class="pdpx__sticky-title">{{ product.title }}</p>
+        <div class="pdpx__price"><span class="pdpx__now" data-pdpx-s-price>{{ current.price | money }}</span><s class="pdpx__was" data-pdpx-s-was {% unless current.compare_at_price > current.price %}hidden{% endunless %}>{{ current.compare_at_price | money }}</s><span class="pdpx__save" data-pdpx-s-save {% unless save_pct > 0 %}hidden{% endunless %}>SAVE {{ save_pct }}%</span></div>
+      </div>
+      {%- unless product.has_only_default_variant -%}
+        <div class="pdpx__sticky-selects">
+          {%- for option in product.options_with_values -%}
+            <select data-pdpx-select="{{ forloop.index0 }}" aria-label="{{ option.name | escape }}">
+              {%- for value in option.values -%}<option value="{{ value | escape }}" {% if current.options[forloop.parentloop.index0] == value %}selected{% endif %}>{{ value }}</option>{%- endfor -%}
+            </select>
+          {%- endfor -%}
+        </div>
+      {%- endunless -%}
+      <button type="button" class="pdpx__sticky-add" data-pdpx-sticky-add {% unless current.available %}disabled{% endunless %}>Add</button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pdpx{
+    --pdpx-red:#ce0000; --pdpx-black:#000; --pdpx-ink:#121212; --pdpx-grey:#595959; --pdpx-line:#e5e5e5; --pdpx-green:#16a34a; --pdpx-ls:.06em;
+    background:#fff; color:var(--pdpx-ink); font-family:inherit; padding:12px 16px 32px; letter-spacing:var(--pdpx-ls);
+  }
+  .pdpx *,.pdpx *::before,.pdpx *::after{box-sizing:border-box}
+  .pdpx [hidden]{display:none!important}
+  .pdpx__wrap{max-width:1500px;margin:0 auto}
+  /* gallery: one slide at a time + thumbnail row */
+  .pdpx__gallery{margin:0 -16px 14px}
+  .pdpx__track{display:grid;gap:12px}
+  .pdpx__slide{display:flex;justify-content:center;background:#f4f4f4}
+  .pdpx__slide img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
+  /* info column */
+  .pdpx__info{display:flex;flex-direction:column;gap:14px}
+  .pdpx__title{margin:0;font-family:inherit;font-size:16px;line-height:1.8;font-weight:400;color:var(--pdpx-ink);letter-spacing:var(--pdpx-ls);text-transform:none}
+  .pdpx__rating{display:flex;align-items:center;gap:8px;margin-top:-6px;font-size:14px}
+  .pdpx__rating a{text-decoration:underline;text-underline-offset:3px;color:inherit}
+  .pdpx__price{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:-6px}
+  .pdpx__now{font-size:16px;font-weight:700;color:var(--pdpx-red);letter-spacing:.065em}
+  .pdpx__was{font-size:13px;font-weight:700;color:rgba(0,0,0,.9);text-decoration:line-through;letter-spacing:.065em}
+  .pdpx__save{background:#cc0000;color:#fff;font-size:12px;line-height:21px;font-weight:700;padding:0 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+  .pdpx__thumbs{display:flex;flex-wrap:wrap;gap:8px}
+  .pdpx__thumb{width:44px;height:44px;padding:0;border:1px solid var(--pdpx-line);border-radius:6px;background:#fff;overflow:hidden;cursor:pointer;display:block;font:inherit}
+  .pdpx__thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .pdpx__thumb.is-active{border:1.5px solid #2f5fd0}
+  .pdpx__thumb-text{display:grid;place-items:center;height:100%;font-size:10px;padding:2px;text-align:center}
+  .pdpx__label{margin:0 0 7px 1px;font-size:9px;line-height:16px;font-weight:500;letter-spacing:1.35px;text-transform:uppercase;color:#000}
+  .pdpx__offerrow{display:flex;gap:7px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -16px;padding:0 16px 2px;scroll-padding-left:16px}
+  .pdpx__offerrow::-webkit-scrollbar{display:none}
+  .pdpx__offer{flex:0 0 150px;scroll-snap-align:start;border:1px solid var(--pdpx-line);border-left:3px solid #111;border-radius:4px;padding:9px 12px;display:flex;flex-direction:column;gap:2px;background:#fff}
+  .pdpx__offer-title{font-size:15px;font-weight:800;line-height:1.3;letter-spacing:-.3px;color:#111}
+  .pdpx__offer-sub{font-size:9px;line-height:1.4;color:#999}
+  .pdpx__offer-foot{display:flex;align-items:center;gap:6px;margin-top:5px}
+  .pdpx__code{background:#f5f5f5;border:1px solid #e5e5e5;border-radius:2px;padding:2px 5px;font-size:8px;line-height:1.4;color:#777;letter-spacing:.48px;white-space:nowrap}
+  .pdpx__auto{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:500;color:var(--pdpx-green);white-space:nowrap}
+  .pdpx__auto svg{color:#f97316}
+  .pdpx__sizelink{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:0;border:0;background:none;font:inherit;font-size:16px;color:var(--pdpx-ink);cursor:pointer;letter-spacing:0}
+  .pdpx__model{margin:0;font-size:13px;line-height:1.5;color:var(--pdpx-ink)}
+  .pdpx__form{display:flex;flex-direction:column;gap:10px}
+  .pdpx__sizelabel{margin:0;font-size:13px;font-weight:600;line-height:1.5;letter-spacing:.4px;color:var(--pdpx-ink)}
+  .pdpx__sizes{display:flex;flex-wrap:wrap;gap:0}
+  .pdpx__size{position:relative;display:block;margin:7px 5px 2px 0}
+  .pdpx__size input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+  .pdpx__size span{display:grid;place-items:center;min-width:44px;padding:10px 20px;border:1px solid rgba(0,0,0,.55);border-radius:40px;background:#fff;color:#000;font-size:14px;line-height:14px;letter-spacing:1px;transition:background .2s,color .2s}
+  .pdpx__size input:checked + span{background:#000;color:#fff}
+  .pdpx__size input:focus-visible + span{outline:2px solid #2f5fd0;outline-offset:2px}
+  .pdpx__size.is-out span{opacity:.4;color:#777;background:linear-gradient(to top right,transparent calc(50% - .6px),#888 50%,transparent calc(50% + .6px)),#fff}
+  .pdpx__size.is-out input{cursor:not-allowed}
+  .pdpx__atc{width:100%;height:49px;margin-top:4px;border:0;border-radius:8px;background:#000;color:#fff;font:inherit;font-size:19px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
+  .pdpx__atc:hover{opacity:.88}
+  .pdpx__atc:disabled{background:#8a8a8a;cursor:not-allowed;opacity:1}
+  /* tabs */
+  .pdpx__tabs{margin-top:15px}
+  .pdpx__tablist{display:flex;border-bottom:1px solid var(--pdpx-line)}
+  .pdpx__tab{flex:1 1 0;position:relative;padding:10px 0;border:0;background:none;font:inherit;font-size:16px;letter-spacing:0;color:var(--pdpx-grey);cursor:pointer;text-align:center}
+  .pdpx__tab.is-active{color:var(--pdpx-ink)}
+  .pdpx__tab.is-active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--pdpx-ink)}
+  .pdpx__panel{padding:14px 0 0;font-size:12px;line-height:1.8;letter-spacing:.96px;color:var(--pdpx-ink)}
+  .pdpx__rte p{margin:0 0 12px}
+  .pdpx__rte p:last-child{margin-bottom:0}
+  .pdpx__rte strong{font-weight:700}
+  /* size-chart modal */
+  .pdpx__modal{width:min(92vw,720px);max-height:88vh;padding:0;border:0;border-radius:10px;overflow:auto}
+  .pdpx__modal::backdrop{background:rgba(0,0,0,.55)}
+  .pdpx__modal-x{position:sticky;top:0;float:right;margin:8px 8px 0 0;width:36px;height:36px;border:0;border-radius:50%;background:#f1f1f1;font-size:22px;line-height:1;cursor:pointer;z-index:1}
+  .pdpx__modal-body{padding:16px}
+  .pdpx__modal-body img{width:100%;height:auto;display:block}
+  .pdpx__slide{cursor:zoom-in}
+  .pdpx__slide:focus-visible{outline:2px solid #2f5fd0;outline-offset:-2px}
+  .pdpx__lb{width:100vw;height:100vh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:rgba(0,0,0,.92);color:#fff;overflow:hidden}
+  .pdpx__lb[open]{display:flex;align-items:center;justify-content:center}
+  .pdpx__lb::backdrop{background:rgba(0,0,0,.92)}
+  .pdpx__lb-img{max-width:92vw;max-height:90vh;width:auto;height:auto;object-fit:contain;user-select:none}
+  .pdpx__lb-x,.pdpx__lb-nav{position:absolute;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;line-height:1;transition:background .2s}
+  .pdpx__lb-x:hover,.pdpx__lb-nav:hover{background:rgba(255,255,255,.3)}
+  .pdpx__lb-x{top:16px;right:16px;width:44px;height:44px;font-size:28px}
+  .pdpx__lb-nav{top:50%;width:48px;height:48px;margin-top:-24px;font-size:30px}
+  .pdpx__lb-prev{left:16px}.pdpx__lb-next{right:16px}
+  .pdpx__lb-nav[hidden]{display:none}
+  .pdpx__lb-count{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:13px;letter-spacing:1px;opacity:.8}
+  /* sticky add-to-cart bar */
+  .pdpx__sticky{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;box-shadow:0 -1px 10px rgba(0,0,0,.2);padding:10px 16px;transform:translateY(105%);transition:transform .35s ease;font-family:inherit}
+  .pdpx__sticky.is-on{transform:none}
+  .pdpx__sticky-in{display:flex;align-items:center;gap:12px;max-width:1500px;margin:0 auto}
+  .pdpx__sticky-in img{flex:none;width:42px;height:52px;object-fit:cover}
+  .pdpx__sticky-info{flex:1;min-width:0}
+  .pdpx__sticky-title{margin:0;font-size:14px;line-height:1.3;letter-spacing:.72px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pdpx__sticky .pdpx__price{margin:2px 0 0;gap:6px}
+  .pdpx__sticky-selects{display:none;gap:10px}
+  .pdpx__sticky-selects select{width:198px;height:40px;padding:5px 12px;border:0;border-radius:8px;background:#ececec;color:#000;font:inherit;font-size:14px;letter-spacing:0}
+  .pdpx__sticky-add{flex:none;height:52px;padding:0 28px;border:0;border-radius:8px;background:#000;color:#fff;font:inherit;font-size:19px;font-weight:700;letter-spacing:1px;cursor:pointer}
+  .pdpx__sticky-add:disabled{background:#8a8a8a;cursor:not-allowed}
+  @media (min-width:900px){
+    .pdpx{padding:36px 50px 56px}
+    .pdpx__wrap{display:grid;grid-template-columns:55% 45%;align-items:start}
+    .pdpx__gallery{margin:0;padding-right:8px}
+    .pdpx__slide{background:none}
+    .pdpx__slide img{width:100%;max-width:600px}
+    .pdpx__info{position:sticky;top:30px;padding-left:50px;gap:14px}
+    .pdpx__now{font-size:20px}
+    .pdpx__was{font-size:16px}
+    .pdpx__offerrow{margin:0;padding:0 0 2px}
+    .pdpx__offer{flex-basis:173px}
+    .pdpx__sticky-title{font-size:19px}
+    .pdpx__sticky-selects{display:flex}
+    .pdpx__sticky .pdpx__now{font-size:18px}
+  }
+  @media (prefers-reduced-motion:reduce){.pdpx *,.pdpx__sticky{transition:none!important}}
+</style>
+
+<script>
+  (function () {
+    document.querySelectorAll('[data-pdpx]').forEach(function (root) {
+      if (root.__pdpx) return; root.__pdpx = true;
+
+      /* ---------- variants ---------- */
+      var variants = []; try { variants = JSON.parse(root.querySelector('[data-pdpx-variants]').textContent); } catch (e) {}
+      var state = []; try { state = JSON.parse(root.getAttribute('data-options')); } catch (e) {}
+      var sizeIdx = +root.dataset.sizeIndex, colorIdx = +root.dataset.colorIndex;
+      var idInput = root.querySelector('[data-pdpx-id]'), atc = root.querySelector('[data-pdpx-atc]');
+      var priceEl = root.querySelector('[data-pdpx-price]'), wasEl = root.querySelector('[data-pdpx-was]'), saveEl = root.querySelector('[data-pdpx-save]');
+      var sizeVal = root.querySelector('[data-pdpx-sizeval]');
+      var fmt = function (cents) {
+        try { return new Intl.NumberFormat(root.dataset.locale || undefined, { style: 'currency', currency: root.dataset.currency || 'INR' }).format(cents / 100); }
+        catch (e) { return (cents / 100).toFixed(2); }
+      };
+      var find = function (opts) { return variants.filter(function (v) { return v.options.every(function (o, i) { return o === opts[i]; }); })[0]; };
+
+      /* ---------- gallery stack: scroll to the variant's image ---------- */
+      var track = root.querySelector('[data-pdpx-track]');
+      var slides = track ? track.querySelectorAll('.pdpx__slide') : [];
+      function goTo(i) {
+        if (!slides[i]) return;
+        var y = slides[i].getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+
+      /* ---------- full-screen viewer: main image + the ones below are clickable ---------- */
+      var lb = root.querySelector('[data-pdpx-lb]');
+      if (lb && slides.length) {
+        var lbImg = lb.querySelector('[data-lb-img]'), lbCount = lb.querySelector('[data-lb-count]');
+        var lbPrev = lb.querySelector('[data-lb-prev]'), lbNext = lb.querySelector('[data-lb-next]'), lbCur = 0;
+        var lbShow = function (i) {
+          lbCur = (i + slides.length) % slides.length;
+          var im = slides[lbCur].querySelector('img');
+          lbImg.src = im.getAttribute('data-full') || im.src; lbImg.alt = im.alt;
+          lbCount.textContent = (lbCur + 1) + ' / ' + slides.length;
+          lbPrev.hidden = lbNext.hidden = slides.length < 2;
+        };
+        var lbOpen = function (i) { lbShow(i); if (lb.showModal) lb.showModal(); else lb.setAttribute('open', ''); };
+        var lbClose = function () { if (lb.close) lb.close(); else lb.removeAttribute('open'); };
+        slides.forEach(function (sl, i) {
+          sl.addEventListener('click', function () { lbOpen(i); });
+          sl.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); lbOpen(i); } });
+        });
+        lbPrev.addEventListener('click', function (e) { e.stopPropagation(); lbShow(lbCur - 1); });
+        lbNext.addEventListener('click', function (e) { e.stopPropagation(); lbShow(lbCur + 1); });
+        lb.querySelector('[data-lb-close]').addEventListener('click', lbClose);
+        lb.addEventListener('click', function (e) { if (e.target === lb) lbClose(); });
+        lb.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') lbShow(lbCur + 1); if (e.key === 'ArrowLeft') lbShow(lbCur - 1); });
+        var tx = null;
+        lb.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
+        lb.addEventListener('touchend', function (e) { if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; tx = null; if (Math.abs(dx) > 40) lbShow(lbCur + (dx < 0 ? 1 : -1)); });
+      }
+
+      /* ---------- sticky add-to-cart bar ---------- */
+      var sticky = root.querySelector('[data-pdpx-sticky]');
+      if (sticky && 'IntersectionObserver' in window) {
+        new IntersectionObserver(function (en) {
+          var e = en[0]; sticky.classList.toggle('is-on', !e.isIntersecting && e.boundingClientRect.top < 0);
+        }).observe(atc);
+      }
+      function syncExtras(v) {
+        var sp = root.querySelector('[data-pdpx-s-price]'), sw = root.querySelector('[data-pdpx-s-was]'), ss = root.querySelector('[data-pdpx-s-save]');
+        var has = v.compare_at_price && v.compare_at_price > v.price;
+        if (sp) sp.textContent = fmt(v.price);
+        if (sw) { sw.hidden = !has; if (has) sw.textContent = fmt(v.compare_at_price); }
+        if (ss) { ss.hidden = !has; if (has) ss.textContent = 'SAVE ' + Math.floor((v.compare_at_price - v.price) * 100 / v.compare_at_price) + '%'; }
+        root.querySelectorAll('[data-pdpx-select]').forEach(function (sel) { sel.value = state[+sel.dataset.pdpxSelect]; });
+        var add = root.querySelector('[data-pdpx-sticky-add]'); if (add) add.disabled = !v.available;
+      }
+
+      function render(pushUrl) {
+        var v = find(state);
+        root.querySelectorAll('.pdpx__size').forEach(function (label) {
+          var input = label.querySelector('input'), test = state.slice(); test[sizeIdx] = input.value;
+          var t = find(test), ok = !!(t && t.available);
+          label.classList.toggle('is-out', !ok); input.disabled = !ok; input.checked = input.value === state[sizeIdx];
+        });
+        if (sizeVal && state[sizeIdx] != null) sizeVal.textContent = state[sizeIdx];
+        if (!v) { atc.disabled = true; atc.textContent = root.dataset.soldOut; return; }
+        idInput.value = v.id;
+        priceEl.textContent = fmt(v.price);
+        var hasWas = v.compare_at_price && v.compare_at_price > v.price;
+        wasEl.hidden = !hasWas; saveEl.hidden = !hasWas;
+        if (hasWas) { wasEl.textContent = fmt(v.compare_at_price); saveEl.textContent = 'SAVE ' + Math.floor((v.compare_at_price - v.price) * 100 / v.compare_at_price) + '%'; }
+        atc.disabled = !v.available; atc.textContent = v.available ? root.dataset.atc : root.dataset.soldOut;
+        if (pushUrl) { try { var u = new URL(location.href); u.searchParams.set('variant', v.id); history.replaceState(null, '', u); } catch (e) {} }
+        syncExtras(v);
+        if (pushUrl && v.featured_media) { var sl = root.querySelector('.pdpx__slide[data-media-id="' + v.featured_media.id + '"]'); if (sl) goTo([].indexOf.call(slides, sl)); }
+      }
+      root.addEventListener('change', function (e) {
+        if (e.target.matches('[data-pdpx-size]')) { state[sizeIdx] = e.target.value; render(true); }
+      });
+      root.addEventListener('change', function (e) {
+        if (e.target.matches('[data-pdpx-select]')) { state[+e.target.dataset.pdpxSelect] = e.target.value; render(true); }
+      });
+      root.addEventListener('click', function (e) {
+        if (e.target.closest('[data-pdpx-sticky-add]')) { if (!atc.disabled) atc.click(); return; }
+        var c = e.target.closest('[data-color]');
+        if (c) {
+          state[colorIdx] = c.dataset.color;
+          root.querySelectorAll('[data-color]').forEach(function (b) { var on = b === c; b.classList.toggle('is-active', on); b.setAttribute('aria-checked', on); });
+          render(true);
+        }
+      });
+
+      /* ---------- modal ---------- */
+      root.querySelectorAll('[data-pdpx-open]').forEach(function (b) {
+        var d = root.querySelector('[data-pdpx-modal="' + b.dataset.pdpxOpen + '"]'); if (!d) return;
+        b.addEventListener('click', function () { if (d.showModal) d.showModal(); else d.setAttribute('open', ''); });
+        d.addEventListener('click', function (e) { if (e.target === d || e.target.closest('[data-pdpx-close]')) d.close ? d.close() : d.removeAttribute('open'); });
+      });
+
+      /* ---------- tabs ---------- */
+      var tabs = root.querySelector('[data-pdpx-tabs]');
+      if (tabs) {
+        var tabEls = [].slice.call(tabs.querySelectorAll('[role=tab]'));
+        var show = function (tab, focus) {
+          tabEls.forEach(function (t) {
+            var on = t === tab; t.classList.toggle('is-active', on); t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1;
+            document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+          });
+          if (focus) tab.focus();
+        };
+        tabEls.forEach(function (t, i) {
+          t.addEventListener('click', function () { show(t); });
+          t.addEventListener('keydown', function (e) {
+            var k = e.key; if (k !== 'ArrowRight' && k !== 'ArrowLeft' && k !== 'Home' && k !== 'End') return;
+            e.preventDefault();
+            var n = k === 'Home' ? 0 : k === 'End' ? tabEls.length - 1 : (i + (k === 'ArrowRight' ? 1 : -1) + tabEls.length) % tabEls.length;
+            show(tabEls[n], true);
+          });
+        });
+        show(tabEls.filter(function (t) { return t.classList.contains('is-active'); })[0] || tabEls[0]);
+      }
+
+      render();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product (custom)",
+  "tag": "section",
+  "class": "section-product-custom",
+  "settings": [
+    { "type": "header", "content": "Gallery" },
+    { "type": "checkbox", "id": "show_gallery", "label": "Show product images above the info", "default": true },
+    { "type": "range", "id": "gallery_count", "label": "Images in the stack", "min": 1, "max": 8, "step": 1, "default": 4, "info": "Key Highlights shows the images after these, so nothing repeats." },
+    { "type": "header", "content": "Offers" },
+    { "type": "text", "id": "offers_label", "label": "Offers label", "default": "Available offers" },
+    { "type": "header", "content": "Sizing chart" },
+    { "type": "text", "id": "sizing_label", "label": "Link text", "default": "Sizing chart" },
+    { "type": "image_picker", "id": "size_chart_image", "label": "Size chart image", "info": "A product metafield custom.size_chart overrides this per product." },
+    { "type": "richtext", "id": "size_chart_fallback", "label": "Size chart table / text (optional)" },
+    { "type": "header", "content": "Product info" },
+    { "type": "text", "id": "model_fallback", "label": "Model info (fallback)", "default": "Model is 5'8\" (172 cm), 70 kg, Wearing M Size", "info": "A product metafield custom.model_info overrides this per product." },
+    { "type": "text", "id": "atc_label", "label": "Add to cart button", "default": "ADD TO CART" },
+    { "type": "text", "id": "sold_out_label", "label": "Sold out button", "default": "SOLD OUT" },
+    { "type": "header", "content": "Tabs" },
+    { "type": "text", "id": "tab_description", "label": "Tab 1 label", "default": "Description" },
+    { "type": "text", "id": "tab_details", "label": "Tab 2 label", "default": "Details" },
+    { "type": "text", "id": "tab_policy", "label": "Tab 3 label", "default": "Exchange Policy" },
+    { "type": "select", "id": "default_tab", "label": "Open tab", "default": "policy", "options": [ { "value": "description", "label": "Description" }, { "value": "details", "label": "Details" }, { "value": "policy", "label": "Exchange Policy" } ] },
+    { "type": "richtext", "id": "details_fallback", "label": "Details (fallback)", "info": "A product metafield custom.details overrides this per product.", "default": "<p>Fabric, fit and care details appear here.</p>" },
+    { "type": "richtext", "id": "policy", "label": "Exchange policy", "default": "<p><strong>Returns</strong> – Accepted only for defective, damaged, incorrect, or undelivered products. Must be requested within 24 hours.</p><p><strong>Refunds</strong> – Approved returns get a store credit coupon code (valid 50 days).</p><p><strong>Exchanges</strong> – Exchanges are strictly allowed only for size-related issues. Product exchanges are not permitted under any circumstances.</p><p>If the requested size is out of stock, no store credit or alternative compensation will be provided.</p><p>Exchange requests must be raised within 24-48 hours of delivery.</p><p>Only a one-time exchange is allowed per order, subject to a ₹250 exchange fee.</p><p><strong>Important Notes</strong> – Exchanges depend on stock availability. If unavailable we won't be able to proceed with the exchange. No exchanges on sale items. Products sold in a Sale are final, and are not eligible for returns, refunds or exchange.</p>" }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "offer",
+      "name": "Offer",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "₹150 OFF" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Prepaid above ₹1049" },
+        { "type": "text", "id": "code", "label": "Coupon code", "default": "UFOFF150FIRE" },
+        { "type": "checkbox", "id": "auto", "label": "Auto applied", "default": true }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product (custom)",
+      "blocks": [
+        { "type": "offer", "settings": { "title": "₹150 OFF", "subtitle": "Prepaid above ₹1049", "code": "UFOFF150FIRE", "auto": true } },
+        { "type": "offer", "settings": { "title": "₹300 OFF", "subtitle": "Prepaid above ₹2069", "code": "UFOFF300FIRE", "auto": true } },
+        { "type": "offer", "settings": { "title": "₹550 OFF", "subtitle": "Prepaid above ₹3599", "code": "UFOFF550FIRE", "auto": true } },
+        { "type": "offer", "settings": { "title": "₹850 OFF", "subtitle": "", "code": "UFOFF850FIRE", "auto": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}
