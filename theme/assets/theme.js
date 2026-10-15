@@ -375,6 +375,19 @@
       .finally(() => btn && btn.removeAttribute('disabled'));
   });
 
+  /* Used by pdp.js: add several lines at once, optionally go straight to checkout */
+  window.terzeeAddItems = (items, opts = {}) =>
+    (opts.discount ? fetch(root + 'discount/' + encodeURIComponent(opts.discount)).catch(() => {}) : Promise.resolve())
+    .then(() => fetch(root + 'cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }, body: JSON.stringify({ items: items.map((i) => ({ id: i.id, quantity: i.qty || 1 })) }) }))
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.status) { window.terzeeToast(res.description || res.message); return; }
+        if (opts.checkout) { window.location.href = root + 'checkout' + (opts.discount ? '?discount=' + encodeURIComponent(opts.discount) : ''); return; }
+        window.terzeeToast(items.length > 1 ? 'Set added to bag' : (settings.t?.added || 'Added to bag'));
+        return fetchCart().then(() => openDrawer('cart-drawer'));
+      })
+      .catch(() => window.terzeeToast('Something went wrong — please try again'));
+
   /* ---------- Shop cards (home + collection): swatches, wishlist ---------- */
   document.addEventListener('click', (e) => {
     const sw = e.target.closest('.shop-swatch'); if (!sw) return;

@@ -3,7 +3,7 @@
   assign sort = collection.sort_by | default: collection.default_sort_by
   assign currency_symbol = cart.currency.symbol | default: localization.country.currency.symbol
 -%}
-<section class="shop section--light" data-header-light data-shop data-shop-url="{{ collection.url }}">
+<section id="shop" class="shop section--light" data-header-light data-shop data-shop-url="{{ collection.url }}">
   <div class="shop__inner">
     <header class="shop__header">
       {%- if section.settings.eyebrow != blank -%}<p class="shop__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}

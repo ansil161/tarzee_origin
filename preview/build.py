@@ -32,7 +32,7 @@ def head(title, base='', body_class=''):
 <title>{e(title)} – Terzee Origins</title>
 <link rel="icon" type="image/png" href="{base}assets/ze-monogram-white.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Marhey:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800&family=Marhey:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{base}assets/base.css">
 <style>:root{{--logo-w:120px}}</style>
 <script>window.TERZEE={{smoothScroll:true,cursor:true,moneyFormat:"₹{{{{amount_no_decimals}}}}",t:{{empty:"Your bag is empty.",remove:"Remove",added:"Added to bag",add:"Add to bag",soldOut:"Sold out"}}}};</script>
@@ -108,10 +108,16 @@ def pmarquee(base=''):
 import re as _re
 SIZES = ['S', 'M', 'L', 'XL', 'XXL']
 CHEV = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
+NEW_ARRIVALS = {'lattice-zip-jacket', 'diamond-jaal-bomber', 'frayed-street-denim', 'archive-patchwork-jacket'}
+def cats_of(p):  # preview-only category keys used by the split panels
+    c = [{'Shirts': 'shirts', 'Jackets': 'jackets', 'Shackets': 'jackets'}[p['type']]]
+    if 'denim' in p['handle']: c.append('denim')
+    if p['handle'] in NEW_ARRIVALS: c.append('new')
+    return ' '.join(c)
 def shop_card(p, i, base=''):
     tag = TAGS.get(p['handle']); alt = ALT.get(p['handle'])
     badge = f'<span class="shop-badge">{"New" if tag == "New drop" else tag}</span>' if tag else ''
-    return f"""<div class="shop-card" data-shop-card data-product-id="{p['handle']}">
+    return f"""<div class="shop-card" data-shop-card data-product-id="{p['handle']}" data-cats="{cats_of(p)}">
   <div class="shop-card__image-wrapper">
     <button type="button" class="shop-wishlist" data-wishlist="{p['handle']}" aria-label="Add to wishlist" aria-pressed="false"><svg class="shop-heart" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>{badge}
     <a class="shop-card__image-link" href="{base}products/{p['handle']}.html" draggable="false" tabindex="-1" aria-hidden="true"><img class="shop-card__img" src="{base}assets/{img(p['handle'],1)}" alt="{e(p['title'])}" width="800" height="1000" loading="lazy" draggable="false">{f'<img class="shop-card__img shop-card__img--alt" src="{base}assets/{alt}" alt="" width="800" height="1000" loading="lazy" draggable="false">' if alt else ''}</a>
@@ -173,10 +179,15 @@ home += '''
 <section class="cats" data-header-light>
   <h2 class="cats__title" data-split>Shop by Categories</h2>
   <div class="cats__grid">
-    <a class="cat cat--tall" href="collection.html" style="--img-x:30%;--img-y:7%;--img-h:112%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR JACKETS</p><h3 class="cat__title">Built For Daily Confidence</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-jackets.png" alt="" loading="lazy" width="931" height="1400"></a>
-    <a class="cat cat--wide" href="collection.html" style="--img-x:36%;--img-y:-6%;--img-h:200%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR SHIRTS</p><h3 class="cat__title">Designed For Modern Living</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-shirts.png" alt="" loading="lazy" width="932" height="1400"></a>
-    <a class="cat cat--wide" href="collection.html" style="--img-x:40%;--img-y:-3%;--img-h:190%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR THE ARCHIVE</p><h3 class="cat__title">Made For Every Season</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-archive.png" alt="" loading="lazy" width="934" height="1400"></a>
+    <a class="cat cat--tall cat--photo" href="collection.html" style="--img-x:30%;--img-y:7%;--img-h:112%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR JACKETS</p><h3 class="cat__title">Built For Daily Confidence</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-jackets-photo.jpg" alt="" loading="lazy" width="1600" height="900" style="object-position:47% 40%"></a>
+    <a class="cat cat--wide cat--photo" href="collection.html" style="--img-x:36%;--img-y:-6%;--img-h:200%"><div class="cat__text"><div class="cat__head"><p class="cat__eyebrow">FOR SHIRTS</p><h3 class="cat__title">Designed For Modern Living</h3></div><span class="pill pill--ink">Shop Now</span></div><img class="cat__img" src="assets/cat-shirts-photo.jpg" alt="" loading="lazy" width="1100" height="1375" style="object-position:50% 36%"></a>
   </div>
+</section>
+'''
+home += '''
+<section class="ig" data-header-light>
+  <div class="ig__head"><div><h2 class="ig__title"><a href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener">@theterzeeorigins</a></h2><p class="ig__sub">Follow the latest looks, moments and stories.</p></div></div>
+  <div class="ig__carousel" style="--ig-speed:40s"><div class="ig__track"><div class="ig__group"><a class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/look-01-bomber-4x5.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/diamond-jaal-bomber-campaign-2.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/look-03-camp-shirt-4x5.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/archive-patchwork-jacket-campaign-1.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/look-02-back-4x5.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/diamond-jaal-bomber-campaign-3.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/frayed-street-denim-3.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/archive-patchwork-jacket-campaign-2.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/diamond-jaal-bomber-campaign-4.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/paisley-tonal-shirt-2.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a></div><div class="ig__group" aria-hidden="true"><a tabindex="-1" class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/look-01-bomber-4x5.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a tabindex="-1" class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/diamond-jaal-bomber-campaign-2.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a tabindex="-1" class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/look-03-camp-shirt-4x5.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a tabindex="-1" class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/archive-patchwork-jacket-campaign-1.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a tabindex="-1" class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/look-02-back-4x5.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a tabindex="-1" class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/diamond-jaal-bomber-campaign-3.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a tabindex="-1" class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/frayed-street-denim-3.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a tabindex="-1" class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/archive-patchwork-jacket-campaign-2.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a tabindex="-1" class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/diamond-jaal-bomber-campaign-4.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a><a tabindex="-1" class="ig__post" href="https://www.instagram.com/theterzeeorigins/" target="_blank" rel="noopener" aria-label="Instagram @theterzeeorigins"><img src="assets/paisley-tonal-shirt-2.jpg" alt="" loading="lazy" width="492" height="614" draggable="false"><span class="ig__meta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></span></a></div></div></div>
 </section>
 '''
 home += '''
@@ -207,8 +218,14 @@ types = sorted({p['type'] for p in cat}); techs = sorted({p['tag'] for p in cat}
 shop_js = _re.search(r'<script>([\s\S]*?)</script>', open(os.path.join(ROOT, 'theme', 'sections', 'main-collection.liquid'), encoding='utf-8').read()).group(1)
 SORTS = [('manual', 'Featured'), ('best-selling', 'Best selling'), ('title-ascending', 'Alphabetically, A-Z'), ('title-descending', 'Alphabetically, Z-A'), ('price-ascending', 'Price, low to high'), ('price-descending', 'Price, high to low'), ('created-descending', 'Date, new to old')]
 sort_opts = ''.join(f'<option value="{v}">{t}</option>' for v, t in SORTS)
-col = head('Shop all', body_class='template-collection') + header(over=False)
-col += f"""<section class="shop section--light" data-header-light data-shop data-shop-url="collection.html"><div class="shop__inner">
+SPLIT = [('Shirts', 'col-shirts.jpg', 'shirts', 50, 30), ('Jackets', 'col-jackets.jpg', 'jackets', 47, 40), ('Denim', 'col-denim.jpg', 'denim', 52, 35), ('New arrivals', 'col-new.jpg', 'new', 50, 30), ('Shop all', 'col-all.jpg', 'all', 50, 40)]
+ARROW = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
+split_html = '<section class="csplit" data-header-light aria-label="Shop by category"><ul class="csplit__list">' + ''.join(
+    f'<li class="csplit__item"><a class="csplit__link" href="collection.html?c={k}#shop" data-split-link="{k}"><img class="csplit__img" src="assets/{a}" alt="" loading="{"eager" if i == 0 else "lazy"}" width="1122" height="1402" style="object-position:{x}% {y}%"><span class="csplit__text"><span class="csplit__title">{t}</span><span class="csplit__cta">Shop now{ARROW}</span></span></a></li>'
+    for i, (t, a, k, x, y) in enumerate(SPLIT)) + '</ul></section>'
+split_js = """<script>(function(){var c=new URLSearchParams(location.search).get('c');if(!c)return;var names={shirts:'Shirts',jackets:'Jackets',denim:'Denim',new:'New arrivals',all:'Shop all'};var n=0,cards=document.querySelectorAll('[data-shop-card]');cards.forEach(function(el){var ok=c==='all'||(el.dataset.cats||'').split(' ').indexOf(c)>-1;el.style.display=ok?'':'none';if(ok)n++});var t=document.querySelector('.shop__title');if(t&&names[c])t.textContent=names[c];var ct=document.querySelector('[data-shop-count]');if(ct)ct.textContent=n+' of '+cards.length+' products';if(location.hash==='#shop'){var s=document.getElementById('shop');if(s)setTimeout(function(){window.scrollTo({top:s.getBoundingClientRect().top+scrollY-56,behavior:'smooth'})},60)}})();</script>"""
+col = head('Shop all', body_class='template-collection') + header(over=False) + split_html
+col += f"""<section id="shop" class="shop section--light" data-header-light data-shop data-shop-url="collection.html"><div class="shop__inner">
   <header class="shop__header"><h1 class="shop__title">Shop all</h1></header>
   <div class="shop__toolbar"><p class="shop__count"><span class="shop__count-label">Showing</span> <span data-shop-count>{len(cat)} of {len(cat)} products</span></p>
     <div class="shop__toolbar-actions"><button type="button" class="shop__filter-btn" data-shop-open-filters><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg> Filter <span data-shop-active-count></span></button>
@@ -221,39 +238,110 @@ col += f"""<section class="shop section--light" data-header-light data-shop data
     <div class="shop__main" data-shop-main><div class="shop-active" data-shop-active></div><span hidden data-shop-active-total>0</span>
       <div class="shop-grid">{''.join(shop_card(p, i) for i, p in enumerate(cat))}</div>
       <nav class="shop-pagination" aria-label="Pagination"></nav></div></div></div>
-  <div class="shop__overlay" data-shop-close-filters></div></section><script>{shop_js}</script>""" + footer()
+  <div class="shop__overlay" data-shop-close-filters></div></section><script>{shop_js}</script>""" + split_js + footer()
 open(os.path.join(OUT, 'collection.html'), 'w', encoding='utf-8').write(col)
 
 # ---------------- PRODUCTS ----------------
+# DEV promotion config for the static preview only. In the Shopify theme these come from the
+# "Product" section settings (all off / 0 by default). Nothing here is a real, live offer — create the
+# matching discount codes / automatic discounts in Shopify before enabling them on the store.
+PROMOS = {
+    'coupon': {'code': 'WELCOME10', 'pct': 10, 'min': 0, 'stacks': False},   # needs a real Shopify discount code
+    'prepaid_pct': 5,                                                          # needs a payment-method discount
+    'bundle': {'duo_pct': 10, 'trio_pct': 15},                                 # needs an automatic bundle discount
+    'free_ship_min': 0, 'ship_flat': 0,                                        # 0 = free shipping on every order
+}
+IC = {
+ 'truck': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19a1.5 1.5 0 1 0 0-.01M17 19a1.5 1.5 0 1 0 0-.01"/></svg>',
+ 'return': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></svg>',
+ 'needle': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 18 6a2.5 2.5 0 1 1 2 2L6 22zM9 15l2 2"/></svg>',
+ 'check': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.3 8 8 9 4.7-1 8-4.5 8-9V6zM8.5 12l2.5 2.5 4.5-5"/></svg>',
+ 'lock': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="1"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+ 'expand': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+}
+FAQ = [
+ ('How does the fit run?', 'Boxy and true to size. If you sit between sizes or want a roomier drape, size up.'),
+ ('How long does delivery take?', 'Orders are dispatched in 2–4 days and shipped free across India.'),
+ ('Can I return or exchange?', 'Yes — returns within 10 days, unworn with tags on.'),
+ ('How do I care for it?', 'Cold wash inside out, line dry in shade, do not tumble. Frayed and patchwork pieces soften with wear — that is the point.'),
+ ('Why might two pieces look slightly different?', 'Every piece is finished by hand in limited runs, so small differences are part of the cloth.'),
+]
+SIZES_ALL = ["S", "M", "L", "XL", "XXL"]
+def slides_for(p):
+    out = [(f'../assets/{img(p["handle"],n+1)}', f'../assets/{img(p["handle"],n+1)}', f'../assets/{p["handle"]}-{n+1}-800.jpg') for n in range(len(p['photos']))]
+    extra = list(p.get('campaign', []))
+    if p['handle'] in ALT and not ALT[p['handle']].startswith(p['handle']): extra.append(ALT[p['handle']])
+    for c in extra: out.append((f'../assets/{c}', f'../assets/{c}', f'../assets/{c}'))
+    return out
+def pdp_item(q, idx=0):
+    return {'id': q['handle'], 'handle': q['handle'], 'title': q['title'], 'type': q['type'], 'tag': q['tag'], 'fabric': q['fabric'],
+            'price': q['price'], 'compare': 0, 'img': f'../assets/{q["handle"]}-1-800.jpg', 'url': f'{q["handle"]}.html',
+            'sizes': [{'id': f'{q["handle"]}-{s}', 'title': s, 'available': not (s == 'XXL' and idx % 3 == 0)} for s in SIZES_ALL]}
 for i, p in enumerate(cat):
-    gallery = ''.join(f'<figure data-reveal data-delay="{n*0.05}"><img src="../assets/{img(p["handle"],n+1)}" alt="{e(p["title"])}" width="1200" height="1500"></figure>' for n in range(len(p['photos'])))
-    gallery += ''.join(f'<figure data-reveal><img src="../assets/{c}" alt="{e(p["title"])} campaign" width="1200" height="1500" loading="lazy"></figure>' for c in p.get('campaign', []))
-    if p['handle'] in ALT and not ALT[p['handle']].startswith(p['handle']):
-        gallery += f'<figure data-reveal><img src="../assets/{ALT[p["handle"]]}" alt="" width="1200" height="1500" loading="lazy"></figure>'
-    related = [q for q in cat if q['handle'] != p['handle']][:4]
+    sl = slides_for(p)
+    slides_json = json.dumps([{'src': a, 'full': b, 'alt': f'{p["title"]} — view {n+1}'} for n, (a, b, c) in enumerate(sl)])
+    thumbs = ''.join(f'<button class="pdp-thumb{" is-active" if n==0 else ""}" type="button" aria-label="Show image {n+1}"><img src="{c}" alt="" loading="lazy" width="168" height="210"></button>' for n, (a, b, c) in enumerate(sl))
+    same = [q for q in cat if q['handle'] != p['handle'] and q['type'] == p['type']]
+    others = [q for q in cat if q['handle'] != p['handle'] and q not in same]
+    pairs = [pdp_item(q, k) for k, q in enumerate((others + same)[:6])]   # complementary first: different category
+    main_item = pdp_item(p, i); main_item['id'] = p['handle']
+    data = json.dumps({'promos': PROMOS, 'main': main_item, 'pairs': pairs})
+    story_img = sl[-1][0]
     page = head(p['title'], base='../', body_class='template-product') + header(base='../', over=False)
-    page += f'''<section class="section section--tight section--light" data-header-light><div class="container"><div class="product">
-  <div class="product__gallery">{gallery}</div>
+    page += f'''<section class="pdp-hero" data-pdp><div class="container"><div class="product product--pdp">
+  <div class="pdp-gallery{' no-thumbs' if len(sl)<2 else ''}" data-gallery>
+    <div class="pdp-thumbs" role="group" aria-label="Product images">{thumbs if len(sl)>1 else ''}</div>
+    <div class="pdp-stage" data-stage><span class="pdp-badge">{e(TAGS.get(p['handle'],'Drop 01'))}</span><img data-main src="{sl[0][0]}" alt="{e(p['title'])} — view 1" width="1200" height="1500"><button class="pdp-expand" type="button" data-expand aria-label="Open full-screen gallery">{IC['expand']}</button></div>
+    <script type="application/json" data-slides>{slides_json}</script>
+    <script type="application/json" data-pdp-data>{data}</script>
+  </div>
   <div class="product__info">
-    <div class="product__crumb"><a href="../collection.html">Drop 01</a> · <a href="../collection.html">{p['type']}</a> · {p['tag']}</div>
+    <div class="product__crumb"><a href="../index.html">Home</a> · <a href="../collection.html">Drop 01</a> · <a href="../collection.html">{p['type']}</a></div>
+    <div class="pdp-brand">Terzee Origins — Drop 01</div>
     <h1 class="product__title" data-split>{e(p['title'])}</h1>
-    <div class="product__price" data-price>{rupee(p['price'])}</div>
+    <div class="pdp-sub">{p['type']} · {p['tag']}</div>
     <div class="product__desc t-body">{e(p['desc'])}</div>
-    <form data-preview-cart data-title="{e(p['title'])}" data-price="{p['price']}" data-img="../assets/{img(p['handle'],1)}">
-      <div class="sizes"><div class="sizes__head"><span class="t-label">Size</span><a class="link" href="#">Size guide</a></div>
-        <div class="sizes__grid">{''.join(f'<label><input type="radio" name="size" value="{s}"{" checked" if s=="M" else ""}{" disabled" if s=="XXL" and i%3==0 else ""}><span>{s}</span></label>' for s in ["S","M","L","XL","XXL"])}</div></div>
-      <div class="product__cta"><button class="btn btn--solid-ink btn--wide" type="submit"><span>Add to bag</span></button></div>
+    <div class="pdp-pricebox">
+      <div class="pdp-pricebox__was" data-was-row hidden>Regular price <s data-was></s></div>
+      <div class="pdp-pricebox__your"><span class="pdp-pricebox__lab">Your price</span><div class="product__price" data-price data-your-price>{rupee(p['price'])}</div><span class="pdp-save" data-save hidden></span></div>
+      <div class="pdp-tax">Inclusive of all taxes · Free shipping across India</div>
+    </div>
+    <div class="pdp-best" data-bestdeal hidden><div class="pdp-best__t"><small>Best deal today</small>As low as<b data-bd-price></b><span data-bd-how></span></div><button type="button" data-unlock>Unlock my deal</button></div>
+    <form data-preview-cart data-pdp-form data-title="{e(p['title'])}" data-price="{p['price']}" data-img="../assets/{img(p['handle'],1)}">
+      <div class="sizes" data-option><div class="sizes__head"><span class="t-label">Size</span><a class="link" href="#details">Fit &amp; details</a></div>
+        <div class="sizes__grid">{''.join(f'<label><input type="radio" name="size" value="{s}"{" checked" if s=="M" else ""}{" disabled" if s=="XXL" and i%3==0 else ""}><span>{s}</span></label>' for s in SIZES_ALL)}</div></div>
+      <div class="pdp-buy">
+        <div class="pdp-qty"><button type="button" data-qty-step="-1" aria-label="Decrease quantity">−</button><input name="quantity" type="number" min="1" max="10" value="1" data-qty-input aria-label="Quantity" inputmode="numeric"><button type="button" data-qty-step="1" aria-label="Increase quantity">+</button></div>
+        <button class="btn btn--red" type="submit"><span>Add to bag<span data-cta-price> — {rupee(p['price'])}</span></span></button>
+        <button class="btn btn--ghost" type="button" data-buy-now><span>Buy it now</span></button>
+      </div>
     </form>
-    <div class="product__meta">Free shipping across India · Cut and sewn by hand</div>
-    <div class="acc">
+    <div class="pdp-assure">
+      <div>{IC['lock']}<span><b>Secure checkout.</b> Encrypted payment at checkout.</span></div>
+      <div>{IC['truck']}<span><b>Free shipping.</b> Ships by <span data-dispatch>in 2–4 days</span></span></div>
+      <div>{IC['return']}<span><b>10-day returns.</b> Unworn, tags on.</span></div>
+      <div>{IC['needle']}<span><b>Cut &amp; sewn by hand.</b> Limited runs, Drop 01.</span></div>
+    </div>
+    <div class="acc" id="details">
       <details open><summary>Details<i></i></summary><div class="acc__body">Boxy fit, true to size. Men and unisex. Each piece is finished by hand, so small differences are part of the cloth.</div></details>
       <details><summary>Fabric &amp; care<i></i></summary><div class="acc__body">{e(p['fabric'])}. Cold wash inside out, line dry in shade, do not tumble.</div></details>
       <details><summary>Shipping &amp; returns<i></i></summary><div class="acc__body">Free shipping across India. Dispatched in 2–4 days. Returns within 10 days, unworn, tags on.</div></details>
     </div>
   </div></div></div></section>
-<section class="section section--stone" data-header-light><div class="container"><div class="section-head"><div><div class="eyebrow t-label"><span class="dia"></span>Drop 01</div><h2 class="t-headline" data-split>You may also like</h2></div><a class="link" href="../collection.html">Shop all</a></div>
-<div class="product-grid" data-stagger>{''.join(card(q, base='../') for q in related)}</div></div></section>'''
-    page += footer(base='../')
+<section class="pdp-sec pdp-sec--ivory" id="offers" data-pdp-offers data-header-light><div class="container"><p class="pdp-kick" data-pdp-rise>Offers</p><h2 class="pdp-h2" data-pdp-rise>Unlock your Terzee privileges</h2><p class="pdp-lead" data-pdp-rise>Every offer that applies to this piece, in one place. Offers marked as codes are confirmed at checkout.</p><div class="pdp-tiles" data-mount></div></div></section>
+<section class="pdp-sec pdp-sec--dark" id="sets" data-pdp-sets><div class="container"><p class="pdp-kick" data-pdp-rise>Sets</p><h2 class="pdp-h2" data-pdp-rise>The more you discover, the more you save</h2><p class="pdp-lead" data-pdp-rise>Pick one piece or pair it. Your total updates as you choose.</p><div class="pdp-sets" data-mount></div></div></section>
+<section class="pdp-sec pdp-sec--ivory" id="collection" data-pdp-collection data-header-light><div class="container"><p class="pdp-kick" data-pdp-rise>Complete the wardrobe</p><h2 class="pdp-h2" data-pdp-rise>Add more from Drop 01</h2><div data-mount></div></div></section>
+<section class="pdp-story"><div class="pdp-story__media"><img src="{story_img}" alt="{e(p['title'])} styled" loading="lazy" width="1200" height="1500"></div>
+  <div class="pdp-story__text"><p class="pdp-kick" data-pdp-rise>The piece</p><h2 data-pdp-rise>{e(p['tag'])}, made by hand.</h2><p class="t-body-lg" data-pdp-rise>{e(p['desc'])}</p>
+    <div class="pdp-story__facts" data-pdp-rise><div><b>Cloth</b><span>{e(p['fabric'].split(' · ')[0])}</span></div><div><b>Fit</b><span>Boxy, true to size</span></div><div><b>Finish</b><span>Hand finished in limited runs</span></div></div></div></section>
+<section class="pdp-sec pdp-sec--ivory" id="compare" data-pdp-compare data-header-light><div class="container"><p class="pdp-kick" data-pdp-rise>Compare</p><h2 class="pdp-h2" data-pdp-rise>Find your piece</h2><div class="pdp-cmps" data-mount></div></div></section>
+<section class="pdp-sec pdp-sec--black" id="reviews"><div class="container"><p class="pdp-kick" data-pdp-rise>Reviews</p><h2 class="pdp-h2" data-pdp-rise>Worn by you</h2>
+  <div class="pdp-rev"><div><div class="pdp-rev__score">—</div><div style="opacity:.6">No ratings yet</div><div class="pdp-rev__bars" aria-hidden="true">{''.join(f'<div><span>{n}★</span><i></i><span>0</span></div>' for n in (5,4,3,2,1))}</div></div>
+  <div class="pdp-rev__empty"><h3>Be the first to review</h3><p>Reviews appear here once customers have worn the piece. Connect your reviews app to show ratings, photos and verified-purchase labels.</p></div></div></div></section>
+<section class="pdp-sec pdp-sec--ivory" data-header-light><div class="container"><p class="pdp-kick">FAQ</p><h2 class="pdp-h2">Good to know</h2>
+  <div class="acc pdp-faq">{''.join(f'<details><summary>{q}<i></i></summary><div class="acc__body">{a}</div></details>' for q, a in FAQ)}</div></div></section>
+<div class="pdp-bar" data-bar aria-label="Quick purchase"><img src="../assets/{p['handle']}-1-800.jpg" alt="" width="88" height="110"><div class="pdp-bar__i"><b data-bar-price>{rupee(p['price'])}</b><span class="pdp-save" data-bar-save hidden></span><span><span data-bar-name>{e(p['title'])}</span> <span data-bar-size></span></span></div><button class="btn btn--red" type="button" data-bar-add><span>Add to bag</span></button></div>'''
+    page += footer(base='../') + '<script src="../assets/pdp.js"></script>'
     open(os.path.join(OUT, 'products', p['handle'] + '.html'), 'w', encoding='utf-8').write(page)
 
 # ---------------- STORY ----------------
@@ -279,12 +367,20 @@ open(os.path.join(ASSETS, 'preview-cart.js'), 'w', encoding='utf-8').write('''/*
     list.innerHTML=items.length?items.map(function(it,i){return '<div class="cart-line" data-i="'+i+'"><img src="'+it.img+'" alt=""><div><div class="cart-line__title">'+it.title+'</div><div class="cart-line__meta">'+(it.size||'')+'</div><div class="cart-line__qty"><button data-d="-1">−</button><span>'+it.qty+'</span><button data-d="1">+</button></div><button class="cart-line__remove" data-d="0">Remove</button></div><div>'+money(it.price*it.qty)+'</div></div>'}).join(''):'<p class="cart-empty">Your bag is empty.</p>';
     var sub=document.querySelector('[data-cart-subtotal]'); if(sub) sub.textContent=money(items.reduce(function(a,b){return a+b.price*b.qty},0));
   }
+  function addItems(list,opts){
+    list.forEach(function(n){
+      var ex=items.find(function(x){return x.title===n.title&&x.size===(n.size||'')});
+      if(ex) ex.qty+=n.qty||1; else items.push({title:n.title,price:+n.price,img:n.img,size:n.size||'',qty:n.qty||1});
+    });
+    render(); window.terzeeToast&&window.terzeeToast(list.length>1?'Set added to bag':'Added to bag'); window.terzeeOpenDrawer&&window.terzeeOpenDrawer('cart-drawer');
+    return Promise.resolve();
+  }
+  window.terzeeAddItems=addItems;
   document.addEventListener('submit',function(e){
     var f=e.target.closest('form[data-preview-cart]'); if(!f) return; e.preventDefault();
     var size=(f.querySelector('input[name=size]:checked')||f.querySelector('input[name=size][type=hidden]')||{}).value||'';
-    var ex=items.find(function(x){return x.title===f.dataset.title&&x.size===size});
-    if(ex) ex.qty++; else items.push({title:f.dataset.title,price:+f.dataset.price,img:f.dataset.img,size:size,qty:1});
-    render(); window.terzeeToast&&window.terzeeToast('Added to bag'); window.terzeeOpenDrawer&&window.terzeeOpenDrawer('cart-drawer');
+    var q=f.querySelector('input[name=quantity]');
+    addItems([{title:f.dataset.title,price:+f.dataset.price,img:f.dataset.img,size:size,qty:q?(parseInt(q.value,10)||1):1}]);
   });
   document.addEventListener('click',function(e){
     var b=e.target.closest('[data-d]'); if(!b) return; var i=+b.closest('.cart-line').dataset.i; var d=+b.dataset.d;

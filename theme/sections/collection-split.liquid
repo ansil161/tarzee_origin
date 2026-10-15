@@ -1,0 +1,40 @@
+{%- comment -%} Full-width split category panels for the top of the collection page. {%- endcomment -%}
+<section class="csplit" data-header-light aria-label="Shop by category">
+  <ul class="csplit__list">
+    {%- for block in section.blocks -%}
+      <li class="csplit__item" {{ block.shopify_attributes }}>
+        <a class="csplit__link" href="{{ block.settings.url | default: routes.collections_url }}">
+          {%- if block.settings.asset != blank -%}
+            <img class="csplit__img" src="{{ block.settings.asset | asset_url }}" alt="" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" width="1122" height="1402" style="object-position:{{ block.settings.focus_x | default: 50 }}% {{ block.settings.focus_y | default: 30 }}%">
+          {%- endif -%}
+          <span class="csplit__text">
+            <span class="csplit__title">{{ block.settings.title }}</span>
+            <span class="csplit__cta">{{ block.settings.cta | default: 'Shop now' }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </span>
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "Category split",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "panel",
+      "name": "Panel",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Shirts" },
+        { "type": "text", "id": "cta", "label": "Button text", "default": "Shop now" },
+        { "type": "text", "id": "asset", "label": "Image file (theme assets)", "default": "col-shirts.jpg" },
+        { "type": "url", "id": "url", "label": "Link" },
+        { "type": "range", "id": "focus_x", "label": "Image focus X", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50 },
+        { "type": "range", "id": "focus_y", "label": "Image focus Y", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 30 }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Category split" }]
+}
+{% endschema %}

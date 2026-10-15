@@ -402,6 +402,89 @@
         "cta_url": "/collections/all",
         "asset": "seasonal-panel.jpg"
       }
+    },
+    "instagram": {
+      "type": "instagram-feed",
+      "blocks": {
+        "i0": {
+          "type": "post",
+          "settings": {
+            "asset": "look-01-bomber-4x5.jpg"
+          }
+        },
+        "i1": {
+          "type": "post",
+          "settings": {
+            "asset": "diamond-jaal-bomber-campaign-2.jpg"
+          }
+        },
+        "i2": {
+          "type": "post",
+          "settings": {
+            "asset": "look-03-camp-shirt-4x5.jpg"
+          }
+        },
+        "i3": {
+          "type": "post",
+          "settings": {
+            "asset": "archive-patchwork-jacket-campaign-1.jpg"
+          }
+        },
+        "i4": {
+          "type": "post",
+          "settings": {
+            "asset": "look-02-back-4x5.jpg"
+          }
+        },
+        "i5": {
+          "type": "post",
+          "settings": {
+            "asset": "diamond-jaal-bomber-campaign-3.jpg"
+          }
+        },
+        "i6": {
+          "type": "post",
+          "settings": {
+            "asset": "frayed-street-denim-3.jpg"
+          }
+        },
+        "i7": {
+          "type": "post",
+          "settings": {
+            "asset": "archive-patchwork-jacket-campaign-2.jpg"
+          }
+        },
+        "i8": {
+          "type": "post",
+          "settings": {
+            "asset": "diamond-jaal-bomber-campaign-4.jpg"
+          }
+        },
+        "i9": {
+          "type": "post",
+          "settings": {
+            "asset": "paisley-tonal-shirt-2.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "i0",
+        "i1",
+        "i2",
+        "i3",
+        "i4",
+        "i5",
+        "i6",
+        "i7",
+        "i8",
+        "i9"
+      ],
+      "settings": {
+        "handle": "theterzeeorigins",
+        "profile_url": "https://www.instagram.com/theterzeeorigins/",
+        "subtitle": "Follow the latest looks, moments and stories.",
+        "speed": 40
+      }
     }
   },
   "order": [
@@ -411,6 +494,7 @@
     "craft",
     "seasonal",
     "tiles",
+    "instagram",
     "jacket",
     "newsletter"
   ]
