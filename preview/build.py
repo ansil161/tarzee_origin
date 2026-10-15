@@ -224,10 +224,7 @@ split_html = '<section class="csplit" data-header-light aria-label="Shop by cate
     f'<li class="csplit__item"><a class="csplit__link" href="collection.html?c={k}" data-split-link="{k}"><img class="csplit__img" src="assets/{a}" alt="" loading="{"eager" if i == 0 else "lazy"}" width="1122" height="1402" style="object-position:{x}% {y}%"><span class="csplit__text"><span class="csplit__title">{t}</span><span class="csplit__cta">Shop now{ARROW}</span></span></a></li>'
     for i, (t, a, k, x, y) in enumerate(SPLIT)) + '</ul></section>'
 split_js = """<script>(function(){var c=new URLSearchParams(location.search).get('c');if(!c)return;var names={shirts:'Shirts',jackets:'Jackets',denim:'Denim',new:'New arrivals',all:'Shop all'};var n=0,cards=document.querySelectorAll('[data-shop-card]');cards.forEach(function(el){var ok=c==='all'||(el.dataset.cats||'').split(' ').indexOf(c)>-1;el.style.display=ok?'':'none';if(ok)n++});var t=document.querySelector('.shop__title');if(t&&names[c])t.textContent=names[c];var ct=document.querySelector('[data-shop-count]');if(ct)ct.textContent=n+' of '+cards.length+' products';if(location.hash==='#shop'){var s=document.getElementById('shop');if(s)setTimeout(function(){window.scrollTo({top:s.getBoundingClientRect().top+scrollY-56,behavior:'smooth'})},60)}})();</script>"""
-shop_page = head('Shop', body_class='template-collection') + header(over=False) + split_html + footer()
-open(os.path.join(OUT, 'shop.html'), 'w', encoding='utf-8').write(shop_page)
-col = head('Shop all', body_class='template-collection') + header(over=False)
-col += f"""<section id="shop" class="shop section--light" data-header-light data-shop data-shop-url="collection.html"><div class="shop__inner">
+col = f"""<section id="shop" class="shop section--light" data-header-light data-shop data-shop-url="collection.html"><div class="shop__inner">
   <header class="shop__header"><h1 class="shop__title">Shop all</h1></header>
   <div class="shop__toolbar"><p class="shop__count"><span class="shop__count-label">Showing</span> <span data-shop-count>{len(cat)} of {len(cat)} products</span></p>
     <div class="shop__toolbar-actions"><button type="button" class="shop__filter-btn" data-shop-open-filters><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg> Filter <span data-shop-active-count></span></button>
@@ -240,8 +237,9 @@ col += f"""<section id="shop" class="shop section--light" data-header-light data
     <div class="shop__main" data-shop-main><div class="shop-active" data-shop-active></div><span hidden data-shop-active-total>0</span>
       <div class="shop-grid">{''.join(shop_card(p, i) for i, p in enumerate(cat))}</div>
       <nav class="shop-pagination" aria-label="Pagination"></nav></div></div></div>
-  <div class="shop__overlay" data-shop-close-filters></div></section><script>{shop_js}</script>""" + split_js + footer()
-open(os.path.join(OUT, 'collection.html'), 'w', encoding='utf-8').write(col)
+  <div class="shop__overlay" data-shop-close-filters></div></section><script>{shop_js}</script>""" + split_js
+open(os.path.join(OUT, 'shop.html'), 'w', encoding='utf-8').write(head('Shop', body_class='template-collection') + header(over=False) + split_html + col + footer())
+open(os.path.join(OUT, 'collection.html'), 'w', encoding='utf-8').write(head('Shop all', body_class='template-collection') + header(over=False) + col + footer())
 
 # ---------------- PRODUCTS ----------------
 # DEV promotion config for the static preview only. In the Shopify theme these come from the

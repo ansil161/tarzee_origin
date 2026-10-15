@@ -5,7 +5,7 @@
       <li class="csplit__item" {{ block.shopify_attributes }}>
         <a class="csplit__link" href="{{ block.settings.url | default: routes.collections_url }}">
           {%- if block.settings.asset != blank -%}
-            <img class="csplit__img" src="{{ block.settings.asset | asset_url }}" alt="" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" width="1122" height="1402" >
+            <img class="csplit__img" src="{{ block.settings.asset | asset_url }}" alt="" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" width="1122" height="1402" style="object-position:{{ block.settings.focus_x | default: 50 }}% {{ block.settings.focus_y | default: 30 }}%">
           {%- endif -%}
           <span class="csplit__text">
             <span class="csplit__title">{{ block.settings.title }}</span>
