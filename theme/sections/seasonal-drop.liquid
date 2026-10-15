@@ -44,7 +44,7 @@
     {%- else -%}
       {%- for product in col.products limit: 4 -%}
         {%- assign img1 = product.featured_image -%}
-        {%- assign img2 = product.images[1] -%}
+        {%- comment -%}Hover image: first gallery image whose alt text says model / wearing / worn. No match = no hover image.{%- endcomment -%}{%- assign img2 = nil -%}{%- for im in product.images offset: 1 -%}{%- assign im_alt = im.alt | downcase -%}{%- if im_alt contains 'model' or im_alt contains 'wearing' or im_alt contains 'worn' -%}{%- assign img2 = im -%}{%- break -%}{%- endif -%}{%- endfor -%}
         <article class="sd-card">
           <div class="sd-card__media">
             {%- if product.compare_at_price > product.price -%}

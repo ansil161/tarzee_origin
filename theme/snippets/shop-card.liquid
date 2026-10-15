@@ -49,7 +49,7 @@
     <a class="shop-card__image-link" href="{{ product.url }}" draggable="false" tabindex="-1" aria-hidden="true">
       {%- if img -%}
         <img class="shop-card__img" src="{{ img | image_url: width: 800 }}" srcset="{{ img | image_url: width: 400 }} 400w, {{ img | image_url: width: 800 }} 800w, {{ img | image_url: width: 1200 }} 1200w" sizes="(max-width:600px) 50vw, (max-width:900px) 45vw, (max-width:1280px) 25vw, 20vw" alt="{{ img.alt | default: product.title | escape }}" width="800" height="1000" loading="lazy" draggable="false">
-        {%- assign img2 = product.images[1] -%}
+        {%- comment -%}Hover image: first gallery image whose alt text says model / wearing / worn. No match = no hover image.{%- endcomment -%}{%- assign img2 = nil -%}{%- for im in product.images offset: 1 -%}{%- assign im_alt = im.alt | downcase -%}{%- if im_alt contains 'model' or im_alt contains 'wearing' or im_alt contains 'worn' -%}{%- assign img2 = im -%}{%- break -%}{%- endif -%}{%- endfor -%}
         {%- if img2 -%}
         <img class="shop-card__img shop-card__img--alt" src="{{ img2 | image_url: width: 800 }}" srcset="{{ img2 | image_url: width: 400 }} 400w, {{ img2 | image_url: width: 800 }} 800w" sizes="(max-width:600px) 50vw, (max-width:900px) 45vw, (max-width:1280px) 25vw, 20vw" alt="" width="800" height="1000" loading="lazy" draggable="false" data-shop-alt>
         {%- endif -%}

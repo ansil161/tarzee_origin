@@ -19,11 +19,9 @@ def rupee(n): return '₹' + f'{n:,}'
 def img(handle, n): return f'{handle}-{n}.jpg'
 def e(s): return html.escape(s)
 GALLERY_EXTRA = {'lattice-zip-jacket': 'detail-jaal.jpg', 'jaal-pocket-camp-shirt': 'look-03-camp-shirt-4x5.jpg'}  # extra gallery shots beyond photos/campaign
-def _own_images(p):
-    imgs = [img(p['handle'], n + 1) for n in range(len(p['photos']))] + list(p.get('campaign', []))
-    return imgs   # lookbook shots (GALLERY_EXTRA) are not product photos, so they never become the hover image
-# hover image for cards = the product's own 2nd photo/campaign image (never another product's, never the same as the main)
-ALT = {p['handle']: _own_images(p)[1] for p in cat if len(_own_images(p)) > 1}
+# Hover image for cards = the product's first on-model photo (the campaign shots). Flat-lay, detail and lookbook
+# shots never qualify; a product with no on-model photo gets no hover image.
+ALT = {p['handle']: p['campaign'][0] for p in cat if p.get('campaign')}
 TAGS = {'lattice-zip-jacket': 'New drop', 'frayed-street-denim': 'Limited'}
 
 def head(title, base='', body_class=''):
