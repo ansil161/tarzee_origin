@@ -1,0 +1,70 @@
+{%- comment -%}
+  Craft — "the stage". Headline + story on the left, a tall rounded video on the right, and the techniques as
+  floating frosted-glass cards that overlap the video edge. Block title format: "Name — detail".
+{%- endcomment -%}
+{%- liquid
+  assign video_src = section.settings.video_url
+  if video_src == blank
+    assign video_src = 'craft-1080x1350.mp4' | asset_url
+  endif
+-%}
+<section class="craft">
+  <div class="craft__inner">
+    <div class="craft__copy">
+      <p class="craft__eyebrow">{{ section.settings.eyebrow }}</p>
+      <h2 class="craft__title" data-split>{{ section.settings.heading }}</h2>
+      <p class="craft__text">{{ section.settings.text }}</p>
+      {%- if section.settings.cta != blank -%}
+        <a class="craft__cta" href="{{ section.settings.cta_url | default: '#' }}">{{ section.settings.cta }}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      {%- endif -%}
+    </div>
+    <div class="craft__stage">
+      <div class="craft__frame">
+        {%- if section.settings.image != blank -%}
+          <img src="{{ section.settings.image | image_url: width: 1400 }}" alt="" width="1400" height="1750" loading="lazy">
+        {%- elsif section.settings.asset != blank -%}
+          <img src="{{ section.settings.asset | asset_url }}" alt="" width="1400" height="1750" loading="lazy">
+        {%- else -%}
+          <video autoplay muted loop playsinline preload="metadata" poster="{{ 'craft-poster.jpg' | asset_url }}"><source src="{{ video_src }}" type="video/mp4"></video>
+        {%- endif -%}
+      </div>
+      {%- if section.blocks.size > 0 -%}
+        <ol class="craft__cards">
+          {%- for block in section.blocks -%}
+            {%- assign parts = block.settings.title | split: ' — ' -%}
+            <li class="craft__card" {{ block.shopify_attributes }}>
+              <span class="craft__n">0{{ forloop.index }}</span>
+              <span class="craft__name">{{ parts[0] }}</span>
+              {%- if parts[1] != blank -%}<span class="craft__detail">{{ parts[1] }}</span>{%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ol>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Craft stage",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Craft" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Every piece carries the hand that made it." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Blanket stitch, block print, patchwork with exposed edges. Slow work, kept patient and precise — the hand is always visible." },
+    { "type": "text", "id": "cta", "label": "Button", "default": "Our story" },
+    { "type": "url", "id": "cta_url", "label": "Button link" },
+    { "type": "url", "id": "video_url", "label": "Video URL (mp4). Empty = bundled craft loop." },
+    { "type": "image_picker", "id": "image", "label": "Image (replaces the video)" },
+    { "type": "text", "id": "asset", "label": "Or theme asset filename (empty = video)", "default": "craft-model.jpg" }
+  ],
+  "max_blocks": 5,
+  "blocks": [ { "type": "line", "name": "Technique", "settings": [
+    { "type": "text", "id": "title", "label": "Name — detail", "default": "Blanket stitch — collars, hems, appliqué" }
+  ] } ],
+  "presets": [ { "name": "Craft stage", "blocks": [
+    { "type": "line", "settings": { "title": "Blanket stitch — collars, hems, appliqué" } },
+    { "type": "line", "settings": { "title": "Block print — lattice and diamond repeats" } },
+    { "type": "line", "settings": { "title": "Patchwork — raw squares, four greys" } },
+    { "type": "line", "settings": { "title": "Frayed appliqué — built from strips of denim" } }
+  ] } ]
+}
+{% endschema %}

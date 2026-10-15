@@ -124,7 +124,7 @@
       }
     },
     "craft": {
-      "type": "split-media",
+      "type": "craft-stage",
       "blocks": {
         "c1": {
           "type": "line",
@@ -163,8 +163,7 @@
         "text": "Blanket stitch, block print, patchwork with exposed edges. Slow work, kept patient and precise — the hand is always visible.",
         "cta": "Our story",
         "cta_url": "/pages/story",
-        "flip": false,
-        "scheme": "dark"
+        "asset": "craft-model.jpg"
       }
     },
     "tiles": {
