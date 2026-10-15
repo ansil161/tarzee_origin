@@ -190,14 +190,7 @@ home += '''
 </section>
 '''
 home += '''
-<section class="jreveal" data-jreveal aria-label="Terzee Origins"><div class="jreveal__pin"><div class="jreveal__stage">
-  <div class="jreveal__title" aria-hidden="true"><div class="jreveal__title-1">TERZEE</div><div class="jreveal__title-2">ORIGINS</div></div>
-  <div class="jreveal__inside"><img src="assets/jacket-reveal-inside.jpg" alt="" loading="lazy" width="2048" height="1152"></div>
-  <div class="jreveal__about"><span class="jreveal__about-sub">about us</span><p class="jreveal__about-text" data-chars>Cut and sewn by hand from one black cloth. Built to be worn hard and kept for years.</p></div>
-  <div class="jreveal__seam" aria-hidden="true"></div>
-  <div class="jreveal__half jreveal__half--left" aria-hidden="true"><img src="assets/jacket-reveal-left.png" alt="" loading="lazy" width="1024" height="1152"></div>
-  <div class="jreveal__half jreveal__half--right" aria-hidden="true"><img src="assets/jacket-reveal-right.png" alt="" loading="lazy" width="1024" height="1152"></div>
-</div></div></section>
+
 
 <section class="section section--stone" data-header-light><div class="container"><div class="newsletter">
   <div><div class="eyebrow t-label" data-reveal><span class="dia"></span>Newsletter</div><h2 class="t-display" data-split>Sign up</h2></div>

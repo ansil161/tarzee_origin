@@ -182,18 +182,6 @@
         "scheme": "stone"
       }
     },
-    "jacket": {
-      "type": "jacket-reveal",
-      "settings": {
-        "heading_1": "TERZEE",
-        "heading_2": "ORIGINS",
-        "subtitle": "about us",
-        "text": "Cut and sewn by hand from one black cloth. Built to be worn hard and kept for years.",
-        "asset_left": "jacket-reveal-left.png",
-        "asset_right": "jacket-reveal-right.png",
-        "asset_inside": "jacket-reveal-inside.jpg"
-      }
-    },
     "seasonal": {
       "type": "seasonal-drop",
       "blocks": {
@@ -522,7 +510,6 @@
     "tiles",
     "social",
     "instagram",
-    "jacket",
     "newsletter"
   ]
 }
