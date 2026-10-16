@@ -279,6 +279,8 @@ ul{list-style:none;margin:0;padding:0}
 .footer{background:var(--ink);color:var(--paper);border-top:1px solid var(--line-dark);padding:clamp(56px,7vw,110px) 0 28px;overflow:hidden}
 .footer__top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:clamp(48px,7vw,96px)}
 .footer__brand img{width:150px;margin-bottom:20px}
+.footer__logo3d{width:min(100%,250px);aspect-ratio:1000/1142;margin:-6px 0 14px -4px}
+.footer__logo3d img{width:100%;margin:0}
 .footer__brand p{max-width:34ch;font-size:14px;opacity:.75}
 .footer__brand .u{font-family:var(--font-urdu);font-size:15px;opacity:.7;direction:rtl;text-align:left;margin-top:10px}
 .footer h4{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;margin-bottom:20px;opacity:.6}

@@ -434,3 +434,16 @@
 
   if (hasST) window.addEventListener('load', () => ScrollTrigger.refresh());
 })();
+
+/* 3D logo modules (footer + craft): load logo3d.js once an instance nears the viewport; the module skips elements it already mounted */
+(function () {
+  var els = document.querySelectorAll('[data-logo3d]');
+  if (!els.length) return;
+  var loaded = false;
+  function load(src) { if (loaded) return; loaded = true; var s = document.createElement('script'); s.src = src; s.async = true; document.head.appendChild(s); }
+  Array.prototype.forEach.call(els, function (el) {
+    if (!('IntersectionObserver' in window)) return load(el.dataset.module);
+    var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); load(el.dataset.module); } }, { rootMargin: '600px 0px' });
+    io.observe(el);
+  });
+})();

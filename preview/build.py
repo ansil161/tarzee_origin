@@ -94,6 +94,7 @@ def footer(base=''):
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
 <script src="{base}assets/theme.js"></script>
+<script src="{base}assets/version-toggle.js"></script>
 <script src="{base}assets/preview-cart.js"></script>
 </body></html>'''
 
@@ -209,7 +210,7 @@ types = sorted({p['type'] for p in cat}); techs = sorted({p['tag'] for p in cat}
 shop_js = _re.search(r'<script>([\s\S]*?)</script>', open(os.path.join(ROOT, 'theme', 'sections', 'main-collection.liquid'), encoding='utf-8').read()).group(1)
 SORTS = [('manual', 'Featured'), ('best-selling', 'Best selling'), ('title-ascending', 'Alphabetically, A-Z'), ('title-descending', 'Alphabetically, Z-A'), ('price-ascending', 'Price, low to high'), ('price-descending', 'Price, high to low'), ('created-descending', 'Date, new to old')]
 sort_opts = ''.join(f'<option value="{v}">{t}</option>' for v, t in SORTS)
-SPLIT = [('Shirts', 'col-shirts.jpg', 'shirts', 50, 30), ('Jackets', 'col-jackets.jpg', 'jackets', 47, 40), ('New arrivals', 'col-new.jpg', 'new', 50, 30), ('Shop all', 'col-all.jpg', 'all', 50, 40)]
+SPLIT = [('Shirts', 'col-shirts.jpg', 'shirts', 50, 30), ('Jackets', 'col-jackets.jpg', 'jackets', 47, 40), ('New arrivals', 'col-new.jpg', 'new', 50, 30), ('Shop all', 'col-all.jpg', 'all', 50, 25)]
 ARROW = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
 split_html = '<section class="csplit" data-header-light aria-label="Shop by category"><ul class="csplit__list">' + ''.join(
     f'<li class="csplit__item"><a class="csplit__link" href="collection.html?c={k}" data-split-link="{k}"><img class="csplit__img" src="assets/{a}" alt="" loading="{"eager" if i == 0 else "lazy"}" width="1122" height="1402" style="object-position:{x}% {y}%"><span class="csplit__text"><span class="csplit__title">{t}</span><span class="csplit__cta">Shop now{ARROW}</span></span></a></li>'

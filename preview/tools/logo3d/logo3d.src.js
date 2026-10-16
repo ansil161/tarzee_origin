@@ -7,6 +7,7 @@
  * Loaded lazily by the section's inline loader when the section nears the viewport.
  */
 import MESH from './logo-mesh.json';
+import WORD from './wordmark-mesh.json';   // the TERZEE wordmark, traced from the brand PNG (only used when the element has data-lockup)
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, MeshPhysicalMaterial, MeshBasicMaterial, Quaternion, Euler, Vector3,
   BufferGeometry, BufferAttribute, PMREMGenerator, BoxGeometry, PlaneGeometry, DirectionalLight,
@@ -40,6 +41,13 @@ const CFG = {
   KEY_LIGHT_SPEED: 0.35,      // rad/s, orbit of the independent key light
   KEY_LIGHT_INTENSITY: 1.6,   // direct light on top of the environment (0 = environment only)
   EXPOSURE: 1.0,
+  WORD_COLOR: 0xe6e6e6,        // the wordmark is a brighter, satin silver so the name stays readable on black
+  WORD_METALNESS: 0.55,
+  WORD_ROUGHNESS: 0.3,
+  FACE_DWELL: 0.2,            // lockup only: auto-rotation slows to this fraction of its speed while the front/back faces you (1 = constant speed)
+  WORD_DEPTH: 0.15,           // extrusion depth of the wordmark (its strokes are thin, so shallower than the mark)
+  WORD_BEVEL: 0.016,          // bevel radius of the wordmark
+  LOCKUP_GAP: 0.3,            // space between the mark and the wordmark when data-lockup is set
   FIT: 1.12                   // camera margin around the logo (bigger = logo smaller)
 };
 
@@ -78,10 +86,10 @@ function buildEnvironment(renderer) {
  * edges that have no reverse twin; the logo's interior is always to their left (CCW cap).
  * Normals are analytic: the cap stays dead flat, the bevel is a true quarter-round, and corners sharper
  * than CREASE_DEG get their own vertices so they stay crisp instead of shading like a pillow. */
-function buildLogoGeometry(xyq, tri, q) {
+function buildLogoGeometry(xyq, tri, q, depth = CFG.DEPTH, bevel = CFG.BEVEL) {
   const n = xyq.length / 2, X = new Float32Array(n), Y = new Float32Array(n);
   for (let i = 0; i < n; i++) { X[i] = xyq[i * 2] / q; Y[i] = xyq[i * 2 + 1] / q; }
-  const H = CFG.DEPTH / 2, r = CFG.BEVEL, STEPS = CFG.BEVEL_STEPS, cosCrease = Math.cos(MathUtils.degToRad(CFG.CREASE_DEG));
+  const H = depth / 2, r = bevel, STEPS = CFG.BEVEL_STEPS, cosCrease = Math.cos(MathUtils.degToRad(CFG.CREASE_DEG));
   const dir = new Map(), key = (a, b) => a * 65536 + b;
   for (let t = 0; t < tri.length; t += 3) for (let e = 0; e < 3; e++) { const a = tri[t + e], b = tri[t + (e + 1) % 3]; dir.set(key(a, b), [a, b]); }
   const bedges = [...dir.values()].filter(([a, b]) => !dir.has(key(b, a)));
@@ -171,7 +179,9 @@ function mount(root) {
   const pivot = new Group();   // user + auto rotation
   const tilt = new Group();    // hover parallax + sinusoidal tilt
   tilt.add(pivot); scene.add(tilt);
-  let geometry = null, mesh = null;
+  const lockup = root.hasAttribute('data-lockup');
+  const LW = lockup ? Math.max(2, WORD.w) : 2, LH = lockup ? 2 + CFG.LOCKUP_GAP + WORD.h : 2;   // lockup bounds in logo units
+  let geometry = null, mesh = null, geometry2 = null, material2 = null;
 
   /* state */
   const q = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), 0.5), qd = new Quaternion(), AX = new Vector3(1, 0, 0), AY = new Vector3(0, 1, 0), eu = new Euler(), upright = new Quaternion();
@@ -185,9 +195,8 @@ function mount(root) {
     const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    const half = 1.0 * CFG.FIT;                              // logo ≈ 2 units wide
-    const vFov = MathUtils.degToRad(camera.fov) / 2;
-    const dist = Math.max(half / Math.tan(vFov), half / (Math.tan(vFov) * camera.aspect));
+    const vFov = MathUtils.degToRad(camera.fov) / 2;         // mark alone ≈ 2 x 2 units; the lockup is taller and a little wider
+    const dist = Math.max((LH / 2) * CFG.FIT / Math.tan(vFov), (LW / 2) * CFG.FIT / (Math.tan(vFov) * camera.aspect));
     camera.position.set(0, 0, dist); camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
   }
@@ -202,13 +211,22 @@ function mount(root) {
     g.computeBoundingSphere();
     geometry = g;
     mesh = new Mesh(g, material);
+    if (lockup) {
+      mesh.position.y = LH / 2 - 1;                           // mark on top
+      const w = new Int16Array(b64(WORD.xy)), wt = new Uint16Array(b64(WORD.tri));
+      geometry2 = buildLogoGeometry(w, wt, WORD.q, CFG.WORD_DEPTH, CFG.WORD_BEVEL);
+      material2 = new MeshPhysicalMaterial({ color: CFG.WORD_COLOR, metalness: CFG.WORD_METALNESS, roughness: CFG.WORD_ROUGHNESS, clearcoat: 0.6, clearcoatRoughness: 0.12, envMapIntensity: CFG.ENV_INTENSITY * 1.1 });
+      const m2 = new Mesh(geometry2, material2);
+      m2.position.y = -LH / 2 + WORD.h / 2;                   // TERZEE underneath, same metal, rotates with the mark
+      pivot.add(m2);
+    }
     pivot.add(mesh);
     st.ready = true;
     draw();
     root.classList.add('is-3d');                              // fades the fallback image out
     if (fallback) setTimeout(() => { fallback.hidden = true; }, 900);
     if (st.visible) start();
-  } catch (e) { /* keep the fallback image */ }
+  } catch (e) { console.warn("logo3d: falling back to the still image", e); }
 
   /* drag / touch */
   canvas.addEventListener('pointerdown', e => {
@@ -247,7 +265,9 @@ function mount(root) {
     const idle = !st.drag && now - st.lastInteract > CFG.IDLE_RESUME_MS;
     if (!reduced) {
       st.auto = idle ? Math.min(1, st.auto + dt / CFG.RESUME_EASE) : (st.drag ? 0 : st.auto);
-      spin(CFG.AUTO_SPEED * ease(st.auto) * dt, 0);
+      let sp = CFG.AUTO_SPEED * ease(st.auto);
+      if (lockup) { eu.setFromQuaternion(q, 'YXZ'); sp *= CFG.FACE_DWELL + (1 - CFG.FACE_DWELL) * Math.pow(Math.sin(eu.y), 2); }   // linger while the name faces you, sweep through the sides
+      spin(sp * dt, 0);
     }
     if (!st.drag) {                                    // inertia
       const damp = Math.exp(-CFG.INERTIA_DAMPING * dt);
@@ -289,7 +309,7 @@ function mount(root) {
 
   return function destroy() {
     stop(); io.disconnect(); ro.disconnect(); document.removeEventListener('visibilitychange', onVis);
-    geometry && geometry.dispose(); material.dispose(); envRT.dispose(); renderer.dispose();
+    geometry && geometry.dispose(); geometry2 && geometry2.dispose(); material2 && material2.dispose(); material.dispose(); envRT.dispose(); renderer.dispose();
   };
 }
 
